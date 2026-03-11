@@ -1,54 +1,29 @@
-# pyDearGDB
+# SideGDB
 
-a custom GDB UI made with Python and [DearPyGui](https://dearpygui.readthedocs.io/en/latest/)
+a custom GDB UI made in Python.
 
 ## ⚠️⚠️ THIS IS ALPHA SOFTWARE ⚠️⚠️
+Parts of this project could be rewritten when you least expect it: this documentation can get outdated very easily.
 
 # How does it work??
 
-I made this scheme about 2 weeks before actually doing something, it's not accurate but it should be enough:
+This is an oversimplified view of the program. Pretty much, you click buttons and it sends commands to the GDB instance that's debugging your target. 
 
-<img src="repo_assets/underthehood.png" alt="pyDearGDB under the hood" width=600>
+<img src="repo_assets/underthehood-v2.png" alt="pyDearGDB under the hood" width=400>
+  
+# VERY IMPORTANT NOTE
 
-> (Ignore the QEMU part for now)
+this program was made with OSDev in mind, i made it so that i could debug [my kernel](https://github.com/purpleK2/kernel) with something other than VSCode's debugger. I did NOT test this with your average C program that's supposed to run on your terminal, or something like that.
 
 # Prerequisites
 
-You need these python libraries installed:
+You'll need these libraries:
 
-- `dearpygui`: (python wrappers for Dear ImGui)[https://github.com/hoffstadt/DearPyGui]
-- `pygdbmi`: (the bridge between Python and GDB)[https://cs01.github.io/pygdbmi/]
+- `pygdbmi`: [the bridge between Python and GDB](https://cs01.github.io/pygdbmi/)
+- `PySide6`: [the official Python module for Qt6](https://pypi.org/project/PySide6/)
 
-# How to run
+There is a `requirements.txt` if you didn't notice btw
 
-You should run pyDearGDB from your project's directory (i.e. `python3 ../pyDearGDB/main.py`, below is the structure i work with)
-```
-.
-├──pyDearGDB
-│  ├──main.py
-│  └──...
-└──[your project directory here]
-```
-You **must** give to `main.py` the path to the executable you want to debug, for example:
+# How to use
 
-```sh
-python3 ../pyDearGDB/main.py build/main
-```
-**BTW, if you don't give the executable path, the script won't run anyways and will show you the available arguments : )**
-
-> oh i forgot, you can do `main.py -h` to show the arguments 
-
-You can additionally pass a GDB script with the `-x` flag:
-```sh
-python3 ../pyDearGDB/main.py build/main -x path/to/script.gdb
-```
-
-# What can I do?
-
-pyDearGDB can't do anything for now, but here's a cool preview for the current UI status:
-
-<img src="repo_assets/ui_readme.png" alt="pyDearGDB UI" width=600>
-
-BTW if you don't like how i arranged the windows, you can move them as you like (so you can reveal the background color : )
-
-<img src="repo_assets/ui_ucanmovestuff.png" alt="pyDearGDB UI with draggable windows" width=600>
+TODO.
