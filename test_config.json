@@ -1,0 +1,10 @@
+{
+  "sessionName": "[BIOS+CDROM] purpleK2 debug",
+
+  "programPath": "/home/repubblicatech/Documenti/VSCode/purpleK2/build/kernel.elf",
+  "gdbScriptPath": "/home/repubblicatech/Documenti/VSCode/purpleK2/debug_scripts/remote.gdb",
+
+  "preRunCommands": [
+    "make -C /home/repubblicatech/Documenti/VSCode/purpleK2 debug-remote"
+  ]
+}

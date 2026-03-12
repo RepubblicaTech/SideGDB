@@ -14,5 +14,6 @@ if __name__ == "__main__":
 
     app = QApplication()
     mainView = MainView(APPLICATION_TITLE)
+    mainView.showLauncher()
     mainView.show()
     sys.exit(app.exec())

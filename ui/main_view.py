@@ -2,6 +2,7 @@ from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QImage
 
+from ui.launcher import launcher_view
 from ui.main_views import bottom_view, code_view, right_view
 
 test_code = """
@@ -22,19 +23,36 @@ class MainView(QtWidgets.QMainWindow):
         self.setMenuBar(QtWidgets.QMenuBar(self))
 
         self.fileMenu = QtWidgets.QMenu("File")
-        self.fileMenu.addAction("Open Configuration...")
-        self.fileMenu.addAction("Save Configuration...")
-
-        self.codeMenu = QtWidgets.QMenu("Code")
-        self.codeMenu.addAction("Manage breakpoints...")
+        self.fileMenu.addAction("Open Session...")
+        self.fileMenu.addAction("Save Session...")
 
         self.menuBar().addMenu(self.fileMenu)
-        self.menuBar().addMenu(self.codeMenu)
 
         self.resize(1000, 800)
 
         self.mdiArea = QtWidgets.QMdiArea()
         self.mdiArea.setBackground(QImage("bg.png"))
+
+        self.setCentralWidget(self.mdiArea)
+
+    def showLauncher(self):
+        self.launcher = launcher_view.LauncherView(self.mdiArea)
+
+        self.launcher.setGeometry(int((self.width() - 600) / 2),
+                                  int((self.height() - 400) / 2),
+                                  600,
+                                  400)
+
+    # to be called after creating GDB instance
+    def showMainUI(self):
+        # Update menu bar
+        self.fileMenu.addSeparator()
+        self.fileMenu.addAction("Quit Session")
+        self.codeMenu = QtWidgets.QMenu("Code")
+        self.codeMenu.addAction("Manage breakpoints...")
+        self.menuBar().addMenu(self.codeMenu)
+
+        # create the actual UI
 
         self.codeSubWindow = code_view.CodeDebugView(self.mdiArea)
         self.rightSubWindow = right_view.RightView(self.mdiArea)
@@ -48,5 +66,3 @@ class MainView(QtWidgets.QMainWindow):
         self.bottomSubWindow.setGeometry(0, self.codeSubWindow.height(),
                                          self.codeSubWindow.width(),
                                          self.height() - self.codeSubWindow.height() - self.menuBar().height())
-
-        self.setCentralWidget(self.mdiArea)
