@@ -2,8 +2,13 @@ from PySide6 import QtWidgets
 from PySide6.QtCore import QFlag, Qt
 
 class LauncherView(QtWidgets.QMdiSubWindow):
-    def __init__(self, /, parent: QtWidgets.QWidget | None):
+    def __init__(self, /, parent: QtWidgets.QMdiArea):
         super().__init__(parent)
+
+        if (parent.parent() is None):
+            self.windowParent = parent
+        else:
+            self.windowParent = parent.parent()
 
         self.setWindowTitle("SideGDB Launcher")
         self.resize(600, 400)

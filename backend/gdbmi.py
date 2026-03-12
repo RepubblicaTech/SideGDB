@@ -4,7 +4,7 @@ from pygdbmi.gdbcontroller import GdbController
 
 from threading import Lock
 
-import logging
+from loguru import logger
 
 class GdbMI:
     GDBMI_TOKENS = {
@@ -32,7 +32,7 @@ class GdbMI:
                 responses = self.gdbmi.get_gdb_response(timeout_sec=1)
                 break
             except constants.GdbTimeoutError:
-                logging.debug("Waiting...")
+                logger.debug("Waiting...")
                 if (att > 0):
                     att -= 1
                     continue
@@ -40,7 +40,7 @@ class GdbMI:
                 if (att == -1):
                     continue
 
-                logging.warn("No more attempts.")
+                logger.warning("No more attempts.")
                 break
 
         self.lock.release()

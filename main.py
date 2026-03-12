@@ -3,7 +3,10 @@ import sys
 
 from PySide6.QtWidgets import QApplication
 
+from ui.launcher.launcher_controller import LauncherController
+from ui.launcher.launcher_view import LauncherView
 from ui.main_view import MainView
+from ui.main_window_view import MainWindow
 
 APPLICATION_TITLE = "SideGDB"
 
@@ -13,7 +16,12 @@ if __name__ == "__main__":
     parsedArgs = ourParser.parse_args()
 
     app = QApplication()
-    mainView = MainView(APPLICATION_TITLE)
-    mainView.showLauncher()
-    mainView.show()
+    mainWindow = MainWindow(APPLICATION_TITLE)
+    launcherView = LauncherView(mainWindow.mdiArea)
+    launcherView.setGeometry(int((mainWindow.width() - 600) / 2),
+                              int((mainWindow.height() - 400) / 2),
+                              600,
+                              400)
+    launcherController = LauncherController(launcherView)
+    mainWindow.show()
     sys.exit(app.exec())
