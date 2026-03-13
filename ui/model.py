@@ -1,6 +1,6 @@
 from backend import code, memory, symbols, cpu, gdbmi
 
-class DearGDBModel:
+class SGDBModel:
     currentThread: int
     currentBreakpoint: str
 
@@ -10,11 +10,12 @@ class DearGDBModel:
     variables: list[dict]
 
     def __init__(self, gdbMI: gdbmi.GdbMI) -> None:
+        self.gdbMI = gdbMI
+
         self.codeMgr = code.CodeManager(gdbMI)
         self.symMgr = symbols.SymbolsManager(gdbMI)
         self.memMgr = memory.MemoryManager(gdbMI)
         self.cpuMgr = cpu.CPUManager(gdbMI)
-        self.gdbMI = gdbMI
 
     def getThreadInfo(self):
         responses = self.cpuMgr.getThreadInfo()

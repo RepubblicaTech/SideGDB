@@ -3,7 +3,7 @@ from ui import model
 from main_views import magic_view
 
 class MagicController:
-    def __init__(self, view: magic_view.MagicView, model: model.DearGDBModel) -> None:
+    def __init__(self, view: magic_view.MagicView, model: model.SGDBModel) -> None:
         self.view = view
         self.model = model
 
