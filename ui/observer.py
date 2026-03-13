@@ -1,0 +1,22 @@
+from enum import Enum
+from typing_extensions import Callable
+
+
+class SGSignals(Enum):
+    SGDB_SIGSTART = "GDB_SIGSTART"
+    SGDB_SIGEND = "GDB_SIGEND"
+
+observers = dict()
+
+def subscribe(signal: SGSignals, function: Callable):
+    if (signal not in observers):
+        observers[signal] = list()
+
+    observers[signal].append(function)
+
+def notify(signal):
+    if (signal not in observers):
+        return -1
+
+    for fun in observers[signal]:
+        fun()
