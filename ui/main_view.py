@@ -1,6 +1,6 @@
 from PySide6 import QtWidgets
-from PySide6.QtCore import QSize, Qt
-from PySide6.QtGui import QDragLeaveEvent, QImage
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QImage
 
 from ui.main_views import bottom_view, code_view, right_view
 
