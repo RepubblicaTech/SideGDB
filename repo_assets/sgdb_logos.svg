@@ -24,15 +24,35 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.62515607"
-     inkscape:cx="451.88716"
-     inkscape:cy="518.27058"
+     inkscape:zoom="0.5"
+     inkscape:cx="1559"
+     inkscape:cy="486"
      inkscape:window-width="1920"
      inkscape:window-height="1014"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer2">
+    <inkscape:page
+       x="0"
+       y="0"
+       width="1000"
+       height="1000"
+       id="page1"
+       margin="0"
+       bleed="0" />
+    <inkscape:page
+       x="1010"
+       y="0"
+       width="1280"
+       height="640"
+       id="page2"
+       margin="0"
+       bleed="0"
+       inkscape:export-filename="repoCard.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+  </sodipodi:namedview>
   <defs
      id="defs1">
     <linearGradient
@@ -94,6 +114,54 @@
          in2="comp1"
          id="feComposite18" />
     </filter>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Drop Shadow"
+       id="filter18-3"
+       x="-0.055454421"
+       y="-0.30367526"
+       width="1.1273284"
+       height="1.6944383">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="1.000000"
+         flood-color="rgb(0,0,0)"
+         id="feFlood17-5" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="20.273315"
+         id="feGaussianBlur17-6" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="14.406593"
+         dy="13.953517"
+         id="feOffset17-2" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite17-9" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite18-1" />
+    </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1"
+       id="linearGradient2"
+       gradientUnits="userSpaceOnUse"
+       x1="0"
+       y1="1000"
+       x2="1000"
+       y2="0"
+       gradientTransform="matrix(1.28,0,0,0.64,1010,0)" />
   </defs>
   <g
      inkscape:label="P1"
@@ -116,6 +184,30 @@
          id="tspan5"
          x="500.90015"
          y="578.08643"
+         style="stroke-width:45.3609">SideGDB</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="P2">
+    <rect
+       style="fill:url(#linearGradient2);fill-opacity:1;stroke-width:17.1042;stroke-linecap:square;paint-order:markers stroke fill"
+       id="rect1-7"
+       width="1280"
+       height="640"
+       x="1010"
+       y="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:900;font-stretch:normal;font-size:230.434px;line-height:1.9;font-family:'Crimson Pro';-inkscape-font-specification:'Crimson Pro, Heavy Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:45.3609;stroke-linecap:square;paint-order:markers stroke fill;filter:url(#filter18-3)"
+       x="1643.6969"
+       y="391.10977"
+       id="text5-0"
+       transform="matrix(1.2940756,0,0,1.2940756,-485.22471,-94.104187)"><tspan
+         sodipodi:role="line"
+         id="tspan5-9"
+         x="1643.6969"
+         y="391.10977"
          style="stroke-width:45.3609">SideGDB</tspan></text>
   </g>
 </svg>
