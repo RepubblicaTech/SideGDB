@@ -3,7 +3,8 @@ from typing_extensions import Callable
 
 
 class SGSignals(Enum):
-    SGDB_SIGSTART = "GDB_SIGSTART"
+    SGDB_SIGCREATE = "GDB_SIGCREATE"
+    SGDB_SIGLAUNCH = "GDB_SIGSTART"
     SGDB_SIGEND = "GDB_SIGEND"
 
 observers = dict()

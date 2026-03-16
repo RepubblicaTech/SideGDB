@@ -1,5 +1,4 @@
 from PySide6 import QtWidgets
-from PySide6.QtCore import QFlag, Qt
 
 class LauncherView(QtWidgets.QMdiSubWindow):
     def __init__(self, /, parent: QtWidgets.QMdiArea):

@@ -1,6 +1,6 @@
 from pprint import pformat
 from ui import model
-from main_views import magic_view
+from ui.subwindows import magic_view
 
 class MagicController:
     def __init__(self, view: magic_view.MagicView, model: model.SGDBModel) -> None:

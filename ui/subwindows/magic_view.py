@@ -5,13 +5,11 @@ class MagicView(QtWidgets.QMainWindow):
         super().__init__()
         self.setWindowTitle("Magic window")
 
-    def initWidgets(self):
         self.magicInput = QtWidgets.QLineEdit()
         self.magicButton = QtWidgets.QPushButton("Buttn :)")
         self.scrollArea = QtWidgets.QScrollArea()
         self.magicTextArea = QtWidgets.QTextEdit()
 
-    def showWidgets(self):
         self.mainContainer = QtWidgets.QWidget()
         self.mainLayout = QtWidgets.QVBoxLayout(self.mainContainer)
         self.upperBox = QtWidgets.QWidget()
