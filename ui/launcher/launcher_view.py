@@ -29,8 +29,8 @@ class LauncherView(QtWidgets.QMdiSubWindow):
 
         self.setWidget(self.mainWidget)
 
-        self.__fileDialog = QtWidgets.QFileDialog(filter="JSON (*.json)")
+        self.__fileDialog = QtWidgets.QFileDialog()
         self.__fileDialog.setFileMode(QtWidgets.QFileDialog.FileMode.ExistingFile)
 
     def openFile(self):
-        return self.__fileDialog.getOpenFileName(dir=os.getcwd())
+        return self.__fileDialog.getOpenFileName(dir=os.getcwd(), filter="JSON (*.json)")
