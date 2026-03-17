@@ -11,6 +11,10 @@ class SGDBController:
 
     def startDebugging(self, config):
         logger.debug(f"Given config {config}")
+        # parse JSON
+        # set up GDB
+
+        # set up UI elements
         self.view.loadMainUI()
 
     def spawnConfigureGDB(self):
