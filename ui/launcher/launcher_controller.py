@@ -12,4 +12,5 @@ class LauncherController:
         observer.notify(observer.SGSignals.SGDB_SIGCREATE)
 
     def openSession(self):
-        observer.notify(observer.SGSignals.SGDB_SIGLAUNCH)
+        chosenFile = self.view.openFile()
+        observer.notify(observer.SGSignals.SGDB_SIGLAUNCH, config=chosenFile[0])

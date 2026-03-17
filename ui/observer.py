@@ -15,9 +15,16 @@ def subscribe(signal: SGSignals, function: Callable):
 
     observers[signal].append(function)
 
-def notify(signal):
+def unsubscribe(function: Callable):
+    for signal in observers:
+        try:
+            signal.remove(function)
+        except ValueError:
+            continue
+
+def notify(signal: SGSignals, **kwargs):
     if (signal not in observers):
         return -1
 
     for fun in observers[signal]:
-        fun()
+        fun(**kwargs)

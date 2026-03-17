@@ -1,3 +1,4 @@
+import os
 from PySide6 import QtWidgets
 
 class LauncherView(QtWidgets.QMdiSubWindow):
@@ -27,3 +28,9 @@ class LauncherView(QtWidgets.QMdiSubWindow):
         self.mainWidget.setLayout(self.gridLayout)
 
         self.setWidget(self.mainWidget)
+
+        self.__fileDialog = QtWidgets.QFileDialog(filter="JSON (*.json)")
+        self.__fileDialog.setFileMode(QtWidgets.QFileDialog.FileMode.ExistingFile)
+
+    def openFile(self):
+        return self.__fileDialog.getOpenFileName(dir=os.getcwd())
