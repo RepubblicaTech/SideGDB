@@ -14,10 +14,6 @@ mainWindow: MainView
 launcherView: LauncherView
 
 if __name__ == "__main__":
-    ourParser = argparse.ArgumentParser(prog=sys.argv[0], description="A custom GDB TUI made in Python")
-    ourParser.add_argument("-c", "--config", metavar="/path/to/config.yml", type=str, nargs=1, help="Path to a SideGDB configuration", required=False)
-    parsedArgs = ourParser.parse_args()
-
     app = QApplication()
     mainWindow = MainView(APPLICATION_TITLE)
     launcherView = LauncherView(mainWindow.mdiArea)
