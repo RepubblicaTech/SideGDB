@@ -2,6 +2,7 @@ from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QImage
 
+from ui.helpers import QtHelpers
 from ui.main_views import bottom_view, code_view, right_view
 
 class MainView(QtWidgets.QMainWindow):
@@ -69,37 +70,29 @@ class SGDBConfigView(QtWidgets.QDialog):
         self.tabWidget.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
 
         gdbConfTab = QtWidgets.QWidget()
-        gdbConfGrid = QtWidgets.QGridLayout()
+        gdbConfV = QtWidgets.QVBoxLayout()
 
-        self.configNameIn = QtWidgets.QLineEdit(placeholderText="A beautiful GDB configuration")
-        self.programPathIn = QtWidgets.QLineEdit(placeholderText="/some/path/to/a.out")
-        self.dotGdbPathIn = QtWidgets.QLineEdit(placeholderText="/path/to/script.gdb")
-        self.programPathChoose = QtWidgets.QPushButton("...")
-        self.dotGdbPathChoose = QtWidgets.QPushButton("...")
-        gdbConfGrid.addWidget(QtWidgets.QLabel("Config name*"), 0, 0)
-        gdbConfGrid.addWidget(QtWidgets.QLabel("Program path*"), 1, 0)
-        gdbConfGrid.addWidget(QtWidgets.QLabel("GDB Script"), 2, 0)
-        gdbConfGrid.addWidget(self.configNameIn, 0, 1, 1, 2)
-        gdbConfGrid.addWidget(self.programPathIn, 1, 1, 1, 1)
-        gdbConfGrid.addWidget(self.programPathChoose, 1, 2, 1, 1)
-        gdbConfGrid.addWidget(self.dotGdbPathIn, 2, 1, 1, 1)
-        gdbConfGrid.addWidget(self.dotGdbPathChoose, 2, 2, 1, 1)
+        self.configName = QtHelpers.QLabeledLineEdit(QtHelpers.QDirectionFlag.QHorizontal, "Config name", placeholderText="A beautiful GDB configuration")
+        self.programPath = QtHelpers.QPathChoose(QtWidgets.QFileDialog.FileMode.ExistingFile, sideText="Program path*", lineEditPlaceholder="/some/path/to/a.out")
+        self.dotGdbPath = QtHelpers.QPathChoose(QtWidgets.QFileDialog.FileMode.ExistingFile, sideText="GDB Script", lineEditPlaceholder="/path/to/script.gdb")
 
-        gdbConfTab.setLayout(gdbConfGrid)
+        gdbConfV.addWidget(self.configName)
+        gdbConfV.addWidget(self.programPath)
+        gdbConfV.addWidget(self.dotGdbPath)
+
+        gdbConfTab.setLayout(gdbConfV)
         self.tabWidget.addTab(gdbConfTab, "GDB Settings")
 
         envConfTab = QtWidgets.QWidget()
-        envConfGrid = QtWidgets.QGridLayout()
+        envConfGrid = QtWidgets.QVBoxLayout()
 
-        self.envPathIn = QtWidgets.QLineEdit(placeholderText="/likely/path/to/your/project")
-        self.envPathChoose = QtWidgets.QPushButton("...")
+        self.envPath = QtHelpers.QPathChoose(QtWidgets.QFileDialog.FileMode.Directory, sideText="Environment path", lineEditPlaceholder="/likely/path/to/your/project")
         self.preRunCommandsIn = QtWidgets.QPlainTextEdit(placeholderText="make debug-remote... or something like that lol")
         self.preRunCommandsIn.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
-        envConfGrid.addWidget(QtWidgets.QLabel("Environment path"), 0, 0)
-        envConfGrid.addWidget(self.envPathIn, 0, 1)
-        envConfGrid.addWidget(self.envPathChoose, 0, 2)
-        envConfGrid.addWidget(QtWidgets.QLabel("Pre-run commands"), 1, 0)
-        envConfGrid.addWidget(self.preRunCommandsIn, 2, 0, 1, 3)
+
+        envConfGrid.addWidget(self.envPath)
+        envConfGrid.addWidget(QtWidgets.QLabel("Pre-run commands"))
+        envConfGrid.addWidget(self.preRunCommandsIn)
 
         envConfTab.setLayout(envConfGrid)
         self.tabWidget.addTab(envConfTab, "Environment")
