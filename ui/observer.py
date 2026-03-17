@@ -1,6 +1,5 @@
 from enum import Enum
-from typing_extensions import Callable
-
+from typing import Callable
 
 class SGSignals(Enum):
     SGDB_SIGCREATE = "GDB_SIGCREATE"
