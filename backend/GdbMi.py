@@ -1,4 +1,3 @@
-from typing_extensions import Any
 from pygdbmi import constants
 from pygdbmi.gdbcontroller import GdbController
 
