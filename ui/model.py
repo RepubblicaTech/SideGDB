@@ -1,4 +1,4 @@
-from backend import code, memory, symbols, cpu, gdbmi
+from backend import code, memory, symbols, cpu, GdbMi
 
 class SGDBModel:
     currentThread: int
@@ -9,17 +9,17 @@ class SGDBModel:
 
     variables: list[dict]
 
-    def __init__(self, gdbMI: gdbmi.GdbMI) -> None:
-        self.gdbMI = gdbMI
+    def __init__(self, gdbMI: GdbMi.GdbMI) -> None:
+        self.__gdbMI = gdbMI
 
-        self.codeMgr = code.CodeManager(gdbMI)
-        self.symMgr = symbols.SymbolsManager(gdbMI)
-        self.memMgr = memory.MemoryManager(gdbMI)
-        self.cpuMgr = cpu.CPUManager(gdbMI)
+        self.__codeMgr = code.CodeManager(gdbMI)
+        self.__symMgr = symbols.SymbolsManager(gdbMI)
+        self.__memMgr = memory.MemoryManager(gdbMI)
+        self.__cpuMgr = cpu.CPUManager(gdbMI)
 
     def getThreadInfo(self):
-        responses = self.cpuMgr.getThreadInfo()
-        threadsResponse = self.cpuMgr.selectResponse(responses, ("token", self.cpuMgr.token()))
+        responses = self.__cpuMgr.getThreadInfo()
+        threadsResponse = self.__cpuMgr.selectResponse(responses, ("token", self.cpuMgr.token()))
 
         threadsFrame: dict = {
             "current_thread": threadsResponse["payload"]["current-thread-id"],

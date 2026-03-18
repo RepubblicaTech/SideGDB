@@ -1,4 +1,4 @@
-from backend.gdbmi import GdbMI, GdbMIManager
+from backend.GdbMi import GdbMI, GdbMIManager
 
 class SymbolsManager(GdbMIManager):
 
