@@ -72,7 +72,7 @@ class SGDBConfigView(QtWidgets.QDialog):
         gdbConfTab = QtWidgets.QWidget()
         gdbConfV = QtWidgets.QVBoxLayout()
 
-        self.configName = QtHelpers.QLabeledLineEdit(QtHelpers.QDirectionFlag.QHorizontal, "Config name", placeholderText="A beautiful GDB configuration")
+        self.configName = QtHelpers.QLabeledLineEdit(QtHelpers.QDirectionFlag.QHorizontal, "Config name*", placeholderText="A beautiful GDB configuration")
         self.programPath = QtHelpers.QPathChoose(QtWidgets.QFileDialog.FileMode.ExistingFile, sideText="Program path*", lineEditPlaceholder="/some/path/to/a.out")
         self.dotGdbPath = QtHelpers.QPathChoose(QtWidgets.QFileDialog.FileMode.ExistingFile, sideText="GDB Script", lineEditPlaceholder="/path/to/script.gdb")
 

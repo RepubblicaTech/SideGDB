@@ -1,4 +1,5 @@
 from loguru import logger
+from backend import SGDBConfig
 from ui import observer
 from ui.main_view import MainView, SGDBConfigView
 
@@ -9,10 +10,9 @@ class SGDBController:
         observer.subscribe(observer.SGSignals.SGDB_SIGCREATE, self.spawnConfigureGDB)
         observer.subscribe(observer.SGSignals.SGDB_SIGLAUNCH, self.startDebugging)
 
-    def startDebugging(self, config):
+    def startDebugging(self, config: SGDBConfig.Config):
         logger.debug(f"Given config {config}")
-        # parse JSON
-        # set up GDB
+        # parse config for GDB
 
         # set up UI elements
         self.view.loadMainUI()
