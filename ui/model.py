@@ -19,7 +19,7 @@ class SGDBModel:
 
     def getThreadInfo(self):
         responses = self.__cpuMgr.getThreadInfo()
-        threadsResponse = self.__cpuMgr.selectResponse(responses, ("token", self.cpuMgr.token()))
+        threadsResponse = self.__cpuMgr.selectResponse(responses, ("token", self.__cpuMgr.token()))
 
         threadsFrame: dict = {
             "current_thread": threadsResponse["payload"]["current-thread-id"],
