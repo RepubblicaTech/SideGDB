@@ -35,25 +35,28 @@ class MainView(QtWidgets.QMainWindow):
         self.breakManQMenu = self.codeMenu.addAction("Manage breakpoints...")
         self.menuBar().addMenu(self.codeMenu)
 
-        self.codeSubWindow = code_view.CodeDebugView(self.mdiArea)
-        self.rightSubWindow = right_view.RightView(self.mdiArea)
-        self.bottomSubWindow = bottom_view.BottomView(self.mdiArea)
+        self.__codeSubWindow = code_view.CodeDebugView(self.mdiArea)
+        self.__rightSubWindow = right_view.RightView(self.mdiArea)
+        self.__bottomSubWindow = bottom_view.BottomView(self.mdiArea)
 
         cWindowWidth = 600
         cWindowHeight = 400
 
-        self.codeSubWindow.setGeometry(0, 0, cWindowWidth, cWindowHeight)
-        self.rightSubWindow.setGeometry(cWindowWidth,
+        self.__codeSubWindow.setGeometry(0, 0, cWindowWidth, cWindowHeight)
+        self.__rightSubWindow.setGeometry(cWindowWidth,
                                         0,
                                         self.width() - cWindowWidth,
                                         self.height() - self.menuBar().height())
-        self.bottomSubWindow.setGeometry(0, cWindowHeight,
+        self.__bottomSubWindow.setGeometry(0, cWindowHeight,
                                          cWindowWidth,
                                          self.height() - cWindowHeight - self.menuBar().height())
 
-        self.codeSubWindow.show()
-        self.rightSubWindow.show()
-        self.bottomSubWindow.show()
+        self.__codeSubWindow.show()
+        self.__rightSubWindow.show()
+        self.__bottomSubWindow.show()
+
+    def appendGDBMIOutput(self, more: str):
+        self.__bottomSubWindow.gdbConsoleWidget.gdbOutput.append(more)
 
 class SGDBConfigView(QtWidgets.QDialog):
     def __init__(self, parent: QtWidgets.QMainWindow):
