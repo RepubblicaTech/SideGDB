@@ -1,3 +1,4 @@
+from typing import Any
 from pygdbmi import constants
 from pygdbmi.gdbcontroller import GdbController
 
@@ -13,10 +14,10 @@ class GdbMI:
         "MEM": 30
     }
 
-    def __init__(self, gdbArgs: list[str]):
+    def __init__(self, gdbArgs: list[str] | None):
         gdbCommand = ["gdb", "--interpreter=mi2"]
 
-        if (gdbArgs):
+        if (gdbArgs is not None):
             gdbCommand.extend(gdbArgs)
 
         self.gdbmi = GdbController(command=gdbCommand)
@@ -53,8 +54,8 @@ class GdbMI:
 
         return resp
 
-    def quit(self):
-        return self.sendCmd("-gdb-exit")
+    def terminate(self):
+        return self.gdbmi.exit()
 
 # this class can manage a component of the GDB-MI
 class GdbMIManager:
