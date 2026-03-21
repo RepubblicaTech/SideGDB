@@ -21,7 +21,7 @@ class LauncherController:
             return
         logger.debug(f"Using file {chosenFile[0]}")
         try:
-            currentConfig = SGDBConfig.ConfigManager.load(Path(chosenFile[0]))
+            currentConfig = SGDBConfig.SGDBConfigManager.load(Path(chosenFile[0]))
         except ValueError as ex:
             traceback.print_exc()
             logger.debug(ex)

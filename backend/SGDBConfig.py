@@ -14,7 +14,7 @@ class Config:
     preRunCommands: Optional[List[str]] = field(default_factory=list)
 
 # Perplexity
-class ConfigManager:
+class SGDBConfigManager:
     @staticmethod
     def load(config_path: Path) -> Config:
         if (not config_path.exists()):
@@ -30,6 +30,16 @@ class ConfigManager:
             raise ValueError("An environment path must be given for pre-run commands")
 
         return Config(**data)
+
+    @staticmethod
+    def toGDBArgs(config: Config) -> list[str] | None:
+        if (not config.programPath.exists()):
+            return None
+
+        gdbArgs: list = [config.programPath]
+
+        if (config.dotGdbPath is not None):
+            gdbArgs.extend(["-x" , str(config.dotGdbPath)])
 
     @staticmethod
     def save(config: Config, config_path: Path):
