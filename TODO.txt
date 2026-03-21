@@ -1,0 +1,4 @@
+No super-complex-kanban.
+
+TODOs
+Terminate GDB on "Quit session"
