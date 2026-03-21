@@ -1,5 +1,18 @@
 from PySide6 import QtWidgets
-from PySide6.QtCore import Qt
+
+class GDBConsoleView(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+
+        layout = QtWidgets.QVBoxLayout()
+
+        self.gdbOutput = QtWidgets.QTextEdit(readOnly=True)
+        self.gdbPrompt = QtWidgets.QLineEdit(placeholderText="Type any GDB command here (-thread-info)...")
+
+        layout.addWidget(self.gdbOutput)
+        layout.addWidget(self.gdbPrompt)
+
+        self.setLayout(layout)
 
 class BottomView(QtWidgets.QMdiSubWindow):
     def __init__(self, /, parent: QtWidgets.QWidget | None):
@@ -11,6 +24,7 @@ class BottomView(QtWidgets.QMdiSubWindow):
         self.tabView = QtWidgets.QTabWidget()
 
         self.tabView.addTab(QtWidgets.QWidget(), "Memory")
-        self.tabView.addTab(QtWidgets.QWidget(), "GDB Console")
+        self.gdbConsoleWidget = GDBConsoleView()
+        self.tabView.addTab(self.gdbConsoleWidget, "GDB Console")
 
         self.setWidget(self.tabView)
