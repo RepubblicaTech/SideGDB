@@ -1,4 +1,7 @@
-No super-complex-kanban.
+No hypersophisticated kanban.
 
 TODOs
-Terminate GDB on "Quit session"
+Rewrite DearGDB model to directly use GDBMI instead of some "managers"
+Main UI elements initialization
+Continue/Step {into, over, into}
+About Box (least of my problems)
