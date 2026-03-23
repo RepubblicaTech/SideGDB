@@ -1,7 +1,0 @@
-No hypersophisticated kanban.
-
-TODOs
-Rewrite DearGDB model to directly use GDBMI instead of some "managers"
-Main UI elements initialization
-Continue/Step {into, over, into}
-About Box (least of my problems)

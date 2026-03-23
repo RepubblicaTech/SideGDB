@@ -4,7 +4,7 @@ Some useful macro-widgets for common components for SideGDB
 
 from enum import Enum
 import os
-from PySide6 import QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 class QDirectionFlag(Enum):
     QHorizontal = 0
@@ -53,6 +53,7 @@ class QPathChoose(QtWidgets.QWidget):
         self.pathLine.setReadOnly(True)
         self.choosePathButton.clicked.connect(self.__spawnOpenDialog)
 
+    @QtCore.Slot()
     def __spawnOpenDialog(self):
         chosenFile = self.__fileDialog.getOpenFileName(dir=os.getcwd())
         self.pathLine.setText(chosenFile[0])

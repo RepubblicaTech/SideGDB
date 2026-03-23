@@ -10,8 +10,8 @@ int main() {
 }"""
 
 class CodeDebugView(QtWidgets.QMdiSubWindow):
-    def __init__(self, /, parent: QtWidgets.QWidget | None):
-        super().__init__(parent)
+    def __init__(self):
+        super().__init__()
 
         self.setWindowTitle("Code")
         self.resize(600, 400)

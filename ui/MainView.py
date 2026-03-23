@@ -1,9 +1,16 @@
+import subprocess
 from PySide6 import QtWidgets
+from PySide6 import QtCore
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QImage
+from PySide6.QtGui import QCloseEvent, QImage
+from loguru import logger
 
+from backend import GDBMI, SGDBConfig
+from backend.model import SideModel
+from ui import observer
 from ui.helpers import QtHelpers
-from ui.main_views import bottom_view, code_view, right_view
+from ui.main_views import BottomView, CodeView, RightView
+from ui.main_views.BottomController import BottomController
 
 class MainView(QtWidgets.QMainWindow):
     def __init__(self, appTitle):
@@ -24,9 +31,10 @@ class MainView(QtWidgets.QMainWindow):
 
         self.setCentralWidget(self.mdiArea)
 
-    def loadMainUI(self):
-        self.update()
+        observer.subscribe(observer.SGSignals.SGDB_SIGCREATE, self.spawnConfigureGDB)
+        observer.subscribe(observer.SGSignals.SGDB_SIGLAUNCH, self.startDebugging)
 
+    def loadMainUI(self):
         self.saveSessionQMenu = self.fileMenu.addAction("Save Session...")
         self.fileMenu.addSeparator()
         self.quitSessionQMenu = self.fileMenu.addAction("Quit Session")
@@ -35,28 +43,68 @@ class MainView(QtWidgets.QMainWindow):
         self.breakManQMenu = self.codeMenu.addAction("Manage breakpoints...")
         self.menuBar().addMenu(self.codeMenu)
 
-        self.__codeSubWindow = code_view.CodeDebugView(self.mdiArea)
-        self.__rightSubWindow = right_view.RightView(self.mdiArea)
-        self.__bottomSubWindow = bottom_view.BottomView(self.mdiArea)
+        self.codeSubWindow = CodeView.CodeDebugView()
+        self.rightSubWindow = RightView.RightView()
+        self.bottomSubWindow = BottomView.BottomView()
+
+        self.mdiArea.addSubWindow(self.codeSubWindow)
+        self.mdiArea.addSubWindow(self.rightSubWindow)
+        self.mdiArea.addSubWindow(self.bottomSubWindow)
 
         cWindowWidth = 600
         cWindowHeight = 400
 
-        self.__codeSubWindow.setGeometry(0, 0, cWindowWidth, cWindowHeight)
-        self.__rightSubWindow.setGeometry(cWindowWidth,
+        self.codeSubWindow.setGeometry(0, 0, cWindowWidth, cWindowHeight)
+        self.rightSubWindow.setGeometry(cWindowWidth,
                                         0,
                                         self.width() - cWindowWidth,
                                         self.height() - self.menuBar().height())
-        self.__bottomSubWindow.setGeometry(0, cWindowHeight,
+        self.bottomSubWindow.setGeometry(0, cWindowHeight,
                                          cWindowWidth,
                                          self.height() - cWindowHeight - self.menuBar().height())
 
-        self.__codeSubWindow.show()
-        self.__rightSubWindow.show()
-        self.__bottomSubWindow.show()
+        self.codeSubWindow.show()
+        self.rightSubWindow.show()
+        self.bottomSubWindow.show()
 
-    def appendGDBMIOutput(self, more: str):
-        self.__bottomSubWindow.gdbConsoleWidget.gdbOutput.append(more)
+    def startDebugging(self, config: SGDBConfig.Config):
+        logger.debug(f"Debugging program: {str(config.programPath)}")
+        if (config.dotGdbPath is not None):
+            logger.debug(f"GDB script: {str(config.dotGdbPath)}")
+
+        # preRunCommands
+        if (config.preRunCommands is not None):
+            for command in config.preRunCommands:
+                logger.debug(f"Command {command}")
+                logger.debug(f"Output:\n{subprocess.check_output(command.split(" "), text=True, cwd=config.envPrefix)}")
+
+        logger.success("preRunCommands OK!")
+
+        self.gdbMi = GDBMI.GdbMI(SGDBConfig.SideConfigManager.toGDBArgs(config))
+        self.model = SideModel(self.gdbMi)
+        logger.success("GDB-MI initialization OK!")
+
+        # set up UI elements
+        self.loadMainUI()
+        self.quitSessionQMenu.triggered.connect(self.terminateSession)
+
+        # set up some controllers
+        BottomController(self.bottomSubWindow, self.model)
+
+    @QtCore.Slot()
+    def terminateSession(self):
+        logger.debug("Terminating GDBMI...")
+        self.gdbMi.terminate()
+
+    def closeEvent(self, event: QCloseEvent):
+        logger.debug("Wooo i'm overriding the close event!!!")
+        self.terminateSession()
+
+        event.accept()
+
+    def spawnConfigureGDB(self):
+        self.sgdbConfig = SGDBConfigView(self)
+        self.sgdbConfig.show()
 
 class SGDBConfigView(QtWidgets.QDialog):
     def __init__(self, parent: QtWidgets.QMainWindow):

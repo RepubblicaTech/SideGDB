@@ -14,7 +14,7 @@ class Config:
     preRunCommands: Optional[List[str]] = field(default_factory=list)
 
 # Perplexity
-class SGDBConfigManager:
+class SideConfigManager:
     @staticmethod
     def load(config_path: Path) -> Config:
         if (not config_path.exists()):
@@ -32,8 +32,8 @@ class SGDBConfigManager:
         return Config(**data)
 
     @staticmethod
-    def toGDBArgs(config: Config) -> list[str] | None:
-        if (not config.programPath.exists()):
+    def toGDBArgs(config: Config):
+        if (not Path(config.programPath).exists()):
             return None
 
         gdbArgs: list = [config.programPath]

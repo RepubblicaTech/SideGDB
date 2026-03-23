@@ -2,8 +2,8 @@ from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 
 class RightView(QtWidgets.QMdiSubWindow):
-    def __init__(self, /, parent: QtWidgets.QWidget | None):
-        super().__init__(parent)
+    def __init__(self):
+        super().__init__()
 
         self.setWindowTitle("Variables and registers")
         self.resize(200, 600)
