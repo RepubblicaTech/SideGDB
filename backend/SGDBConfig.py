@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import List, Optional
 
 @dataclass
-class Config:
+class SGDBConfig:
     sessionTitle: str
 
     programPath: Path
@@ -14,9 +14,9 @@ class Config:
     preRunCommands: Optional[List[str]] = field(default_factory=list)
 
 # Perplexity
-class SideConfigManager:
+class SGDBConfigManager:
     @staticmethod
-    def load(config_path: Path) -> Config:
+    def load(config_path: Path) -> SGDBConfig:
         if (not config_path.exists()):
             raise FileNotFoundError(f"Missing file {str(config_path)}")
         with open(config_path) as f:
@@ -29,10 +29,10 @@ class SideConfigManager:
         elif ((configDict.get("preRunCommands") is not None) and (configDict.get("envPrefix") is None)):
             raise ValueError("An environment path must be given for pre-run commands")
 
-        return Config(**data)
+        return SGDBConfig(**data)
 
     @staticmethod
-    def toGDBArgs(config: Config):
+    def toGDBArgs(config: SGDBConfig):
         if (not Path(config.programPath).exists()):
             return None
 
@@ -42,7 +42,7 @@ class SideConfigManager:
             gdbArgs.extend(["-x" , str(config.dotGdbPath)])
 
     @staticmethod
-    def save(config: Config, config_path: Path):
+    def save(config: SGDBConfig, config_path: Path):
         data = asdict(config)
         with open(config_path, 'w') as f:
             json.dump(data, f, indent=2)

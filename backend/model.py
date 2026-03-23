@@ -1,7 +1,5 @@
-from pprint import pformat
 from typing import Any, List
 
-from loguru import logger
 from backend import GDBMI
 
 class SideModel:
