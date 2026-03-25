@@ -1,5 +1,6 @@
 from loguru import logger
 
+
 APPLICATION_TITLE = "SideGDB"
 
 if __name__ == "__main__":
