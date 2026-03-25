@@ -2,28 +2,28 @@ from enum import Enum
 from typing import Callable
 
 class SGSignals(Enum):
-    SGDB_SIGCREATE = "GDB_SIGCREATE"
-    SGDB_SIGLAUNCH = "GDB_SIGSTART"
-    SGDB_SIGEND = "GDB_SIGEND"
+    SGDB_SIGCREATE = "GDB_SIGCREATE"    # Create a GDB instance
+    SGDB_SIGLAUNCH = "UI_SIGSTART"      # Launch the debugger
+    SGDB_SIGEND = "SGDB_SIGEND"         # Terminate the debugger/GDBMI
 
-observers = dict()
+__observers = dict()
 
 def subscribe(signal: SGSignals, function: Callable):
-    if (signal not in observers):
-        observers[signal] = list()
+    if (signal not in __observers):
+        __observers[signal] = list()
 
-    observers[signal].append(function)
+    __observers[signal].append(function)
 
 def unsubscribe(function: Callable):
-    for signal in observers:
+    for signal in __observers:
         try:
             signal.remove(function)
         except ValueError:
             continue
 
 def notify(signal: SGSignals, **kwargs):
-    if (signal not in observers):
+    if (signal not in __observers):
         return -1
 
-    for fun in observers[signal]:
+    for fun in __observers[signal]:
         fun(**kwargs)
