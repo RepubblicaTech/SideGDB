@@ -11,4 +11,6 @@ if __name__ == "__main__":
     app = QApplication([])
     window = DebuggerUI(APPLICATION_TITLE)
     window.show()
+    window.statusBar().showMessage("Ready.")
+
     app.exec()
