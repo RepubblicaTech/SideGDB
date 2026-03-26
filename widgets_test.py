@@ -3,8 +3,6 @@ import sys
 from PySide6.QtWidgets import QApplication
 from ui.GalleryTest import WidgetGallery
 
-APPLICATION_NAME = "SideGDB"
-
 if __name__ == "__main__":
     app = QApplication()
     view = WidgetGallery()
