@@ -12,12 +12,12 @@ class DebuggerToolBar(QToolBar):
         self.addAction(openTQAction)
 
 class DebuggerMenuBar():
-    def __init__(self, menuBar: QMenuBar) -> None:
+    def __init__(self, menuBar: QMenuBar, appTitle: str) -> None:
 
         fileQMenu = menuBar.addMenu("File")
         helpQMenu = menuBar.addMenu("Help")
         openQAction = fileQMenu.addAction("Open configuration...")
-        aboutQAction = helpQMenu.addAction("About")
+        aboutQAction = helpQMenu.addAction(f"About{f" {appTitle}" if appTitle else ""}")
 
 class DebuggerUI(QMainWindow):
     def __init__(self, appTitle: str):
@@ -28,7 +28,7 @@ class DebuggerUI(QMainWindow):
         self.setWindowTitle(f"{self.appTitle} Debugger")
         self.resize(1200, 800)
 
-        DebuggerMenuBar(self.menuBar())
+        DebuggerMenuBar(self.menuBar(), self.appTitle)
         self.addToolBar(DebuggerToolBar(self))
 
         label = QLabel("Hi there! Check out the menubar (or the toolbar) to create (or re-use) a GDB Session.")
