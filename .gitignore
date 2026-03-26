@@ -3,3 +3,6 @@ venv
 
 # all test configs
 *.json
+
+# assets
+assets/fugue*
