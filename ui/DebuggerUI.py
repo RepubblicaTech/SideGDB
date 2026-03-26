@@ -1,6 +1,23 @@
 from PySide6.QtGui import QAction, Qt
-from PySide6.QtWidgets import QLabel, QMainWindow, QMenu, QMenuBar
+from PySide6.QtWidgets import QLabel, QMainWindow, QMenuBar, QToolBar
+from assets.QFugueAssets import FugueIconSize, QFugueManager
 
+class DebuggerToolBar(QToolBar):
+    def __init__(self, parent, title: str = ""):
+        super().__init__(title)
+
+        openTQAction = QAction(icon=QFugueManager.loadIcon("disc", "plus", FugueIconSize.FUGUE_32), parent=parent)
+        openTQAction.setToolTip("New debugger instance")
+
+        self.addAction(openTQAction)
+
+class DebuggerMenuBar():
+    def __init__(self, menuBar: QMenuBar) -> None:
+
+        fileQMenu = menuBar.addMenu("File")
+        helpQMenu = menuBar.addMenu("Help")
+        openQAction = fileQMenu.addAction("Open configuration...")
+        aboutQAction = helpQMenu.addAction("About")
 
 class DebuggerUI(QMainWindow):
     def __init__(self, appTitle: str):
@@ -11,14 +28,10 @@ class DebuggerUI(QMainWindow):
         self.setWindowTitle(f"{self.appTitle} Debugger")
         self.resize(1200, 800)
 
-        menubar = self.menuBar()
-        fileQMenu = menubar.addMenu("File")
-        helpQMenu = menubar.addMenu("Help")
+        DebuggerMenuBar(self.menuBar())
+        self.addToolBar(DebuggerToolBar(self))
 
-        openQAction = fileQMenu.addAction("Open configuration...")
-        aboutQAction = helpQMenu.addAction(f"About {self.appTitle}")
-
-        label = QLabel("Hi there! Check out this neat thing called the menu bar to create (or re-use) a GDB Session.")
+        label = QLabel("Hi there! Check out the menubar (or the toolbar) to create (or re-use) a GDB Session.")
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.setCentralWidget(label)
