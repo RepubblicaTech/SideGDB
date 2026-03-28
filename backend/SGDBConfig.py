@@ -41,6 +41,8 @@ class SGDBConfigManager:
         if (config.dotGdbPath is not None):
             gdbArgs.extend(["-x" , str(config.dotGdbPath)])
 
+        return gdbArgs
+
     @staticmethod
     def save(config: SGDBConfig, config_path: Path):
         data = asdict(config)
