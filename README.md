@@ -11,20 +11,16 @@ this program was made with OSDev in mind, i made it so that i could debug [my ke
 
 # Prerequisites
 
-TODO.
+If you want to run directly the Python code from the repo, you'll have to do some preparation.
 
-# How to use
+All required libraries are in the [requirements.txt](requirements.txt) file. Anyways, these are the needed libraries:
+- `pygdbmi`:  [A library to parse gdb mi output](https://cs01.github.io/pygdbmi/) and interact with gdb subprocesses
+- `PySide6`: the [official Qt Widgets implementation](https://doc.qt.io/qtforpython-6/) for Python
+- `loguru`: [Python logging](https://pypi.org/project/loguru/) made (stupidly) simple
 
-TODO.
+# Check out the [wiki](https://github.com/RepubblicaTech/SideGDB/wiki) for usage instructions
 
 # CREDITS
 
 - [Fugue Icons](assets/fugue) by [Yusuke Kamiyamane](http://p.yusukekamiyamane.com/). Licensed under a Creative Commons Attribution 3.0 License.
-- [Upscaled Fugue](assets/fugue-2x) by [chrisjbillington](github.com/chrisjbillington/fugue-2x-icons)
-
-## NOTE: FUGUE ICONS ARE NOT IN THE PROJECT
-
-you'll have to download them manually, because i don't want to commit 14k+ files lol.
-
-You should have this setup inside the `assets` folder:
-![](repo_assets/fugue_setup.png)
+- [Upscaled Fugue](assets/fugue-2x) by [chrisjbillington](https://github.com/chrisjbillington/fugue-2x-icons)
