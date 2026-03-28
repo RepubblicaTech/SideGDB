@@ -33,10 +33,10 @@ class SGDBConfigManager:
 
     @staticmethod
     def toGDBArgs(config: SGDBConfig):
-        if (not Path(config.programPath).exists()):
+        if (not config.programPath.exists()):
             return None
 
-        gdbArgs: list = [config.programPath]
+        gdbArgs: list = [str(config.programPath)]
 
         if (config.dotGdbPath is not None):
             gdbArgs.extend(["-x" , str(config.dotGdbPath)])

@@ -11,7 +11,7 @@ from backend.SGDBConfig import SGDBConfig, SGDBConfigManager
 from backend.GDBMI import GdbMI
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFileDialog, QLineEdit, QMainWindow, QPlainTextEdit, QToolBar, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFileDialog, QLineEdit, QMainWindow, QMessageBox, QPlainTextEdit, QToolBar, QVBoxLayout, QWidget
 
 from backend.SideModel import SideModel
 from ui.subwindows.SideConfigurator import SideConfigurator
@@ -111,6 +111,7 @@ class DebuggerUI(QMainWindow):
 
         self.newQAction.triggered.connect(self.spawnConfigureGDB)
         self.openQAction.triggered.connect(self.openConfig)
+        self.endQAction.triggered.connect(self.terminateSession)
 
     def spawnConfigureGDB(self):
         self.statusBar().showMessage("Showing configuration")
@@ -121,10 +122,29 @@ class DebuggerUI(QMainWindow):
             return
 
         # TODO: create GDB configuration
-        # config = SGDBConfig()
+        try:
+            if (not configurator.programPath()):
+                raise TypeError("programPath")
+            elif (configurator.preRunCommands() and (not configurator.envPath())):
+                raise TypeError("envPath")
+
+            sessionTitle = configurator.sessionTitle()
+            program = Path(configurator.programPath())
+            dotGdb = Path(configurator.dotGdbPath()) if configurator.dotGdbPath() else None
+            envPath = Path(configurator.envPath()) if configurator.envPath() else None
+            preRunCommands = (configurator.preRunCommands()).split("\n") if configurator.preRunCommands() else None
+            logger.debug(preRunCommands)
+        except TypeError as e:
+            error = QMessageBox(QMessageBox.Icon.Critical, "Missing field", f"The following field is missing: {str(e)}", QMessageBox.StandardButton.Ok)
+            error.exec()
+            self.statusBar().showMessage("Invalid configuration. Please check your settings again.")
+
+            return
+
+        config = SGDBConfig(sessionTitle, program, dotGdb, envPath, preRunCommands)
 
         self.statusBar().showMessage("Starting up GDBMI...")
-        # self.launchGDBMI(config)
+        self.launchGDBMI(config)
 
     def openConfig(self):
         openFilename = self.__fileDialog.getOpenFileName(dir=os.getcwd(), filter="JSON (*.json)")
@@ -148,6 +168,7 @@ class DebuggerUI(QMainWindow):
 
         # preRunCommands
         if (config.preRunCommands is not None):
+            QMessageBox(QMessageBox.Icon.Information, "Pre-run commands", "Make sure to check the terminal for any input (eg. sudo)", QMessageBox.StandardButton.Ok).exec()
             for command in config.preRunCommands:
                 logger.debug(f"Command {command}")
                 ret = subprocess.call(command.split(" "), text=True, cwd=config.envPrefix)
@@ -165,6 +186,7 @@ class DebuggerUI(QMainWindow):
         logger.success("GDB-MI initialization OK!")
 
         # set up debugger UI
+        self.setWindowTitle(f"{config.sessionTitle} - {self.appTitle}")
         self.setCentralWidget(MIPrompt(self.model))
         self.endQAction.triggered.connect(self.terminateSession)
 
@@ -185,3 +207,5 @@ class DebuggerUI(QMainWindow):
         self.gdbMi.terminate()
         logger.success("GDBMI terminated.")
         self.statusBar().showMessage("Debugger terminated.")
+
+        self.centralWidget().close()

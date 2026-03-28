@@ -9,15 +9,24 @@ class GDBConfig(QWidget):
 
         layout = QVBoxLayout()
 
-        self.configName = QtHelpers.QLabeledLineEdit(QtHelpers.QDirectionFlag.QHorizontal, "Config name*", placeholderText="A beautiful GDB configuration")
-        self.programPath = QtHelpers.QPathChoose(QFileDialog.FileMode.ExistingFile, sideText="Program path*", lineEditPlaceholder="/some/path/to/a.out")
-        self.dotGdbPath = QtHelpers.QPathChoose(QFileDialog.FileMode.ExistingFile, sideText="GDB Script", lineEditPlaceholder="/path/to/script.gdb")
+        self.__configName = QtHelpers.QLabeledLineEdit(QtHelpers.QDirectionFlag.QHorizontal, "Config name*", placeholderText="A beautiful GDB configuration")
+        self.__programPath = QtHelpers.QPathChoose(QFileDialog.FileMode.ExistingFile, sideText="Program path*", lineEditPlaceholder="/some/path/to/a.out")
+        self.__dotGdbPath = QtHelpers.QPathChoose(QFileDialog.FileMode.ExistingFile, sideText="GDB Script", lineEditPlaceholder="/path/to/script.gdb")
 
-        layout.addWidget(self.configName)
-        layout.addWidget(self.programPath)
-        layout.addWidget(self.dotGdbPath)
+        layout.addWidget(self.__configName)
+        layout.addWidget(self.__programPath)
+        layout.addWidget(self.__dotGdbPath)
 
         self.setLayout(layout)
+
+    def sessionTitle(self):
+        return self.__configName.inputText()
+
+    def programPath(self):
+        return self.__programPath.chosenPath()
+
+    def dotGdbPath(self):
+        return self.__dotGdbPath.chosenPath()
 
 class EnvConfig(QWidget):
     def __init__(self):
@@ -25,15 +34,21 @@ class EnvConfig(QWidget):
 
         layout = QVBoxLayout()
 
-        self.envPath = QtHelpers.QPathChoose(QFileDialog.FileMode.Directory, sideText="Environment path", lineEditPlaceholder="/likely/path/to/your/project")
-        self.preRunCommandsIn = QPlainTextEdit(placeholderText="make debug-remote... or something like that lol")
-        self.preRunCommandsIn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.__envPath = QtHelpers.QPathChoose(QFileDialog.FileMode.Directory, sideText="Environment path", lineEditPlaceholder="/likely/path/to/your/project")
+        self.__preRunCommandsIn = QPlainTextEdit(placeholderText="make debug-remote... or something like that lol")
+        self.__preRunCommandsIn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
-        layout.addWidget(self.envPath)
+        layout.addWidget(self.__envPath)
         layout.addWidget(QLabel("Pre-run commands"))
-        layout.addWidget(self.preRunCommandsIn)
+        layout.addWidget(self.__preRunCommandsIn)
 
         self.setLayout(layout)
+
+    def envPath(self):
+        return self.__envPath.chosenPath()
+
+    def preRunCommands(self):
+        return self.__preRunCommandsIn.toPlainText()
 
 class SideConfigurator(QDialog):
     def __init__(self, parent, appTitle: str):
@@ -50,8 +65,11 @@ class SideConfigurator(QDialog):
         self.tabWidget = QTabWidget(self)
         self.tabWidget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
-        self.tabWidget.addTab(GDBConfig(), "GDB Settings")
-        self.tabWidget.addTab(EnvConfig(), "Environment")
+        self.__gdbConfig = GDBConfig()
+        self.__envConfig = EnvConfig()
+
+        self.tabWidget.addTab(self.__gdbConfig, "GDB Settings")
+        self.tabWidget.addTab(self.__envConfig, "Environment")
 
         self.doneButton = QPushButton("Done")
 
@@ -60,3 +78,18 @@ class SideConfigurator(QDialog):
         mainLayout.addWidget(self.tabWidget)
         mainLayout.addWidget(self.doneButton, alignment=Qt.AlignmentFlag.AlignRight)
         mainLayout.addStretch()
+
+    def sessionTitle(self):
+        return self.__gdbConfig.sessionTitle()
+
+    def programPath(self):
+        return self.__gdbConfig.programPath()
+
+    def dotGdbPath(self):
+        return self.__gdbConfig.dotGdbPath()
+
+    def envPath(self):
+        return self.__envConfig.envPath()
+
+    def preRunCommands(self):
+        return self.__envConfig.preRunCommands()
