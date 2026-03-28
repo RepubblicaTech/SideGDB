@@ -15,22 +15,22 @@ ASSETS_PREFIX = "assets/"
 
 class QFugueManager:
     @staticmethod
-    def loadIcon(iconName: str, variant:str = "", iconSize: FugueIconSize = FugueIconSize.FUGUE_NORMAL, shadowless: bool = False):
+    def loadIcon(iconName: str, iconSize: FugueIconSize = FugueIconSize.FUGUE_NORMAL, shadowless: bool = False):
         # assemble a first path
         match (iconSize):
             case FugueIconSize.FUGUE_NORMAL:
-                pathToLoad = f"{ASSETS_PREFIX}fugue/icons{"-shadowless" if shadowless else ""}/{iconName}{f"--{variant}" if variant else ""}.png"
+                pathToLoad = f"{ASSETS_PREFIX}fugue/icons{"-shadowless" if shadowless else ""}/{iconName}.png"
             case FugueIconSize.FUGUE_24:
-                pathToLoad = f"{ASSETS_PREFIX}fugue/icons{"-shadowless" if shadowless else ""}-24/{iconName}{f"--{variant}" if variant else ""}.png"
+                pathToLoad = f"{ASSETS_PREFIX}fugue/icons{"-shadowless" if shadowless else ""}-24/{iconName}.png"
             case FugueIconSize.FUGUE_32:
-                pathToLoad = f"{ASSETS_PREFIX}fugue/icons{"-shadowless" if shadowless else ""}-32/{iconName}{f"--{variant}" if variant else ""}.png"
+                pathToLoad = f"{ASSETS_PREFIX}fugue/icons{"-shadowless" if shadowless else ""}-32/{iconName}.png"
                 if (not Path(pathToLoad).exists()):
-                    pathToLoad = f"{ASSETS_PREFIX}fugue-2x/icons{"-shadowless" if shadowless else ""}/{iconName}{f"--{variant}" if variant else ""}.png"
+                    pathToLoad = f"{ASSETS_PREFIX}fugue-2x/icons{"-shadowless" if shadowless else ""}/{iconName}.png"
 
-        logger.debug(f"Loading {iconName}{f"--{variant}" if variant else ""} @ {pathToLoad}")
+        logger.debug(f"Loading {iconName} @ {pathToLoad}")
 
         if (not Path(pathToLoad).exists()):
-            logger.warning(f"Icon {iconName}{f"--{variant}" if variant else ""} not found")
-            return None
+            logger.warning(f"Icon {iconName} not found")
+            return QIcon()
 
         return QIcon(pathToLoad)
