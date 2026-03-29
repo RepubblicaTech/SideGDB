@@ -119,7 +119,6 @@ class DebuggerUI(QMainWindow):
             self.statusBar().showMessage("Configuration cancelled.")
             return
 
-        # TODO: create GDB configuration
         try:
             if (not configurator.programPath()):
                 raise TypeError("programPath")
@@ -131,7 +130,6 @@ class DebuggerUI(QMainWindow):
             dotGdb = Path(configurator.dotGdbPath()) if configurator.dotGdbPath() else None
             envPath = Path(configurator.envPath()) if configurator.envPath() else None
             preRunCommands = (configurator.preRunCommands()).split("\n") if configurator.preRunCommands() else None
-            logger.debug(preRunCommands)
         except TypeError as e:
             error = QMessageBox(QMessageBox.Icon.Critical, "Missing field", f"The following field is missing: {str(e)}", QMessageBox.StandardButton.Ok)
             error.exec()
@@ -151,10 +149,8 @@ class DebuggerUI(QMainWindow):
         logger.debug(f"Using file {openFilename[0]}")
         try:
             currentConfig = SGDBConfigManager.load(Path(openFilename[0]))
-        except ValueError as ex:
-            traceback.print_exc()
-            logger.debug(ex)
-            logger.critical("Invalid configuration. Please choose a valid configuration file.")
+        except ValueError as e:
+            QMessageBox(QMessageBox.Icon.Critical, "Config error", f"An error occurred when loading {Path(openFilename[0]).name}: {str(e)}", QMessageBox.StandardButton.Ok).exec()
             return
 
         self.launchGDBMI(currentConfig)
