@@ -67,7 +67,7 @@ class DebuggerUI(QMainWindow):
         aboutQAction = helpQMenu.addAction(f"About{f" {appTitle}" if appTitle else ""}")
 
         # MAIN TOOLBAR (NEW, OPEN, SAVE, ETC.)
-        self.mainToolbar = QToolBar(self)
+        self.mainToolbar = QToolBar("Main toolbar")
         self.mainToolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self.newQAction = self.mainToolbar.addAction(QFugueManager.loadIcon("bug--plus", FugueIconSize.FUGUE_32), "New")
         self.openQAction = self.mainToolbar.addAction(QFugueManager.loadIcon("folder-horizontal-open", FugueIconSize.FUGUE_32), "Open")
@@ -78,7 +78,7 @@ class DebuggerUI(QMainWindow):
         self.saveQAction.setToolTip("Save")
 
         # DEBUG TOOLBAR (CONTINUE, STEP)
-        self.debugToolbar = QToolBar(self)
+        self.debugToolbar = QToolBar("Debugging toolbar")
         self.debugToolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self.breakPointsQAction = self.debugToolbar.addAction(QFugueManager.loadIcon("table-delete-row", FugueIconSize.FUGUE_32), "Breakpoints")
         self.continueQAction = self.debugToolbar.addAction(QFugueManager.loadIcon("control", FugueIconSize.FUGUE_32), "")
@@ -87,7 +87,7 @@ class DebuggerUI(QMainWindow):
         self.stepOutQAction = self.debugToolbar.addAction(QFugueManager.loadIcon("arrow-step-out", FugueIconSize.FUGUE_32), "")
 
         # WIDGETS TOOLBAR (SHOW/HIDE)
-        self.widgetsToolbar = QToolBar(self)
+        self.widgetsToolbar = QToolBar("Widgets toolbar")
         self.widgetsToolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self.codeQAction = self.widgetsToolbar.addAction(QFugueManager.loadIcon("script-code", FugueIconSize.FUGUE_32), "")
         self.disasmQAction = self.widgetsToolbar.addAction(QFugueManager.loadIcon("script-binary", FugueIconSize.FUGUE_32), "")
@@ -103,8 +103,6 @@ class DebuggerUI(QMainWindow):
         self.regsQAction.setToolTip("Show registers")
 
         self.addToolBar(self.mainToolbar)
-        self.addToolBar(self.debugToolbar)
-        self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.widgetsToolbar)
 
         self.__fileDialog = QFileDialog()
         self.__fileDialog.setFileMode(QFileDialog.FileMode.ExistingFile)
@@ -188,24 +186,33 @@ class DebuggerUI(QMainWindow):
         # set up debugger UI
         self.setWindowTitle(f"{config.sessionTitle} - {self.appTitle}")
         self.setCentralWidget(MIPrompt(self.model))
-        self.endQAction.triggered.connect(self.terminateSession)
+        self.endQAction.toggled.connect(self.terminateSession)
+
+        self.addToolBar(self.debugToolbar)
+        self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.widgetsToolbar)
 
         # show GDBMI prompt
         self.statusBar().showMessage("Debugger launched.")
 
     def closeEvent(self, event: QCloseEvent):
             logger.debug("Wooo i'm overriding the close event!!!")
-            try:
-                self.terminateSession()
-            except AttributeError:
-                logger.debug("No GDBMI instance...")
+            self.terminateSession()
 
             event.accept()
 
     def terminateSession(self):
         logger.debug("Terminating GDBMI...")
-        self.gdbMi.terminate()
-        logger.success("GDBMI terminated.")
-        self.statusBar().showMessage("Debugger terminated.")
 
-        self.centralWidget().close()
+        try:
+            self.gdbMi.terminate()
+            self.gdbMi = None
+
+            logger.success("GDBMI terminated.")
+            self.statusBar().showMessage("Debugger terminated.")
+            self.centralWidget().close()
+            self.debugToolbar.close()
+            self.widgetsToolbar.close()
+            self.removeToolBar(self.debugToolbar)
+            self.removeToolBar(self.widgetsToolbar)
+        except AttributeError:
+            logger.debug("No GDBMI instance...")
