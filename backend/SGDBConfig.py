@@ -33,7 +33,7 @@ class SGDBConfigManager:
 
     @staticmethod
     def toGDBArgs(config: SGDBConfig):
-        if (not config.programPath.exists()):
+        if (not Path(config.programPath).exists()):
             return None
 
         gdbArgs: list = [str(config.programPath)]
