@@ -10,7 +10,7 @@ from assets.QFugueAssets import FugueIconSize, QFugueManager
 from backend.SGDBConfig import SGDBConfig, SGDBConfigManager
 from backend.GDBMI import GdbMI
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QFileDialog, QLineEdit, QMainWindow, QMessageBox, QPlainTextEdit, QToolBar, QVBoxLayout, QWidget
 
 from backend.SideModel import SideModel
@@ -38,6 +38,10 @@ class MIPrompt(QWidget):
         read = self.model.read(-1)
         self.miResponses.setPlainText(pformat(read))
 
+    def reset(self):
+        self.miPrompt.setText("")
+        self.miResponses.setPlainText("")
+
     def sendCommand(self):
         toSend = self.miPrompt.text()
         if (not toSend):
@@ -53,7 +57,7 @@ class DebuggerUI(QMainWindow):
 
         self.appTitle = appTitle or "pyDearGDB"     # easter egg
 
-        self.setWindowTitle(f"{self.appTitle} Debugger")
+        self.setWindowTitle(self.appTitle)
         self.resize(1200, 800)
 
         # MENU BAR
@@ -111,7 +115,14 @@ class DebuggerUI(QMainWindow):
         self.openQAction.triggered.connect(self.openConfig)
         self.endQAction.triggered.connect(self.terminateSession)
 
+        # to check if a program is being debugged.
+        self.running = False
+
     def spawnConfigureGDB(self):
+        if (self.running):
+            QMessageBox(QMessageBox.Icon.Warning, "Running session", "An instance of GDB is already running. Make sure to terminate the current session before starting a new one.", QMessageBox.StandardButton.Ok).exec()
+            return
+
         self.statusBar().showMessage("Showing configuration")
         configurator = SideConfigurator(self, self.appTitle)
         if not configurator.exec():
@@ -143,6 +154,10 @@ class DebuggerUI(QMainWindow):
         self.launchGDBMI(config)
 
     def openConfig(self):
+        if (self.running):
+            QMessageBox(QMessageBox.Icon.Warning, "Running session", "An instance of GDB is already running. Make sure to terminate the current session before starting a new one.Another instance of", QMessageBox.StandardButton.Ok).exec()
+            return
+
         openFilename = self.__fileDialog.getOpenFileName(dir=os.getcwd(), filter="JSON (*.json)")
         if (openFilename[0] == ""):
             return
@@ -157,6 +172,7 @@ class DebuggerUI(QMainWindow):
 
     def launchGDBMI(self, config: SGDBConfig):
         logger.debug(f"Debugging program: {str(config.programPath)}")
+        self.statusBar().showMessage(f"Initializing {config.sessionTitle}...")
         if (config.dotGdbPath is not None):
             logger.debug(f"GDB script: {str(config.dotGdbPath)}")
 
@@ -179,16 +195,40 @@ class DebuggerUI(QMainWindow):
         self.model = SideModel(self.gdbMi)
         logger.success("GDB-MI initialization OK!")
 
-        # set up debugger UI
-        self.setWindowTitle(f"{config.sessionTitle} - {self.appTitle}")
-        self.setCentralWidget(MIPrompt(self.model))
+        self.setDebuggerUI(config)
+
+        self.running = True
+        self.statusBar().showMessage("Debugger launched.")
+
+    def setDebuggerUI(self, config: SGDBConfig):
+        self.miPrompt = MIPrompt(self.model)
+        self.setCentralWidget(self.miPrompt)
         self.endQAction.toggled.connect(self.terminateSession)
 
         self.addToolBar(self.debugToolbar)
         self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.widgetsToolbar)
 
-        # show GDBMI prompt
-        self.statusBar().showMessage("Debugger launched.")
+        # they may have been hidden
+        self.debugToolbar.show()
+        self.widgetsToolbar.show()
+
+        self.setWindowTitle(f"{config.sessionTitle} - {self.appTitle}")
+
+    def resetDebuggerUI(self):
+        # reset the widgets toolbar buttons to OFF
+        self.centralWidget().hide()
+        self.debugToolbar.hide()
+        self.widgetsToolbar.hide()
+
+        self.miPrompt.reset()
+
+        # reset widgets toolbar
+        self.codeQAction.setChecked(False)
+        self.disasmQAction.setChecked(False)
+        self.varsQAction.setChecked(False)
+        self.regsQAction.setChecked(False)
+
+        self.setWindowTitle(self.appTitle)
 
     def closeEvent(self, event: QCloseEvent):
             logger.debug("Wooo i'm overriding the close event!!!")
@@ -202,13 +242,11 @@ class DebuggerUI(QMainWindow):
         try:
             self.gdbMi.terminate()
             self.gdbMi = None
-
             logger.success("GDBMI terminated.")
+
+            self.resetDebuggerUI()
+
+            self.running = False
             self.statusBar().showMessage("Debugger terminated.")
-            self.centralWidget().close()
-            self.debugToolbar.close()
-            self.widgetsToolbar.close()
-            self.removeToolBar(self.debugToolbar)
-            self.removeToolBar(self.widgetsToolbar)
         except AttributeError:
             logger.debug("No GDBMI instance...")
