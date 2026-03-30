@@ -53,7 +53,7 @@ class EnvConfig(QWidget):
 class SideConfigurator(QDialog):
     def __init__(self, parent, appTitle: str):
         super().__init__(parent)
-        self.appTitle = appTitle or "pyGDBView"
+        self.appTitle = appTitle or "pyGDBView" # easter egg 2
 
         self.setWindowTitle(f"New {self.appTitle} Session")
         self.setModal(True)
