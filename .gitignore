@@ -6,3 +6,6 @@ venv
 
 # assets
 assets/fugue*
+
+# test executable
+test/helloworld
