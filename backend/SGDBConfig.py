@@ -44,7 +44,7 @@ class SGDBConfigManager:
         return gdbArgs
 
     @staticmethod
-    def save(config: SGDBConfig, config_path: Path):
+    def save(config: SGDBConfig, savePath: Path):
         data = asdict(config)
-        with open(config_path, 'w') as f:
+        with open(savePath, 'w') as f:
             json.dump(data, f, indent=2)

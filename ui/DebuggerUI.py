@@ -76,10 +76,10 @@ class DebuggerUI(QMainWindow):
         self.newQAction = self.mainToolbar.addAction(QFugueManager.loadIcon("bug--plus", FugueIconSize.FUGUE_32), "New")
         self.openQAction = self.mainToolbar.addAction(QFugueManager.loadIcon("folder-horizontal-open", FugueIconSize.FUGUE_32), "Open")
         self.saveAsQAction = self.mainToolbar.addAction(QFugueManager.loadIcon("disk-rename", FugueIconSize.FUGUE_32), "")
-        self.saveQAction = self.mainToolbar.addAction(QFugueManager.loadIcon("disk", FugueIconSize.FUGUE_32), "")
+        # self.saveQAction = self.mainToolbar.addAction(QFugueManager.loadIcon("disk", FugueIconSize.FUGUE_32), "")
         self.endQAction = self.mainToolbar.addAction(QFugueManager.loadIcon("plug-disconnect-prohibition", FugueIconSize.FUGUE_32), "Terminate")
         self.saveAsQAction.setToolTip("Save As...")
-        self.saveQAction.setToolTip("Save")
+        # self.saveQAction.setToolTip("Save")
 
         # DEBUG TOOLBAR (CONTINUE, STEP)
         self.debugToolbar = QToolBar("Debugging toolbar")
@@ -109,14 +109,28 @@ class DebuggerUI(QMainWindow):
         self.addToolBar(self.mainToolbar)
 
         self.__fileDialog = QFileDialog()
-        self.__fileDialog.setFileMode(QFileDialog.FileMode.ExistingFile)
 
         self.newQAction.triggered.connect(self.spawnConfigureGDB)
         self.openQAction.triggered.connect(self.openConfig)
+        self.saveAsQAction.triggered.connect(self.saveAs)
         self.endQAction.triggered.connect(self.terminateSession)
 
         # to check if a program is being debugged.
         self.running = False
+
+    def saveAs(self):
+        try:
+            self.currentConfig
+        except AttributeError:
+            QMessageBox(QMessageBox.Icon.Warning, "No configuration", "No current configuration is available. Please create a new session before saving.", QMessageBox.StandardButton.Ok).exec()
+            return
+
+        self.__fileDialog.setFileMode(QFileDialog.FileMode.AnyFile)
+        destinationFile = self.__fileDialog.getSaveFileName(self, dir=os.getcwd(), filter="JSON (*.json)")
+        if (destinationFile[0] == ""):
+            return
+        logger.debug(f"Saving to file {destinationFile[0]}")
+        SGDBConfigManager.save(self.currentConfig, Path(destinationFile[0]))
 
     def spawnConfigureGDB(self):
         if (self.running):
@@ -158,6 +172,7 @@ class DebuggerUI(QMainWindow):
             QMessageBox(QMessageBox.Icon.Warning, "Running session", "An instance of GDB is already running. Make sure to terminate the current session before starting a new one.Another instance of", QMessageBox.StandardButton.Ok).exec()
             return
 
+        self.__fileDialog.setFileMode(QFileDialog.FileMode.ExistingFile)
         openFilename = self.__fileDialog.getOpenFileName(dir=os.getcwd(), filter="JSON (*.json)")
         if (openFilename[0] == ""):
             return
@@ -194,6 +209,8 @@ class DebuggerUI(QMainWindow):
         self.gdbMi = GdbMI(gdbArgs)
         self.model = SideModel(self.gdbMi)
         logger.success("GDB-MI initialization OK!")
+
+        self.currentConfig = config
 
         self.setDebuggerUI(config)
 
