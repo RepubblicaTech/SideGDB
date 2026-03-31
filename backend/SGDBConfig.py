@@ -1,7 +1,7 @@
 from dataclasses import asdict, dataclass, field
 import json
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 @dataclass
 class SGDBConfig:
@@ -12,6 +12,12 @@ class SGDBConfig:
 
     envPrefix: Optional[Path]
     preRunCommands: Optional[List[str]] = field(default_factory=list)
+
+class SGDBConfigEncoder(json.JSONEncoder):
+    def default(self, o: Any):
+        if isinstance(o, Path):
+            return str(o)
+        return super().default(o)
 
 # Perplexity
 class SGDBConfigManager:
@@ -46,5 +52,6 @@ class SGDBConfigManager:
     @staticmethod
     def save(config: SGDBConfig, savePath: Path):
         data = asdict(config)
-        with open(savePath, 'w') as f:
-            json.dump(data, f, indent=2)
+
+        with savePath.open("w") as f:
+            json.dump(data, f, indent=2, cls=SGDBConfigEncoder)
