@@ -1,119 +1,103 @@
 import os
 from pathlib import Path
-from pprint import pformat
-import traceback
 import subprocess
-from PySide6.QtGui import QCloseEvent
+from typing import List, override
 from loguru import logger
 
 from assets.QFugueAssets import FugueIconSize, QFugueManager
 from backend.SGDBConfig import SGDBConfig, SGDBConfigManager
 from backend.GDBMI import GdbMI
 
-from PySide6.QtCore import Qt, Signal
-from PySide6.QtWidgets import QFileDialog, QLineEdit, QMainWindow, QMessageBox, QPlainTextEdit, QToolBar, QVBoxLayout, QWidget
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QCloseEvent
+from PySide6.QtWidgets import QFileDialog, QMainWindow, QMessageBox, QToolBar
 
 from backend.SideModel import SideModel
+from ui.helpers.QtHelpers import Resettable
+from ui.subwindows.MIPrompt import MIPrompt
 from ui.subwindows.SideConfigurator import SideConfigurator
 
-class MIPrompt(QWidget):
-    def __init__(self, model: SideModel):
-        super().__init__()
+class MainToolbar(QToolBar, Resettable):
+    def __init__(self, title: str):
+        super().__init__(title)
 
-        layout = QVBoxLayout()
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        self.newConfig = self.addAction(QFugueManager.loadIcon("bug--plus", FugueIconSize.FUGUE_32), "New")
+        self.openConfig = self.addAction(QFugueManager.loadIcon("folder-horizontal-open", FugueIconSize.FUGUE_32), "Open")
+        self.saveAsConfig = self.addAction(QFugueManager.loadIcon("disk-rename", FugueIconSize.FUGUE_32), "")
+        # self.saveQAction = self.addAction(QFugueManager.loadIcon("disk", FugueIconSize.FUGUE_32), "")
+        self.terminateDebug = self.addAction(QFugueManager.loadIcon("plug-disconnect-prohibition", FugueIconSize.FUGUE_32), "Terminate")
+        self.saveAsConfig.setToolTip("Save As...")
+        # self.saveQAction.setToolTip("Save")
 
-        self.miPrompt = QLineEdit(placeholderText="Type any GDBMI command in here (-thread-info)")
-        self.miResponses = QPlainTextEdit(placeholderText="Responses get printed here", readOnly=True)
+class DebugToolbar(QToolBar, Resettable):
+    def __init__(self, title: str):
+        super().__init__(title)
 
-        layout.addWidget(self.miPrompt)
-        layout.addWidget(self.miResponses)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        self.breakpointsMan = self.addAction(QFugueManager.loadIcon("table-delete-row", FugueIconSize.FUGUE_32), "Breakpoints")
+        self.continueExec = self.addAction(QFugueManager.loadIcon("control", FugueIconSize.FUGUE_32), "")
+        self.stepOver = self.addAction(QFugueManager.loadIcon("arrow-step-over", FugueIconSize.FUGUE_32), "")
+        self.stepInto = self.addAction(QFugueManager.loadIcon("arrow-step", FugueIconSize.FUGUE_32), "")
+        self.stepOut = self.addAction(QFugueManager.loadIcon("arrow-step-out", FugueIconSize.FUGUE_32), "")
 
-        self.miPrompt.returnPressed.connect(self.sendCommand)
+class ShowHideToolbar(QToolBar, Resettable):
+    def __init__(self, title: str):
+        super().__init__(title)
 
-        self.setLayout(layout)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        self.showCode = self.addAction(QFugueManager.loadIcon("script-code", FugueIconSize.FUGUE_32), "")
+        self.showDisasm = self.addAction(QFugueManager.loadIcon("script-binary", FugueIconSize.FUGUE_32), "")
+        self.showVars = self.addAction(QFugueManager.loadIcon("block", FugueIconSize.FUGUE_32), "")
+        self.showRegs = self.addAction(QFugueManager.loadIcon("processor", FugueIconSize.FUGUE_32), "")
+        self.showCode.setCheckable(True)
+        self.showDisasm.setCheckable(True)
+        self.showVars.setCheckable(True)
+        self.showRegs.setCheckable(True)
+        self.showCode.setToolTip("Show code")
+        self.showDisasm.setToolTip("Show disassembly")
+        self.showVars.setToolTip("Show variables")
+        self.showRegs.setToolTip("Show registers")
 
-        self.model = model
-
-        # some initialization
-        read = self.model.read(-1)
-        self.miResponses.setPlainText(pformat(read))
-
+    @override
     def reset(self):
-        self.miPrompt.setText("")
-        self.miResponses.setPlainText("")
-
-    def sendCommand(self):
-        toSend = self.miPrompt.text()
-        if (not toSend):
-            return
-        print(f"command: {toSend}")
-
-        response = self.model.send(toSend)
-        self.miResponses.setPlainText(pformat(response))
+        self.showCode.setChecked(False)
+        self.showDisasm.setChecked(False)
+        self.showVars.setChecked(False)
+        self.showRegs.setChecked(False)
 
 class DebuggerUI(QMainWindow):
     def __init__(self, appTitle: str):
         super().__init__()
-
         self.appTitle = appTitle or "pyDearGDB"     # easter egg
 
         self.setWindowTitle(self.appTitle)
         self.resize(1200, 800)
 
+        self.resettables: List[Resettable] = []
+
         # MENU BAR
         menuBar = self.menuBar()
-        # FILE
         fileQMenu = menuBar.addMenu("File")
-        newQAction = fileQMenu.addAction("New Session...")
-        openQAction = fileQMenu.addAction("Open configuration...")
-        # HELP
         helpQMenu = menuBar.addMenu("Help")
-        aboutQAction = helpQMenu.addAction(f"About{f" {appTitle}" if appTitle else ""}")
+        self.newSession = fileQMenu.addAction("New Session...")
+        self.openSession = fileQMenu.addAction("Open configuration...")
+        self.aboutProgram = helpQMenu.addAction(f"About{f" {appTitle}" if appTitle else ""}")
 
-        # MAIN TOOLBAR (NEW, OPEN, SAVE, ETC.)
-        self.mainToolbar = QToolBar("Main toolbar")
-        self.mainToolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.newQAction = self.mainToolbar.addAction(QFugueManager.loadIcon("bug--plus", FugueIconSize.FUGUE_32), "New")
-        self.openQAction = self.mainToolbar.addAction(QFugueManager.loadIcon("folder-horizontal-open", FugueIconSize.FUGUE_32), "Open")
-        self.saveAsQAction = self.mainToolbar.addAction(QFugueManager.loadIcon("disk-rename", FugueIconSize.FUGUE_32), "")
-        # self.saveQAction = self.mainToolbar.addAction(QFugueManager.loadIcon("disk", FugueIconSize.FUGUE_32), "")
-        self.endQAction = self.mainToolbar.addAction(QFugueManager.loadIcon("plug-disconnect-prohibition", FugueIconSize.FUGUE_32), "Terminate")
-        self.saveAsQAction.setToolTip("Save As...")
-        # self.saveQAction.setToolTip("Save")
-
-        # DEBUG TOOLBAR (CONTINUE, STEP)
-        self.debugToolbar = QToolBar("Debugging toolbar")
-        self.debugToolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.breakPointsQAction = self.debugToolbar.addAction(QFugueManager.loadIcon("table-delete-row", FugueIconSize.FUGUE_32), "Breakpoints")
-        self.continueQAction = self.debugToolbar.addAction(QFugueManager.loadIcon("control", FugueIconSize.FUGUE_32), "")
-        self.stepOverQAction = self.debugToolbar.addAction(QFugueManager.loadIcon("arrow-step-over", FugueIconSize.FUGUE_32), "")
-        self.stepIntoQAction = self.debugToolbar.addAction(QFugueManager.loadIcon("arrow-step", FugueIconSize.FUGUE_32), "")
-        self.stepOutQAction = self.debugToolbar.addAction(QFugueManager.loadIcon("arrow-step-out", FugueIconSize.FUGUE_32), "")
-
-        # WIDGETS TOOLBAR (SHOW/HIDE)
-        self.widgetsToolbar = QToolBar("Widgets toolbar")
-        self.widgetsToolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.codeQAction = self.widgetsToolbar.addAction(QFugueManager.loadIcon("script-code", FugueIconSize.FUGUE_32), "")
-        self.disasmQAction = self.widgetsToolbar.addAction(QFugueManager.loadIcon("script-binary", FugueIconSize.FUGUE_32), "")
-        self.varsQAction = self.widgetsToolbar.addAction(QFugueManager.loadIcon("block", FugueIconSize.FUGUE_32), "")
-        self.regsQAction = self.widgetsToolbar.addAction(QFugueManager.loadIcon("processor", FugueIconSize.FUGUE_32), "")
-        self.codeQAction.setCheckable(True)
-        self.disasmQAction.setCheckable(True)
-        self.varsQAction.setCheckable(True)
-        self.regsQAction.setCheckable(True)
-        self.codeQAction.setToolTip("Showw code")
-        self.disasmQAction.setToolTip("Show disassembly")
-        self.varsQAction.setToolTip("Show variables")
-        self.regsQAction.setToolTip("Show registers")
+        self.mainToolbar = MainToolbar("Main toolbar")
+        self.debugToolbar = DebugToolbar("Debugging toolbar")
+        self.showHideToolbar = ShowHideToolbar("Widgets toolbar")
 
         self.addToolBar(self.mainToolbar)
 
         self.__fileDialog = QFileDialog()
 
-        self.newQAction.triggered.connect(self.spawnConfigureGDB)
-        self.openQAction.triggered.connect(self.openConfig)
-        self.saveAsQAction.triggered.connect(self.saveAs)
-        self.endQAction.triggered.connect(self.terminateSession)
+        self.mainToolbar.newConfig.triggered.connect(self.spawnConfigureGDB)
+        self.mainToolbar.openConfig.triggered.connect(self.openConfig)
+        self.mainToolbar.saveAsConfig.triggered.connect(self.saveAs)
+        self.mainToolbar.terminateDebug.triggered.connect(self.terminateSession)
+
+        self.resettables.append(self.showHideToolbar)
 
         # to check if a program is being debugged.
         self.running = False
@@ -220,30 +204,29 @@ class DebuggerUI(QMainWindow):
     def setDebuggerUI(self, config: SGDBConfig):
         self.miPrompt = MIPrompt(self.model)
         self.setCentralWidget(self.miPrompt)
-        self.endQAction.toggled.connect(self.terminateSession)
+        self.mainToolbar.terminateDebug.toggled.connect(self.terminateSession)
 
         self.addToolBar(self.debugToolbar)
-        self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.widgetsToolbar)
+        self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.showHideToolbar)
 
         # they may have been hidden
         self.debugToolbar.show()
-        self.widgetsToolbar.show()
+        self.showHideToolbar.show()
 
         self.setWindowTitle(f"{config.sessionTitle} - {self.appTitle}")
 
     def resetDebuggerUI(self):
         # reset the widgets toolbar buttons to OFF
-        self.centralWidget().hide()
-        self.debugToolbar.hide()
-        self.widgetsToolbar.hide()
+        self.centralWidget().close()
+        self.debugToolbar.close()
+        self.showHideToolbar.close()
 
         self.miPrompt.reset()
 
-        # reset widgets toolbar
-        self.codeQAction.setChecked(False)
-        self.disasmQAction.setChecked(False)
-        self.varsQAction.setChecked(False)
-        self.regsQAction.setChecked(False)
+        # reset toolbars
+        for resettable in self.resettables:
+            resettable.reset()
+
 
         self.setWindowTitle(self.appTitle)
 

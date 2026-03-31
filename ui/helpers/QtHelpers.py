@@ -68,3 +68,7 @@ class QPathChoose(QtWidgets.QWidget):
 
     def chosenPath(self):
         return self.pathLine.text()
+
+class Resettable:
+    def reset(self):
+        raise NotImplementedError("This function should be overridden!")
