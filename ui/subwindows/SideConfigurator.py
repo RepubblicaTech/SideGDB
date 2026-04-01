@@ -56,7 +56,6 @@ class SideConfigurator(QDialog):
         self.appTitle = appTitle or "pyGDBView" # easter egg 2
 
         self.setWindowTitle(f"New {self.appTitle} Session")
-        self.setModal(True)
         self.resize(600,200)
 
         mainLayout = QVBoxLayout(self)
