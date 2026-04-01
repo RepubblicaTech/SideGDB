@@ -1,9 +1,10 @@
 from pprint import pformat
 from typing import Dict, List
-from PySide6.QtWidgets import QLineEdit, QTextBrowser, QVBoxLayout, QWidget
+
+from PySide6.QtGui import QPalette
 
 from backend.SideModel import SideModel
-
+from PySide6.QtWidgets import QLineEdit, QTextBrowser, QVBoxLayout, QWidget
 
 class MIPrompt(QWidget):
     def __init__(self, model: SideModel):
@@ -12,53 +13,65 @@ class MIPrompt(QWidget):
         layout = QVBoxLayout()
 
         self.miPrompt = QLineEdit(placeholderText="Type any GDBMI command in here (-thread-info)")
-        self.miResponses = QTextBrowser(self)
-        self.miResponses.setPlaceholderText("Responses get printed here")
+        self.miOutput = QTextBrowser(self)
+        self.miOutput.setPlaceholderText("Responses get printed here")
 
         layout.addWidget(self.miPrompt)
-        layout.addWidget(self.miResponses)
+        layout.addWidget(self.miOutput)
 
-        self.miPrompt.returnPressed.connect(self.sendCommand)
 
         self.setLayout(layout)
 
-        self.model = model
+        self.miPrompt.returnPressed.connect(self.sendCommand)
 
-        # some initialization
+        self.model = model
         read = self.model.read(-1)
-        self.miResponses.setPlainText(self.formatResponse(list(read)))
+        self.printFormatted(list(read))
 
     def reset(self):
         self.miPrompt.setText("")
-        self.miResponses.setPlainText("")
+        self.miOutput.setPlainText("")
 
-    @staticmethod
-    def formatResponse(gdbmiResponses: List[Dict]) -> str:
-        formatted = ""
+    def formatResponse(self, miResponse: dict) -> str:
+        match (miResponse.get("type")):
+            case "log":
+                return ""
 
-        for response in gdbmiResponses:
+        match (miResponse.get("message")):
+            case "thread-group-added":
+                formatted = f"[THREAD] Thread group {miResponse["payload"]["id"]} added"
+            case "thread-group-started":
+                formatted = f"[THREAD] Thread group {miResponse["payload"]["id"]} started"
+            case "thread-created":
+                formatted = f"[THREAD] Thread {miResponse["payload"]["id"]} (group {miResponse["payload"]["group-id"]}) created"
+            case "cmd-param-changed":
+                formatted = f"[GDBPARAM] {miResponse["payload"]["param"]} set to {miResponse["payload"]["value"]}"
+            case "stopped":
+                formatted = "Program stopped."
+            case "running":
+                formatted = "Program is running..."
+            case "done":
+                formatted = "Done."
+            case "error":
+                formatted = miResponse["payload"]["msg"]
+            case None:
+                return miResponse.get("payload", "")
+            case _:
+                return pformat(miResponse) + "\n"
+
+        return formatted + "\n"
+
+    def printFormatted(self, miResponses: List[dict]):
+        for response in miResponses:
             match (response.get("message")):
-                case None:
-                    formatted += response.get("payload", "")
-                    continue
-                case "thread-group-added":
-                    formatted += f"[THREAD] Thread group {response["payload"]["id"]} added"
-                case "thread-group-started":
-                    formatted += f"[THREAD] Thread group {response["payload"]["id"]} started"
-                case "thread-created":
-                    formatted += f"[THREAD] Thread {response["payload"]["id"]} (group {response["payload"]["group-id"]}) created"
-                case "cmd-param-changed":
-                    formatted += f"[GDBPARAM] {response["payload"]["param"]} set to {response["payload"]["value"]}"
-                case "stopped":
-                    formatted += "Program stopped."
-                case "running":
-                    formatted += "Program is running..."
+                case "done":
+                    self.miOutput.setTextColor("#23c417")
+                case "error":
+                    self.miOutput.setTextColor("#e93e3e")
                 case _:
-                    formatted += pformat(response)
+                    self.miOutput.setTextColor(self.palette().color(QPalette.ColorRole.Text))
 
-            formatted += "\n"
-
-        return formatted
+            self.miOutput.insertPlainText(self.formatResponse(response))
 
     def sendCommand(self):
         toSend = self.miPrompt.text()
@@ -67,4 +80,4 @@ class MIPrompt(QWidget):
         print(f"command: {toSend}")
 
         response = self.model.send(toSend)
-        self.miResponses.setPlainText(self.formatResponse(response))
+        self.printFormatted(response)

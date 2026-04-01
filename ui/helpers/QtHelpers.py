@@ -2,11 +2,10 @@
 Some useful macro-widgets for common components for SideGDB
 """
 
-from enum import Enum
 import os
-from stat import filemode
-from PySide6 import QtCore, QtWidgets
 from loguru import logger
+from enum import Enum
+from PySide6 import QtCore, QtWidgets
 
 class QDirectionFlag(Enum):
     QHorizontal = 0
