@@ -94,7 +94,9 @@ class DebuggerUI(QMainWindow):
         self.__fileDialog = QFileDialog()
 
         self.mainToolbar.newConfig.triggered.connect(self.spawnConfigureGDB)
+        self.newSession.triggered.connect(self.spawnConfigureGDB)
         self.mainToolbar.openConfig.triggered.connect(self.openConfig)
+        self.openSession.triggered.connect(self.openConfig)
         self.mainToolbar.saveAsConfig.triggered.connect(self.saveAs)
         self.mainToolbar.terminateDebug.triggered.connect(self.terminateSession)
 
