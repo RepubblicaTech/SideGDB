@@ -27,7 +27,7 @@ class QFugueManager:
                 if (not Path(pathToLoad).exists()):
                     pathToLoad = f"{ASSETS_PREFIX}fugue-2x/icons{"-shadowless" if shadowless else ""}/{iconName}.png"
 
-        logger.debug(f"Loading {iconName} @ {pathToLoad}")
+        logger.debug(f"Loading {pathToLoad}")
 
         if (not Path(pathToLoad).exists()):
             logger.warning(f"Icon {iconName} not found")
