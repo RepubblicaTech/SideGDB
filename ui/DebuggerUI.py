@@ -14,6 +14,7 @@ from PySide6.QtWidgets import QFileDialog, QMainWindow, QMessageBox, QToolBar
 
 from backend.SideModel import SideModel
 from ui.helpers.QtHelpers import Resettable
+from ui.subwindows.AboutBox import AboutBox
 from ui.subwindows.MIPrompt import MIPrompt
 from ui.subwindows.SideConfigurator import SideConfigurator
 
@@ -96,6 +97,8 @@ class DebuggerUI(QMainWindow):
         self.mainToolbar.openConfig.triggered.connect(self.openConfig)
         self.mainToolbar.saveAsConfig.triggered.connect(self.saveAs)
         self.mainToolbar.terminateDebug.triggered.connect(self.terminateSession)
+
+        self.aboutProgram.triggered.connect(self.showAboutBox)
 
         self.resettables.append(self.showHideToolbar)
 
@@ -227,7 +230,6 @@ class DebuggerUI(QMainWindow):
         for resettable in self.resettables:
             resettable.reset()
 
-
         self.setWindowTitle(self.appTitle)
 
     def closeEvent(self, event: QCloseEvent):
@@ -250,3 +252,7 @@ class DebuggerUI(QMainWindow):
             self.statusBar().showMessage("Debugger terminated.")
         except AttributeError:
             logger.debug("No GDBMI instance...")
+
+    def showAboutBox(self):
+        aboutBox = AboutBox(self, self.appTitle)
+        aboutBox.exec()
