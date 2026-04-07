@@ -69,8 +69,10 @@ class MIPrompt(QWidget):
             match (response.get("message")):
                 case "done":
                     self.miOutput.setTextColor("#23c417")
+                    self.miOutput.insertPlainText("[DONE] ")
                 case "error":
                     self.miOutput.setTextColor("#e93e3e")
+                    self.miOutput.insertPlainText("[ERROR] ")
                 case _:
                     self.miOutput.setTextColor(self.palette().color(QPalette.ColorRole.Text))
 
