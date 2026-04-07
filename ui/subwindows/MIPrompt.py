@@ -1,6 +1,7 @@
 from pprint import pformat
 from typing import Dict, List
 
+from PySide6.QtCore import QTimer
 from PySide6.QtGui import QPalette
 
 from backend.SideModel import SideModel
@@ -27,6 +28,8 @@ class MIPrompt(QWidget):
         self.model = model
         read = self.model.read(-1)
         self.printFormatted(list(read))
+
+        self.canAutoscroll = True
 
     def reset(self):
         self.miPrompt.setText("")
@@ -75,9 +78,17 @@ class MIPrompt(QWidget):
 
     def sendCommand(self):
         toSend = self.miPrompt.text()
+        scrollbar = self.miOutput.verticalScrollBar()
+        atBottom = scrollbar.value() >= scrollbar.maximum() - 10
+
         if (not toSend):
             return
         print(f"command: {toSend}")
 
         response = self.model.send(toSend)
         self.printFormatted(response)
+
+        if atBottom and self.canAutoscroll:
+            QTimer.singleShot(0, lambda: scrollbar.setValue(scrollbar.maximum()))
+
+        self.miPrompt.setText("")
