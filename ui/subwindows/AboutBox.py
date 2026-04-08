@@ -28,7 +28,7 @@ class AboutBox(QDialog):
             if (obj.get("prerelease", None)):
                 semVersion += f"-{obj["prerelease"]["version"]}.{obj["prerelease"]["id"]}"
 
-        aboutLabel = QLabel(f"{self.appTitle} {codeName}\nv{semVersion}")
+        aboutLabel = QLabel(f"{self.appTitle} {codeName}\nVersion {semVersion}")
         creditsLabel = QLabel("Some icons by <a href=\"http://p.yusukekamiyamane.com/\">Yusuke Kamiyamane</a>")
         creditsLabel.setTextFormat(Qt.TextFormat.RichText)
         creditsLabel.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
