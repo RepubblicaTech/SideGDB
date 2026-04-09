@@ -24,9 +24,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="0.64549821"
-     inkscape:cx="1669.2533"
-     inkscape:cy="893.88319"
+     inkscape:zoom="0.70011949"
+     inkscape:cx="1609.7252"
+     inkscape:cy="841.28496"
      inkscape:window-width="1920"
      inkscape:window-height="1014"
      inkscape:window-x="0"
@@ -77,6 +77,22 @@
   </sodipodi:namedview>
   <defs
      id="defs1">
+    <pattern
+       inkscape:collect="always"
+       xlink:href="#pattern7"
+       preserveAspectRatio="xMidYMid"
+       id="pattern8"
+       patternTransform="matrix(0.38637033,-0.10352762,0.10352762,0.38637033,2005,707.00002)"
+       x="0"
+       y="0"
+       width="384.55759277"
+       height="159.33739014" />
+    <rect
+       x="1049.436"
+       y="699.15393"
+       width="418.88474"
+       height="228.57747"
+       id="rect7" />
     <linearGradient
        id="linearGradient1"
        inkscape:collect="always">
@@ -319,6 +335,49 @@
          in2="comp1"
          id="feComposite18-1-4" />
     </filter>
+    <pattern
+       patternUnits="userSpaceOnUse"
+       width="418.68971"
+       height="173.07914"
+       patternTransform="translate(1049.4341,699.15337)"
+       preserveAspectRatio="xMidYMid"
+       id="pattern1"
+       inkscape:label="pattern1">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:171.876px;line-height:1.9;font-family:'Butler FREE VERSION';-inkscape-font-specification:'Butler FREE VERSION, Semi-Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;opacity:1;fill:#87b7ff;fill-opacity:1;stroke-width:33.8336;stroke-linecap:square;paint-order:markers stroke fill"
+         x="423.84616"
+         y="127.532"
+         id="text1"><tspan
+           id="tspan1"
+           x="423.84616"
+           y="127.532"
+           style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:171.876px;font-family:'Butler FREE VERSION';-inkscape-font-specification:'Butler FREE VERSION, Semi-Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;fill:#87b7ff;fill-opacity:1;stroke-width:33.8336"
+           sodipodi:role="line">Alpha</tspan></text>
+    </pattern>
+    <rect
+       x="1049.436"
+       y="699.15393"
+       width="418.88474"
+       height="228.57747"
+       id="rect7-4" />
+    <pattern
+       patternUnits="userSpaceOnUse"
+       width="320.46465"
+       height="72.426084"
+       patternTransform="translate(2005,707)"
+       preserveAspectRatio="xMidYMid"
+       id="pattern7"
+       inkscape:label="pattern7">
+      <text
+         xml:space="preserve"
+         id="text7-6"
+         style="font-weight:600;font-size:107.11px;line-height:1.9;font-family:'Butler FREE VERSION';-inkscape-font-specification:'Butler FREE VERSION, Semi-Bold';text-align:end;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect7-4);display:inline;fill:#87b7ff;fill-opacity:1;stroke-width:18.8976;stroke-linecap:square;paint-order:markers stroke fill"
+         transform="matrix(0.96048884,0,0,0.96048884,-1089.8406,-721.0142)"><tspan
+           x="1134.6729"
+           y="826.07965"
+           id="tspan2">ALPHA</tspan></text>
+    </pattern>
   </defs>
   <g
      inkscape:label="P1"
@@ -378,17 +437,28 @@
        height="300"
        x="1049.4359"
        y="699.15393" />
+    <rect
+       style="display:inline;opacity:0.5;fill:url(#pattern8);fill-opacity:1;stroke-width:11.3386;stroke-linecap:square;paint-order:markers stroke fill"
+       id="rect1-7-6-6"
+       width="1200.0001"
+       height="300"
+       x="1049.436"
+       y="699.15393" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:82.4385px;line-height:1.9;font-family:'Butler FREE VERSION';-inkscape-font-specification:'Butler FREE VERSION, Semi-Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;opacity:1;fill:#87b7ff;fill-opacity:1;stroke-width:16.228;stroke-linecap:square;paint-order:markers stroke fill"
-       x="2115.531"
-       y="772.3233"
-       id="text1"><tspan
-         sodipodi:role="line"
-         id="tspan1"
-         x="2115.531"
-         y="772.3233"
-         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:82.4385px;font-family:'Butler FREE VERSION';-inkscape-font-specification:'Butler FREE VERSION, Semi-Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#87b7ff;fill-opacity:1;stroke-width:16.228">Alpha I</tspan></text>
+       id="text7"
+       style="font-weight:600;font-size:107.11px;line-height:1.9;font-family:'Butler FREE VERSION';-inkscape-font-specification:'Butler FREE VERSION, Semi-Bold';text-align:end;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect7);display:none;opacity:1;fill:#87b7ff;fill-opacity:1;stroke-width:18.8976;stroke-linecap:square;paint-order:markers stroke fill"
+       transform="matrix(0.96048884,0,0,0.96048884,785.62927,0.4179188)"><tspan
+         x="1134.6729"
+         y="826.07965"
+         id="tspan3">ALPHA</tspan></text>
+    <rect
+       style="display:none;fill:url(#pattern7);stroke:none"
+       width="320.46466"
+       height="72.426086"
+       x="2005"
+       y="707"
+       id="rect8" />
     <text
        xml:space="preserve"
        style="font-style:italic;font-variant:normal;font-weight:900;font-stretch:normal;font-size:230.434px;line-height:1.9;font-family:'Crimson Pro';-inkscape-font-specification:'Crimson Pro, Heavy Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:45.3609;stroke-linecap:square;paint-order:markers stroke fill;filter:url(#filter18-3-0)"
