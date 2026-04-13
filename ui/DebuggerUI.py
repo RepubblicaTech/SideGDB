@@ -129,7 +129,7 @@ class DebuggerUI(QMainWindow):
         self.statusBar().showMessage("Showing configuration")
         configurator = SideConfigurator(self, self.appTitle)
         if not configurator.exec():
-            logger.warning("Bro quit. Doing nothing.")
+            logger.warning("Nothing.")
             self.statusBar().showMessage("Configuration cancelled.")
             return
 
