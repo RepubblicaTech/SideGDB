@@ -35,7 +35,8 @@ class MIPrompt(QWidget):
         self.miPrompt.setText("")
         self.miOutput.setPlainText("")
 
-    def formatResponse(self, miResponse: dict) -> str:
+    @staticmethod
+    def formatResponseMessage(miResponse: dict) -> str:
         match (miResponse.get("type")):
             case "log":
                 return ""
@@ -50,7 +51,7 @@ class MIPrompt(QWidget):
             case "cmd-param-changed":
                 formatted = f"[GDBPARAM] {miResponse["payload"]["param"]} set to {miResponse["payload"]["value"]}"
             case "stopped":
-                formatted = "Program stopped."
+                formatted = f"Program stopped @ {miResponse["payload"]["frame"]["addr"]}"
             case "running":
                 formatted = "Program is running..."
             case "done":
@@ -61,6 +62,25 @@ class MIPrompt(QWidget):
                 return miResponse.get("payload", "")
             case _:
                 return pformat(miResponse) + "\n"
+
+        return formatted + "\n"
+
+    @staticmethod
+    def formatResponsePayload(miResponse: dict):
+        payload = miResponse.get("payload", None)
+        if (not payload):
+            return ""
+
+        formatted = ""
+
+        if "bkpt" in payload:
+            breakpoint = payload["bkpt"]
+            formatted = f"Breakpoint {breakpoint.get("number", "X")} created: {breakpoint.get("func", "<unknown>")}() @ {breakpoint.get("file", "/???.?")}:{breakpoint.get("line", "??")}"
+        elif "BreakpointTable" in payload:
+            breakpointTable = dict(payload["BreakpointTable"])
+            breakpointsList = list(breakpointTable["body"])
+            for breakpoint in breakpointsList:
+                formatted += f"Breakpoint {breakpoint.get("number", "X")}: {breakpoint.get("func", "<unknown>")}() @ {breakpoint.get("file", "/???.?")}:{breakpoint.get("line", "??")}\n"
 
         return formatted + "\n"
 
@@ -76,7 +96,8 @@ class MIPrompt(QWidget):
                 case _:
                     self.miOutput.setTextColor(self.palette().color(QPalette.ColorRole.Text))
 
-            self.miOutput.insertPlainText(self.formatResponse(response))
+            self.miOutput.insertPlainText(self.formatResponsePayload(response))
+            self.miOutput.insertPlainText(self.formatResponseMessage(response))
 
     def sendCommand(self):
         toSend = self.miPrompt.text()
