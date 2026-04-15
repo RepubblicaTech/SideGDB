@@ -15,6 +15,7 @@ from PySide6.QtWidgets import QFileDialog, QMainWindow, QMessageBox, QToolBar
 from backend.SideModel import SideModel
 from ui.helpers.QtHelpers import Resettable
 from ui.subwindows.AboutBox import AboutBox
+from ui.subwindows.BreakManager import BreakManager
 from ui.subwindows.MIPrompt import MIPrompt
 from ui.subwindows.SideConfigurator import SideConfigurator
 
@@ -99,6 +100,7 @@ class DebuggerUI(QMainWindow):
         self.openSession.triggered.connect(self.openConfig)
         self.mainToolbar.saveAsConfig.triggered.connect(self.saveAs)
         self.mainToolbar.terminateDebug.triggered.connect(self.terminateSession)
+        self.debugToolbar.breakpointsMan.triggered.connect(self.showBreakpointsManager)
 
         self.aboutProgram.triggered.connect(self.showAboutBox)
 
@@ -155,6 +157,14 @@ class DebuggerUI(QMainWindow):
 
         self.statusBar().showMessage("Starting up GDBMI...")
         self.launchGDBMI(config)
+
+    def showAboutBox(self):
+        aboutBox = AboutBox(self, self.appTitle)
+        aboutBox.exec()
+
+    def showBreakpointsManager(self):
+        breakpointsManager = BreakManager(self, self.model)
+        breakpointsManager.show()
 
     def openConfig(self):
         if (self.running):
@@ -254,7 +264,3 @@ class DebuggerUI(QMainWindow):
             self.statusBar().showMessage("Debugger terminated.")
         except AttributeError:
             logger.debug("No GDBMI instance...")
-
-    def showAboutBox(self):
-        aboutBox = AboutBox(self, self.appTitle)
-        aboutBox.exec()
