@@ -10,13 +10,13 @@ class AboutBox(QDialog):
         super().__init__(parent)
         self.appTitle = appTitle or "SideGDB"
         self.setWindowTitle(f"About {appTitle}")
-        self.setFixedSize(600,400)
+        self.setFixedSize(450,300)
 
         layout = QVBoxLayout()
         self.setLayout(layout)
 
         banner = QLabel()
-        banner.setPixmap(QPixmap("assets/sidegdb_banner.png").scaledToWidth(575, Qt.TransformationMode.SmoothTransformation))
+        banner.setPixmap(QPixmap("assets/sidegdb_banner.png").scaledToWidth(self.width() - 10, Qt.TransformationMode.SmoothTransformation))
 
         # json thingies
         codeName = ""
