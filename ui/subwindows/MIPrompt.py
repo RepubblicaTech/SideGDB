@@ -63,33 +63,7 @@ class MIPromptManager:
 
     @staticmethod
     def formatResponseMessage(miResponse: dict) -> str:
-        match (miResponse.get("type")):
-            case "log":
-                return ""
-
-        match (miResponse.get("message")):
-            case "thread-group-added":
-                formatted = f"[THREAD] Thread group {miResponse["payload"]["id"]} added"
-            case "thread-group-started":
-                formatted = f"[THREAD] Thread group {miResponse["payload"]["id"]} started"
-            case "thread-created":
-                formatted = f"[THREAD] Thread {miResponse["payload"]["id"]} (group {miResponse["payload"]["group-id"]}) created"
-            case "cmd-param-changed":
-                formatted = f"[GDBPARAM] {miResponse["payload"]["param"]} set to {miResponse["payload"]["value"]}"
-            case "stopped":
-                formatted = f"Program stopped @ {miResponse["payload"]["frame"]["addr"]}"
-            case "running":
-                formatted = "Program is running..."
-            case "done":
-                formatted = "Done."
-            case "error":
-                formatted = miResponse["payload"]["msg"]
-            case None:
-                return miResponse.get("payload", "")
-            case _:
-                return pformat(miResponse) + "\n"
-
-        return formatted + "\n"
+        return f"[MI::{str(miResponse.get("message") if miResponse.get("message") else "unknown").upper()}] "
 
     @staticmethod
     def formatResponsePayload(miResponse: dict):
@@ -108,9 +82,9 @@ class MIPromptManager:
             for breakpoint in breakpointsList:
                 formatted += f"Breakpoint {breakpoint.get("number", "X")}: {breakpoint.get("func", "<unknown>")}() @ {breakpoint.get("file", "/???.?")}:{breakpoint.get("line", "??")}\n"
         else:
-            return ""
+            formatted = pformat(payload)
 
-        return formatted + "\n"
+        return formatted
 
     @staticmethod
     def printFormatted(miResponses: List[dict]):
@@ -118,12 +92,11 @@ class MIPromptManager:
             match (response.get("message")):
                 case "done":
                     MIPromptManager.miOutput.setTextColor("#23c417")
-                    MIPromptManager.miOutput.insertPlainText("[DONE] ")
                 case "error":
                     MIPromptManager.miOutput.setTextColor("#e93e3e")
-                    MIPromptManager.miOutput.insertPlainText("[ERROR] ")
                 case _:
                     MIPromptManager.miOutput.setTextColor(MIPromptManager.miOutput.palette().color(QPalette.ColorRole.Text))
 
-            MIPromptManager.miOutput.insertPlainText(MIPromptManager.formatResponsePayload(response))
             MIPromptManager.miOutput.insertPlainText(MIPromptManager.formatResponseMessage(response))
+            if (response.get("payload", None)):
+                MIPromptManager.miOutput.insertPlainText(MIPromptManager.formatResponsePayload(response) + "\n")
