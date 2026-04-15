@@ -19,7 +19,6 @@ class SideModel:
         self.__gdbMI = gdbMI
 
         self.breakpointsStandardModel = QStandardItemModel(0, 2)
-        self.breakpointsStandardModel.setHorizontalHeaderLabels(["No.", "Where[file:line]"])
 
     def send(self, cmd):
         r =  self.__gdbMI.sendCmd(f"{self.currentToken}{cmd}")
@@ -35,27 +34,46 @@ class SideModel:
 
         return self.send(f"-break-insert {where}")
 
-    def getBreakpointsList(self):
-        return self.send("-break-list")
-
-    def loadBreakpointsListToModel(self):
-        responses = self.getBreakpointsList()
+    def getBreakpointsList(self) -> List[dict[str, Any]] | None:
+        responses =  self.send("-break-list")
         r = self.selectResponse(responses, ("token", self.currentToken - 1))
         if (not r):
             logger.warning(f"No response with token {self.currentToken - 1}")
-            return
+            return None
         payload = r.get("payload", None)
         if ((not payload) or ("BreakpointTable" not in payload) or ("body" not in payload["BreakpointTable"])):
             logger.debug("No BreakpointTable given.")
-            return
-        breakpointsTable = list(payload["BreakpointTable"]["body"])
-        if (len(breakpointsTable) < 1):
+            return None
+        body = list(payload["BreakpointTable"]["body"])
+        if (len(body) < 1):
             logger.debug("No breakpoints yet.")
+            return None
+
+        breakpointsList = list()
+        for b in body:
+            breakpoint = dict(b)
+
+            bDict = {
+                "number": breakpoint.get("number"),
+                "enabled": True if (breakpoint.get("enabled") == "y") else False,
+                "addr": breakpoint.get("addr", None),
+                # Optional
+                "func": breakpoint.get("func", None),
+                "file": breakpoint.get("file", None),
+                "fullPath": breakpoint.get("fullname", None),
+                "line": breakpoint.get("line", None),
+            }
+            breakpointsList.append(bDict)
+
+        return breakpointsList
+
+    def loadBreakpointsListToModel(self):
+        list = self.getBreakpointsList()
+        if (not list):
             return
 
         self.breakpointsStandardModel.clear()
-        for breakpoint in breakpointsTable:
-            b = dict(breakpoint)
+        for b in list:
             bNo = QStandardItem(str(b.get("number", "XX")))
             whereStr = f"{b.get("func", b.get("addr"))}[{b.get("file", "/???.?")}:{b.get("line", "??")}]"
             where = QStandardItem(whereStr)
