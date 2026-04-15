@@ -3,8 +3,10 @@ venv
 
 # all test configs
 *.json
-# except the about lol
+# except the about
 !assets/about.json
+# all test logs
+*.log
 
 # assets
 assets/fugue*
