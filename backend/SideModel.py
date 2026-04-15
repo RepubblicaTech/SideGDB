@@ -4,6 +4,7 @@ from PySide6.QtGui import QStandardItem, QStandardItemModel
 from loguru import logger
 
 from backend import GDBMI
+from backend.MIResponseManager import MIPromptManager
 
 class SideModel:
     currentToken: int = 0
@@ -22,17 +23,43 @@ class SideModel:
 
     def send(self, cmd):
         r =  self.__gdbMI.sendCmd(f"{self.currentToken}{cmd}")
+        MIPromptManager.printFormatted(r)
         self.currentToken += 1
         return r
 
     def read(self, attempts):
-        return self.__gdbMI.readResponse(attempts)
+        r = self.__gdbMI.readResponse(attempts)
+        MIPromptManager.printFormatted(list(r))
+        return r
 
-    def setBreakpoint(self, where: str):
+    def deleteBreakpoint(self, number):
+        return self.send(f"-break-delete {number}")
+
+    def setBreakpoint(self, where: str) -> dict | None:
         if (not str):
             return None
 
-        return self.send(f"-break-insert {where}")
+        responses = self.send(f"-break-insert {where}")
+        r = self.selectResponse(responses, ("token", self.currentToken - 1))
+        if (r.get("message", None) != "done"):
+            payload = dict(r["payload"])
+            raise RuntimeError(payload.get("msg", r.get("payload", "Unknown error.")))
+
+        payload = r.get("payload", None)
+        if ((not payload) or ("bkpt" not in payload)):
+            logger.warning("No breakpoint?")
+            return None
+        bkpt = dict(payload["bkpt"])
+
+        return {
+            "number": bkpt.get("number"),
+            "enabled": True if (bkpt.get("enabled") == "y") else False,
+            "addr": bkpt.get("addr"),
+            "where": bkpt.get("func", bkpt.get("at", None)),
+            "source": bkpt.get("file", None),
+            "sourceFullPath": bkpt.get("fullname", None),
+            "line": bkpt.get("line", None)
+        }
 
     def getBreakpointsList(self) -> List[dict[str, Any]] | None:
         responses =  self.send("-break-list")
@@ -42,7 +69,7 @@ class SideModel:
             return None
         payload = r.get("payload", None)
         if ((not payload) or ("BreakpointTable" not in payload) or ("body" not in payload["BreakpointTable"])):
-            logger.debug("No BreakpointTable given.")
+            logger.warning("No BreakpointTable given.")
             return None
         body = list(payload["BreakpointTable"]["body"])
         if (len(body) < 1):
