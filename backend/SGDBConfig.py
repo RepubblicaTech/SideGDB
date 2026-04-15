@@ -32,6 +32,8 @@ class SGDBConfigManager:
 
         if (configDict.get("programPath") is None):
             raise ValueError("No program path has been given")
+        elif (not Path(str(configDict.get("programPath"))).exists()):
+            raise FileNotFoundError("Program path is non-existent.")
         elif ((configDict.get("preRunCommands") is not None) and (configDict.get("envPrefix") is None)):
             raise ValueError("An environment path must be given for pre-run commands")
 
