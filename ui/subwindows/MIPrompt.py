@@ -62,7 +62,10 @@ class MIPromptManager:
 
     @staticmethod
     def formatResponseMessage(miResponse: dict) -> str:
-        return f"[MI::{str(miResponse.get("message") if miResponse.get("message") else "unknown").upper()}] "
+        if (miResponse.get("message")):
+            return f"[MI::{str(miResponse.get("message")).upper()}] "
+        else:
+            return ""
 
     @staticmethod
     def formatResponsePayload(miResponse: dict):
@@ -72,18 +75,54 @@ class MIPromptManager:
 
         formatted = ""
 
-        if "bkpt" in payload:
-            breakpoint = payload["bkpt"]
-            formatted = f"Breakpoint {breakpoint.get("number", "X")} created: {breakpoint.get("func", "<unknown>")}() @ {breakpoint.get("file", "/???.?")}:{breakpoint.get("line", "??")}"
-        elif "BreakpointTable" in payload:
-            breakpointTable = dict(payload["BreakpointTable"])
-            breakpointsList = list(breakpointTable["body"])
-            for breakpoint in breakpointsList:
-                formatted += f"Breakpoint {breakpoint.get("number", "X")}: {breakpoint.get("func", "<unknown>")}() @ {breakpoint.get("file", "/???.?")}:{breakpoint.get("line", "??")}\n"
-        else:
-            formatted = pformat(payload)
+        match(miResponse.get("type")):
+            case "log":
+                return ""
+            case "console":
+                return str(payload)
+            case "result" | "notify":
+                pass
+            case _:
+                return pformat(payload) + "\n"
 
-        return formatted
+        match(miResponse.get("message")):
+            case "thread-group-added":
+                return f"Thread group {miResponse["payload"]["id"]} added\n"
+            case "thread-group-started":
+                return f"Thread group {miResponse["payload"]["id"]} started\n"
+            case "thread-created":
+                thread = miResponse["payload"]
+                return f"Thread {thread["id"]} (group {thread["group-id"]}) created\n"
+            case "cmd-param-changed":
+                cmdParam = dict(miResponse["payload"])
+                return f"{cmdParam["param"]} set to {cmdParam["value"]}\n"
+            case "stopped":
+                return f"Program stopped @ {miResponse["payload"]["frame"]["addr"]}\n"
+            case None:
+                return str(payload)
+            case _:
+                pass
+
+        payloadKeys = list(dict(payload).keys())
+        match(payloadKeys[0]):
+            case "msg":
+                formatted = payload["msg"]
+            case "bkpt":
+                breakpoint = payload["bkpt"]
+                formatted = f"Breakpoint {breakpoint.get("number", "X")} created: {breakpoint.get("func", "<unknown>")}() @ {breakpoint.get("file", "/???.?")}:{breakpoint.get("line", "??")}"
+            case "BreakpointTable":
+                breakpointTable = dict(payload["BreakpointTable"])
+                breakpointsList = list(breakpointTable["body"])
+                if (not breakpointsList):
+                    return "No breakpoints set."
+                formatted = "Breakpoints list:\n"
+                for breakpoint in breakpointsList:
+                    formatted += f"\t[{breakpoint.get("number", "X")}]: {breakpoint.get("func", "<unknown>")}() @ {breakpoint.get("file", "/???.?")}:{breakpoint.get("line", "??")}\n"
+                    return formatted
+            case _:
+                formatted = pformat(payload)
+
+        return formatted + "\n"
 
     @staticmethod
     def printFormatted(miResponses: List[dict]):
@@ -98,4 +137,4 @@ class MIPromptManager:
 
             MIPromptManager.miOutput.insertPlainText(MIPromptManager.formatResponseMessage(response))
             if (response.get("payload", None)):
-                MIPromptManager.miOutput.insertPlainText(MIPromptManager.formatResponsePayload(response) + "\n")
+                MIPromptManager.miOutput.insertPlainText(MIPromptManager.formatResponsePayload(response))
