@@ -1,6 +1,11 @@
 {
   "major": 0,
-  "minor": 1,
-  "patch": 1,
-  "codename": "Alpha I"
+  "minor": 2,
+  "patch": 0,
+  "codename": "Alpha I",
+
+  "prerelease": {
+    "version": "alpha",
+    "id": 1
+  }
 }
