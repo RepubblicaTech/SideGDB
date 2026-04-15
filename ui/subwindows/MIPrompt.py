@@ -25,15 +25,41 @@ class MIPrompt(QWidget):
 
         self.miPrompt.returnPressed.connect(self.sendCommand)
 
+        MIPromptManager.setOutputView(self.miOutput)
+
         self.model = model
         read = self.model.read(-1)
-        self.printFormatted(list(read))
+        MIPromptManager.printFormatted(list(read))
 
         self.canAutoscroll = True
 
     def reset(self):
         self.miPrompt.setText("")
         self.miOutput.setPlainText("")
+
+    def sendCommand(self):
+        toSend = self.miPrompt.text()
+        scrollbar = self.miOutput.verticalScrollBar()
+        atBottom = scrollbar.value() >= scrollbar.maximum() - 10
+
+        if (not toSend):
+            return
+        print(f"command: {toSend}")
+
+        response = self.model.send(toSend)
+        MIPromptManager.printFormatted(response)
+
+        if atBottom and self.canAutoscroll:
+            QTimer.singleShot(0, lambda: scrollbar.setValue(scrollbar.maximum()))
+
+        self.miPrompt.setText("")
+
+class MIPromptManager:
+    miOutput: QTextBrowser
+
+    @staticmethod
+    def setOutputView(p: QTextBrowser):
+        MIPromptManager.miOutput = p
 
     @staticmethod
     def formatResponseMessage(miResponse: dict) -> str:
@@ -81,37 +107,23 @@ class MIPrompt(QWidget):
             breakpointsList = list(breakpointTable["body"])
             for breakpoint in breakpointsList:
                 formatted += f"Breakpoint {breakpoint.get("number", "X")}: {breakpoint.get("func", "<unknown>")}() @ {breakpoint.get("file", "/???.?")}:{breakpoint.get("line", "??")}\n"
+        else:
+            return ""
 
         return formatted + "\n"
 
-    def printFormatted(self, miResponses: List[dict]):
+    @staticmethod
+    def printFormatted(miResponses: List[dict]):
         for response in miResponses:
             match (response.get("message")):
                 case "done":
-                    self.miOutput.setTextColor("#23c417")
-                    self.miOutput.insertPlainText("[DONE] ")
+                    MIPromptManager.miOutput.setTextColor("#23c417")
+                    MIPromptManager.miOutput.insertPlainText("[DONE] ")
                 case "error":
-                    self.miOutput.setTextColor("#e93e3e")
-                    self.miOutput.insertPlainText("[ERROR] ")
+                    MIPromptManager.miOutput.setTextColor("#e93e3e")
+                    MIPromptManager.miOutput.insertPlainText("[ERROR] ")
                 case _:
-                    self.miOutput.setTextColor(self.palette().color(QPalette.ColorRole.Text))
+                    MIPromptManager.miOutput.setTextColor(MIPromptManager.miOutput.palette().color(QPalette.ColorRole.Text))
 
-            self.miOutput.insertPlainText(self.formatResponsePayload(response))
-            self.miOutput.insertPlainText(self.formatResponseMessage(response))
-
-    def sendCommand(self):
-        toSend = self.miPrompt.text()
-        scrollbar = self.miOutput.verticalScrollBar()
-        atBottom = scrollbar.value() >= scrollbar.maximum() - 10
-
-        if (not toSend):
-            return
-        print(f"command: {toSend}")
-
-        response = self.model.send(toSend)
-        self.printFormatted(response)
-
-        if atBottom and self.canAutoscroll:
-            QTimer.singleShot(0, lambda: scrollbar.setValue(scrollbar.maximum()))
-
-        self.miPrompt.setText("")
+            MIPromptManager.miOutput.insertPlainText(MIPromptManager.formatResponsePayload(response))
+            MIPromptManager.miOutput.insertPlainText(MIPromptManager.formatResponseMessage(response))
