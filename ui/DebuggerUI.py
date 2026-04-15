@@ -93,8 +93,8 @@ class DebuggerUI(QMainWindow):
 
         self.__fileDialog = QFileDialog()
 
-        self.mainToolbar.newConfig.triggered.connect(self.spawnConfigureGDB)
-        self.newSession.triggered.connect(self.spawnConfigureGDB)
+        self.mainToolbar.newConfig.triggered.connect(self.showConfigureGDB)
+        self.newSession.triggered.connect(self.showConfigureGDB)
         self.mainToolbar.openConfig.triggered.connect(self.openConfig)
         self.openSession.triggered.connect(self.openConfig)
         self.mainToolbar.saveAsConfig.triggered.connect(self.saveAs)
@@ -121,7 +121,7 @@ class DebuggerUI(QMainWindow):
         logger.debug(f"Saving to file {destinationFile[0]}")
         SGDBConfigManager.save(self.currentConfig, Path(destinationFile[0]))
 
-    def spawnConfigureGDB(self):
+    def showConfigureGDB(self):
         if (self.running):
             QMessageBox(QMessageBox.Icon.Warning, "Running session", "An instance of GDB is already running. Make sure to terminate the current session before starting a new one.", QMessageBox.StandardButton.Ok).exec()
             return
