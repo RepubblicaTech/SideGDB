@@ -178,8 +178,9 @@ class DebuggerUI(QMainWindow):
         logger.debug(f"Using file {openFilename[0]}")
         try:
             currentConfig = SGDBConfigManager.load(Path(openFilename[0]))
-        except ValueError as e:
-            QMessageBox(QMessageBox.Icon.Critical, "Config error", f"An error occurred when loading {Path(openFilename[0]).name}: {str(e)}", QMessageBox.StandardButton.Ok).exec()
+        except Exception as e:
+            logger.error(f"Error {type(e)} occurred when loading {Path(openFilename[0]).name}: {str(e)}")
+            QMessageBox(QMessageBox.Icon.Critical, "Config error", f"Error {type(e)} occurred when loading {Path(openFilename[0]).name}: {str(e)}", QMessageBox.StandardButton.Ok).exec()
             return
 
         self.launchGDBMI(currentConfig)
