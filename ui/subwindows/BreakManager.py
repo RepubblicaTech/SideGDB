@@ -16,7 +16,6 @@ class BreakManager(QDialog):
 
         self.table.setModel(self.model.breakpointsStandardModel)
         self.table.resizeColumnsToContents()
-        self.table.hideRow(0)
 
         layout.addWidget(self.symbolBreakpoint, 0, 0, 1, 1)
         layout.addWidget(self.insertButton, 0, 1, 1, 1)
