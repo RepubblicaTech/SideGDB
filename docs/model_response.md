@@ -23,26 +23,29 @@ Next up is a table of all GDBMI commands and their relative custom responses. Op
 }
 ```
 
+# Breakpoint set
+### GDBMI Command: `-break-insert <where>`
+
+```json
+{
+  "number": <breakpoint number>,
+  "enabled": True | False,
+  "addr": <address of breakpoint>,
+  ***
+  "where": <function name, taken from "func", "at"> | None,
+  "source": <source file path, taken from "file">,
+  "sourceFullPath": <actual source path, if present> | None,
+  "line": <line of breakpoint> | None,
+}
+```
+
 # Breakpoints list
 ### GDBMI Command: `-break-list`
 
 ```json
 [
-  {
-    "number": <breakpoint number>,
-    "enabled": <True | False>,
-    "addr": "0xffffffff80035f55",
-    ***
-    "func": "kstart",
-    "file": "src/kernel/kernel.c",
-    "fullPath": "/home/repubblicatech/Documenti/VSCode/purpleK2/src/kernel/kernel.c",
-    "line": "149",
-  },
+  <the same object from the breakpoint set command>
+  ,
   ...
 ]
 ```
-
-# Breakpoint set
-### GDBMI Command: `-break-insert <where>`
-
-An object containing the same dict of a single item from the Breakpoints' list.
