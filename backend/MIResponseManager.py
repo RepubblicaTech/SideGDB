@@ -48,7 +48,13 @@ class MIPromptManager:
                 cmdParam = dict(miResponse["payload"])
                 return f"{cmdParam["param"]} set to {cmdParam["value"]}\n"
             case "stopped":
-                return f"Program stopped @ {miResponse["payload"]["frame"]["addr"]}\n"
+                formatted = "Program stopped.\n"
+                match(list(dict(miResponse["payload"]).keys())[0]):
+                    case "reason":
+                        formatted += f"Reason: {str(miResponse["payload"]["reason"]).upper()}\n"
+                    case _:
+                        formatted += pformat(miResponse["payload"]) + "\n"
+                return formatted
             case None:
                 return str(payload)
             case _:
