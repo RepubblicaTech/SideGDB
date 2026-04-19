@@ -1,8 +1,5 @@
-from pprint import pformat
-from typing import List
-
 from PySide6.QtCore import QTimer
-from PySide6.QtGui import QPalette, Qt
+from PySide6.QtGui import Qt
 
 from backend.MIResponseManager import MIPromptManager
 from backend.SideModel import SideModel
