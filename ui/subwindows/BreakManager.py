@@ -11,7 +11,7 @@ class BreakManager(QDialog):
         self.resize(600, 400)
         layout = QGridLayout()
 
-        self.symbolBreakpoint = QLineEdit(placeholderText="Type a function or *address...")
+        self.symbolInput = QLineEdit(placeholderText="Type a function or *address...")
         self.insertButton = QPushButton("Insert")
         self.table = QTableView()
         self.deleteButton = QPushButton("DELETE selected breakpoint")
@@ -20,7 +20,7 @@ class BreakManager(QDialog):
         self.table.setModel(self.model.breakpointsStandardModel)
         self.table.resizeColumnsToContents()
 
-        layout.addWidget(self.symbolBreakpoint, 0, 0, 1, 1)
+        layout.addWidget(self.symbolInput, 0, 0, 1, 1)
         layout.addWidget(self.insertButton, 0, 1, 1, 1)
         layout.addWidget(self.table, 1, 0, 1, 2)
         layout.addWidget(self.deleteButton, 2, 0, 1, 2)
@@ -50,7 +50,7 @@ class BreakManager(QDialog):
             logger.debug(f"Breakpoint {breakpointNumber} deleted.")
 
     def sendInsertBreakpoint(self):
-        symbol = self.symbolBreakpoint.text()
+        symbol = self.symbolInput.text()
         if (not symbol):
             return
 
@@ -80,3 +80,4 @@ class BreakManager(QDialog):
         self.model.breakpointsStandardModel.appendRow([c1, c2])
 
         self.table.resizeColumnsToContents()
+        self.symbolInput.setText("")
