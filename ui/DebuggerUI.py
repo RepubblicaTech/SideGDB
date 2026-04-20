@@ -88,7 +88,7 @@ class DebuggerUI(QMainWindow):
 
         self.mainToolbar = MainToolbar("Main toolbar")
         self.debugToolbar = DebugToolbar("Debugging toolbar")
-        self.showHideToolbar = ShowHideToolbar("Widgets toolbar")
+        self.widgetsToolbar = ShowHideToolbar("Widgets toolbar")
 
         self.addToolBar(self.mainToolbar)
 
@@ -104,7 +104,7 @@ class DebuggerUI(QMainWindow):
 
         self.aboutProgram.triggered.connect(self.showAboutBox)
 
-        self.resettables.append(self.showHideToolbar)
+        self.resettables.append(self.widgetsToolbar)
 
         # to check if a program is being debugged.
         self.running = False
@@ -223,11 +223,11 @@ class DebuggerUI(QMainWindow):
         self.mainToolbar.terminateDebug.toggled.connect(self.terminateSession)
 
         self.addToolBar(self.debugToolbar)
-        self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.showHideToolbar)
+        self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.widgetsToolbar)
 
         # they may have been hidden
         self.debugToolbar.show()
-        self.showHideToolbar.show()
+        self.widgetsToolbar.show()
 
         self.setWindowTitle(f"{config.sessionTitle} - {self.appTitle}")
 
@@ -235,7 +235,7 @@ class DebuggerUI(QMainWindow):
         # reset the widgets toolbar buttons to OFF
         self.centralWidget().close()
         self.debugToolbar.close()
-        self.showHideToolbar.close()
+        self.widgetsToolbar.close()
 
         self.miPrompt.reset()
 
