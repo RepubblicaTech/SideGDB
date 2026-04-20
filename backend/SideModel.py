@@ -1,3 +1,4 @@
+from turtle import resetscreen
 from typing import Any, List
 
 from PySide6.QtGui import QStandardItem, QStandardItemModel
@@ -21,6 +22,10 @@ class SideModel:
 
         self.breakpointsStandardModel = QStandardItemModel(0, 2)
 
+    # Request the last token that was sent to GDBMI.
+    def token(self):
+        return self.currentToken - 1
+
     def send(self, cmd):
         r =  self.__gdbMI.sendCmd(f"{self.currentToken}{cmd}")
         MIPromptManager.printFormatted(r)
@@ -40,7 +45,7 @@ class SideModel:
             return None
 
         responses = self.send(f"-break-insert {where}")
-        r = self.selectResponse(responses, ("token", self.currentToken - 1))
+        r = self.selectResponse(responses, ("token", self.token()))
         if (r.get("message", None) != "done"):
             payload = dict(r["payload"])
             raise RuntimeError(payload.get("msg", r.get("payload", "Unknown error.")))
@@ -63,9 +68,9 @@ class SideModel:
 
     def getBreakpointsList(self) -> List[dict[str, Any]] | None:
         responses =  self.send("-break-list")
-        r = self.selectResponse(responses, ("token", self.currentToken - 1))
+        r = self.selectResponse(responses, ("token", self.token()))
         if (not r):
-            logger.warning(f"No response with token {self.currentToken - 1}")
+            logger.warning(f"No response with token {self.token()}")
             return None
         payload = r.get("payload", None)
         if ((not payload) or ("BreakpointTable" not in payload) or ("body" not in payload["BreakpointTable"])):
@@ -106,17 +111,75 @@ class SideModel:
             where = QStandardItem(whereStr)
             self.breakpointsStandardModel.appendRow([bNo, where])
 
+    def currentFrame(self):
+        responses = self.send("-thread-info")
+        frameMessage = self.selectResponse(responses, ("message", "stopped"))
+
+        if (not frameMessage or not frameMessage.get("payload", None)):
+            raise TypeError("No frame!")
+
+        return dict(frameMessage["payload"]["frame"])
+
+    def continueExecution(self):
+        responses = self.send("-exec-continue")
+        frameDict = self.selectResponse(responses, ("message", "stopped"))
+
+        if (not frameDict):
+            self.read(-1)
+            try:
+                return self.currentFrame()
+            except Exception as e:
+                raise e
+
+        return dict(frameDict["payload"]["frame"])
+
+    def stepOver(self):
+        responses = self.send("-exec-next")
+        frameDict = self.selectResponse(responses, ("message", "stopped"))
+
+        if (not frameDict or not frameDict.get("payload", None)):
+            try:
+                return self.currentFrame()
+            except Exception as e:
+                raise e
+
+        return dict(frameDict["payload"]["frame"])
+
+    def stepInto(self):
+        responses = self.send("-exec-step")
+        frameDict = self.selectResponse(responses, ("message", "stopped"))
+
+        if (not frameDict or not frameDict.get("payload", None)):
+            try:
+                return self.currentFrame()
+            except Exception as e:
+                raise e
+
+        return dict(frameDict["payload"]["frame"])
+
+    def stepOut(self):
+        responses = self.send("-exec-finish")
+        frameDict = self.selectResponse(responses, ("message", "stopped"))
+
+        if (not frameDict or not frameDict.get("payload", None)):
+            try:
+                return self.currentFrame()
+            except Exception as e:
+                raise e
+
+        return dict(frameDict["payload"]["frame"])
+
     def terminate(self):
         self.__gdbMI.exit()
 
-    def selectResponse(self, gdbMIResponse: dict | List[dict], *keys: tuple[str, Any]) -> dict:
+    def selectResponse(self, gdbMIResponse: dict | List[dict], *keys: tuple[str, Any]):
         keysCount = len(keys)
         finds = 0
 
         if (type(gdbMIResponse) is list):
             for r in gdbMIResponse:
                 selected = self.selectResponse(r, *keys)
-                if (selected != {}):
+                if (selected is not None):
                     return selected
         elif (type(gdbMIResponse) is dict):
             for key in keys:
@@ -126,4 +189,4 @@ class SideModel:
             if (finds == keysCount):
                 return gdbMIResponse
 
-        return {}
+        return None

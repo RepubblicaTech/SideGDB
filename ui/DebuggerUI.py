@@ -100,7 +100,12 @@ class DebuggerUI(QMainWindow):
         self.openSession.triggered.connect(self.openConfig)
         self.mainToolbar.saveAsConfig.triggered.connect(self.saveAs)
         self.mainToolbar.terminateDebug.triggered.connect(self.terminateSession)
+
         self.debugToolbar.breakpointsMan.triggered.connect(self.showBreakpointsManager)
+        self.debugToolbar.continueExec.triggered.connect(self.sendContinue)
+        self.debugToolbar.stepOver.triggered.connect(self.sendStepOver)
+        self.debugToolbar.stepInto.triggered.connect(self.sendStepInto)
+        self.debugToolbar.stepOut.triggered.connect(self.sendStepOut)
 
         self.aboutProgram.triggered.connect(self.showAboutBox)
 
@@ -216,6 +221,18 @@ class DebuggerUI(QMainWindow):
 
         self.running = True
         self.statusBar().showMessage("Debugger launched.")
+
+    def sendContinue(self):
+        self.model.continueExecution()
+
+    def sendStepOver(self):
+        self.model.stepOver()
+
+    def sendStepInto(self):
+        self.model.stepInto()
+
+    def sendStepOut(self):
+        self.model.stepOut()
 
     def setDebuggerUI(self, config: SGDBConfig):
         self.miPrompt = MIPrompt(self.model)
