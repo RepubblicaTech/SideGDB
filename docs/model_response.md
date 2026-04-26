@@ -15,7 +15,7 @@ Next up is a table of all GDBMI commands and their relative custom responses. Op
       "id": <thread id>,
       "state": <thread state according to GDB, running, stopped, ...>,
       "frame": {
-        // TODO
+        // the frame as-is from -thread-info
       },
     },
     ...
