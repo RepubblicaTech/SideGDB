@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from pprint import pformat
 import subprocess
 from typing import List, override
 from loguru import logger
@@ -8,7 +9,7 @@ from assets.QFugueAssets import FugueIconSize, QFugueManager
 from backend.SGDBConfig import SGDBConfig, SGDBConfigManager
 from backend.GDBMI import GdbMI
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QSize, Qt
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import QFileDialog, QMainWindow, QMessageBox, QToolBar
 
@@ -16,6 +17,7 @@ from backend.SideModel import SideModel
 from ui.helpers.QtHelpers import Resettable
 from ui.subwindows.AboutBox import AboutBox
 from ui.subwindows.BreakManager import BreakManager
+from ui.subwindows.CodeDock import CodeDock
 from ui.subwindows.MIPrompt import MIPrompt
 from ui.subwindows.SideConfigurator import SideConfigurator
 
@@ -89,8 +91,9 @@ class DebuggerUI(QMainWindow):
         self.mainToolbar = MainToolbar("Main toolbar")
         self.debugToolbar = DebugToolbar("Debugging toolbar")
         self.widgetsToolbar = ShowHideToolbar("Widgets toolbar")
-
         self.addToolBar(self.mainToolbar)
+
+        self.codeDock = CodeDock()
 
         self.__fileDialog = QFileDialog()
 
@@ -222,17 +225,40 @@ class DebuggerUI(QMainWindow):
         self.running = True
         self.statusBar().showMessage("Debugger launched.")
 
+    def updateDebugger(self, threadInfo):
+        logger.debug(pformat(threadInfo))
+
+        threadId = threadInfo.get("currentThread")
+        threads = threadInfo.get("threads")
+        if ((threadId == 0) or ((not threads) or (type(threads) is not list))):
+            return
+        try:
+            thread = threads[int(threadId) - 1]
+        except ValueError as v:
+            print(str(v))
+            return
+
+        frame = thread.get("frame", None)
+        if (not frame):
+            return
+
+        self.codeDock.sgUpdate(frame)
+
     def sendContinue(self):
-        self.model.continueExecution()
+        threadInfo = self.model.continueExecution()
+        self.updateDebugger(threadInfo)
 
     def sendStepOver(self):
-        self.model.stepOver()
+        frame = self.model.stepOver()
+        self.updateDebugger(frame)
 
     def sendStepInto(self):
-        self.model.stepInto()
+        frame = self.model.stepInto()
+        self.updateDebugger(frame)
 
     def sendStepOut(self):
-        self.model.stepOut()
+        frame = self.model.stepOut()
+        self.updateDebugger(frame)
 
     def setDebuggerUI(self, config: SGDBConfig):
         self.miPrompt = MIPrompt(self.model)
@@ -246,6 +272,9 @@ class DebuggerUI(QMainWindow):
         self.debugToolbar.show()
         self.widgetsToolbar.show()
 
+        self.addDockWidget(Qt.DockWidgetArea.TopDockWidgetArea, self.codeDock)
+        self.codeDock.setMinimumHeight(400)
+
         self.setWindowTitle(f"{config.sessionTitle} - {self.appTitle}")
 
     def resetDebuggerUI(self):
@@ -253,6 +282,7 @@ class DebuggerUI(QMainWindow):
         self.centralWidget().close()
         self.debugToolbar.close()
         self.widgetsToolbar.close()
+        self.codeDock.close()
 
         self.miPrompt.reset()
 
