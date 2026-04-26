@@ -1,4 +1,4 @@
-from turtle import resetscreen
+from pprint import pformat
 from typing import Any, List
 
 from PySide6.QtGui import QStandardItem, QStandardItemModel
@@ -138,49 +138,33 @@ class SideModel:
         frameDict = self.selectResponse(responses, ("message", "stopped"))
 
         if (not frameDict):
+            # wait until breakpoint
             self.read(-1)
-            try:
-                return self.currentFrame()
-            except Exception as e:
-                raise e
 
-        return dict(frameDict["payload"]["frame"])
+        return self.threadInfo()
 
     def stepOver(self):
         responses = self.send("-exec-next")
         frameDict = self.selectResponse(responses, ("message", "stopped"))
+        if (not frameDict):
+            # wait until finishing
+            self.read(-1)
 
-        if (not frameDict or not frameDict.get("payload", None)):
-            try:
-                return self.currentFrame()
-            except Exception as e:
-                raise e
-
-        return dict(frameDict["payload"]["frame"])
+        return self.threadInfo()
 
     def stepInto(self):
-        responses = self.send("-exec-step")
-        frameDict = self.selectResponse(responses, ("message", "stopped"))
+        self.send("-exec-step")
 
-        if (not frameDict or not frameDict.get("payload", None)):
-            try:
-                return self.currentFrame()
-            except Exception as e:
-                raise e
-
-        return dict(frameDict["payload"]["frame"])
+        return self.threadInfo()
 
     def stepOut(self):
         responses = self.send("-exec-finish")
         frameDict = self.selectResponse(responses, ("message", "stopped"))
+        if (not frameDict):
+            # wait until finishing
+            self.read(-1)
 
-        if (not frameDict or not frameDict.get("payload", None)):
-            try:
-                return self.currentFrame()
-            except Exception as e:
-                raise e
-
-        return dict(frameDict["payload"]["frame"])
+        return self.threadInfo()
 
     def terminate(self):
         self.__gdbMI.exit()
