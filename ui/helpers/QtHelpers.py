@@ -2,30 +2,35 @@
 Some useful macro-widgets for common components for SideGDB
 """
 
+from math import floor
 import os
+from pathlib import Path
+import traceback
+from PySide6 import QtCore
+from PySide6.QtCore import QEvent, QPoint, QRect, Qt
+from PySide6.QtGui import QHoverEvent, QPaintEvent, QPainter, QPalette, QResizeEvent
+from PySide6.QtWidgets import QFileDialog, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QScrollArea, QVBoxLayout, QWidget
 from loguru import logger
 from enum import Enum
-from PySide6 import QtCore, QtWidgets
 
 class QDirectionFlag(Enum):
     QHorizontal = 0
     QVertical = 1
 
-class QLabeledLineEdit(QtWidgets.QWidget):
-    def __init__(self, direction: QDirectionFlag, labelText: str, parent: QtWidgets.QWidget | None = None, placeholderText: str = ""):
+class QLabeledLineEdit(QWidget):
+    def __init__(self, direction: QDirectionFlag, labelText: str, parent: QWidget | None = None, placeholderText: str = ""):
         super().__init__(parent)
 
         match direction:
             case QDirectionFlag.QHorizontal:
-                layout = QtWidgets.QHBoxLayout(self)
+                layout = QHBoxLayout(self)
             case QDirectionFlag.QVertical:
-                layout = QtWidgets.QVBoxLayout(self)
+                layout = QVBoxLayout(self)
             case _:
                 raise ValueError("Invalid direction flag (there are only two directions how can you get this wrong lol, go read the manual), got " + direction)
 
-
-        self.__input = QtWidgets.QLineEdit(placeholderText=placeholderText)
-        layout.addWidget(QtWidgets.QLabel(labelText))
+        self.__input = QLineEdit(placeholderText=placeholderText)
+        layout.addWidget(QLabel(labelText))
         layout.addWidget(self.__input)
 
         self.setLayout(layout)
@@ -33,15 +38,15 @@ class QLabeledLineEdit(QtWidgets.QWidget):
     def inputText(self):
         return self.__input.text()
 
-class QPathChoose(QtWidgets.QWidget):
-    def __init__(self, fileMode: QtWidgets.QFileDialog.FileMode, filter: str = "", parent: QtWidgets.QWidget | None = None, sideText: str = "Path:", lineEditPlaceholder: str = ""):
+class QPathChoose(QWidget):
+    def __init__(self, fileMode: QFileDialog.FileMode, filter: str = "", parent: QWidget | None = None, sideText: str = "Path:", lineEditPlaceholder: str = ""):
         super().__init__(parent)
 
-        gridLayout = QtWidgets.QGridLayout()
+        gridLayout = QGridLayout()
 
-        self.sideLabel = QtWidgets.QLabel(sideText)
-        self.pathLine = QtWidgets.QLineEdit(placeholderText=lineEditPlaceholder)
-        self.choosePathButton = QtWidgets.QPushButton("...")
+        self.sideLabel = QLabel(sideText)
+        self.pathLine = QLineEdit(placeholderText=lineEditPlaceholder)
+        self.choosePathButton = QPushButton("...")
 
         gridLayout.addWidget(self.sideLabel, 0, 0)
         gridLayout.addWidget(self.pathLine, 0, 1)
@@ -49,7 +54,7 @@ class QPathChoose(QtWidgets.QWidget):
 
         self.setLayout(gridLayout)
 
-        self.__fileDialog = QtWidgets.QFileDialog(filter=filter)
+        self.__fileDialog = QFileDialog(filter=filter)
         self.__fileDialog.setFileMode(fileMode)
         self.pathLine.setReadOnly(True)
         self.choosePathButton.clicked.connect(self.__spawnOpenDialog)
@@ -58,11 +63,11 @@ class QPathChoose(QtWidgets.QWidget):
     def __spawnOpenDialog(self):
         logger.debug("huh?")
         match (self.__fileDialog.fileMode()):
-            case QtWidgets.QFileDialog.FileMode.ExistingFile | QtWidgets.QFileDialog.FileMode.ExistingFiles:
+            case QFileDialog.FileMode.ExistingFile | QFileDialog.FileMode.ExistingFiles:
                 chosenFile = self.__fileDialog.getOpenFileName(self, f"Open {self.sideLabel.text()}", dir=os.getcwd())
                 self.pathLine.setText(chosenFile[0])
-            case QtWidgets.QFileDialog.FileMode.Directory:
-                chosenDir = self.__fileDialog.getExistingDirectory(self, "Select", os.getcwd(), QtWidgets.QFileDialog.Option.ShowDirsOnly)
+            case QFileDialog.FileMode.Directory:
+                chosenDir = self.__fileDialog.getExistingDirectory(self, "Select", os.getcwd(), QFileDialog.Option.ShowDirsOnly)
                 self.pathLine.setText(chosenDir)
 
     def chosenPath(self):
