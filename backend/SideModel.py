@@ -111,14 +111,27 @@ class SideModel:
             where = QStandardItem(whereStr)
             self.breakpointsStandardModel.appendRow([bNo, where])
 
-    def currentFrame(self):
+    def threadInfo(self):
         responses = self.send("-thread-info")
-        frameMessage = self.selectResponse(responses, ("message", "stopped"))
+        response = self.selectResponse(responses, ("token", self.token()))
+        if (not response):
+            return {}
+        payload = response.get("payload", None)
+        if (not payload):
+            return {}
 
-        if (not frameMessage or not frameMessage.get("payload", None)):
-            raise TypeError("No frame!")
-
-        return dict(frameMessage["payload"]["frame"])
+        threads = list()
+        for thread in payload.get("threads", []):
+            threadDict = dict(thread)
+            threads.append({
+                "id": threadDict.get("id", None),
+                "state": threadDict.get("state", "unknown"),
+                "frame": threadDict.get("frame", None),
+            })
+        return {
+            "currentThread": payload.get("current-thread-id", None),
+            "threads": threads
+        }
 
     def continueExecution(self):
         responses = self.send("-exec-continue")
