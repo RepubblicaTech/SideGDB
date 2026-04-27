@@ -2,10 +2,10 @@
   "major": 0,
   "minor": 2,
   "patch": 0,
-  "codename": "Alpha",
+  "codename": "Essentials",
 
   "prerelease": {
-    "version": "alpha",
-    "id": 6
+    "version": "beta",
+    "id": 1
   }
 }

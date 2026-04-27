@@ -25,8 +25,8 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      inkscape:zoom="0.70011949"
-     inkscape:cx="1609.7252"
-     inkscape:cy="841.28496"
+     inkscape:cx="1539.023"
+     inkscape:cy="836.99998"
      inkscape:window-width="1920"
      inkscape:window-height="1014"
      inkscape:window-x="0"
@@ -77,6 +77,18 @@
   </sodipodi:namedview>
   <defs
      id="defs1">
+    <linearGradient
+       id="linearGradient5"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#87b7ff;stop-opacity:1;"
+         offset="0"
+         id="stop6" />
+      <stop
+         style="stop-color:#87b7ff;stop-opacity:0;"
+         offset="0.51935762"
+         id="stop7" />
+    </linearGradient>
     <pattern
        inkscape:collect="always"
        xlink:href="#pattern7"
@@ -204,44 +216,6 @@
     <filter
        style="color-interpolation-filters:sRGB"
        inkscape:label="Drop Shadow"
-       id="filter18-7"
-       x="-0.055454421"
-       y="-0.30367526"
-       width="1.1273284"
-       height="1.6944383">
-      <feFlood
-         result="flood"
-         in="SourceGraphic"
-         flood-opacity="1.000000"
-         flood-color="rgb(0,0,0)"
-         id="feFlood17-53" />
-      <feGaussianBlur
-         result="blur"
-         in="SourceGraphic"
-         stdDeviation="20.273315"
-         id="feGaussianBlur17-5" />
-      <feOffset
-         result="offset"
-         in="blur"
-         dx="14.406593"
-         dy="13.953517"
-         id="feOffset17-6" />
-      <feComposite
-         result="comp1"
-         operator="in"
-         in="flood"
-         in2="offset"
-         id="feComposite17-2" />
-      <feComposite
-         result="comp2"
-         operator="over"
-         in="SourceGraphic"
-         in2="comp1"
-         id="feComposite18-9" />
-    </filter>
-    <filter
-       style="color-interpolation-filters:sRGB"
-       inkscape:label="Drop Shadow"
        id="filter18-7-6"
        x="-0.18495875"
        y="-0.35561971"
@@ -297,44 +271,6 @@
        y1="1000"
        x2="1000"
        y2="0" />
-    <filter
-       style="color-interpolation-filters:sRGB"
-       inkscape:label="Drop Shadow"
-       id="filter18-3-0"
-       x="-0.055454421"
-       y="-0.30367526"
-       width="1.1273284"
-       height="1.6944383">
-      <feFlood
-         result="flood"
-         in="SourceGraphic"
-         flood-opacity="1.000000"
-         flood-color="rgb(0,0,0)"
-         id="feFlood17-5-6" />
-      <feGaussianBlur
-         result="blur"
-         in="SourceGraphic"
-         stdDeviation="20.273315"
-         id="feGaussianBlur17-6-1" />
-      <feOffset
-         result="offset"
-         in="blur"
-         dx="14.406593"
-         dy="13.953517"
-         id="feOffset17-2-5" />
-      <feComposite
-         result="comp1"
-         operator="in"
-         in="flood"
-         in2="offset"
-         id="feComposite17-9-5" />
-      <feComposite
-         result="comp2"
-         operator="over"
-         in="SourceGraphic"
-         in2="comp1"
-         id="feComposite18-1-4" />
-    </filter>
     <pattern
        patternUnits="userSpaceOnUse"
        width="418.68971"
@@ -376,8 +312,23 @@
          transform="matrix(0.96048884,0,0,0.96048884,-1089.8406,-721.0142)"><tspan
            x="1134.6729"
            y="826.07965"
-           id="tspan2">ALPHA</tspan></text>
+           id="tspan6">ALPHA</tspan></text>
     </pattern>
+    <rect
+       x="1049.436"
+       y="699.15393"
+       width="418.88474"
+       height="228.57747"
+       id="rect7-43" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5"
+       id="linearGradient7"
+       x1="1189.5453"
+       y1="925.00549"
+       x2="1189.5453"
+       y2="654.76697"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <g
      inkscape:label="P1"
@@ -431,27 +382,49 @@
      id="layer5"
      inkscape:label="P4">
     <rect
-       style="fill:url(#linearGradient6);fill-opacity:1;stroke-width:11.3386;stroke-linecap:square;paint-order:markers stroke fill"
+       style="display:inline;fill:url(#linearGradient6);fill-opacity:1;stroke-width:11.3386;stroke-linecap:square;paint-order:markers stroke fill"
        id="rect1-7-6"
        width="1200.0001"
        height="300"
        x="1049.4359"
        y="699.15393" />
     <rect
-       style="display:inline;opacity:0.5;fill:url(#pattern8);fill-opacity:1;stroke-width:11.3386;stroke-linecap:square;paint-order:markers stroke fill"
+       style="display:none;opacity:0.5;fill:url(#pattern8);fill-opacity:1;stroke-width:11.3386;stroke-linecap:square;paint-order:markers stroke fill"
        id="rect1-7-6-6"
        width="1200.0001"
        height="300"
        x="1049.436"
        y="699.15393" />
-    <text
-       xml:space="preserve"
-       id="text7"
-       style="font-weight:600;font-size:107.11px;line-height:1.9;font-family:'Butler FREE VERSION';-inkscape-font-specification:'Butler FREE VERSION, Semi-Bold';text-align:end;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect7);display:none;opacity:1;fill:#87b7ff;fill-opacity:1;stroke-width:18.8976;stroke-linecap:square;paint-order:markers stroke fill"
-       transform="matrix(0.96048884,0,0,0.96048884,785.62927,0.4179188)"><tspan
-         x="1134.6729"
-         y="826.07965"
-         id="tspan3">ALPHA</tspan></text>
+    <g
+       id="g7"
+       inkscape:label="Mirror"
+       transform="matrix(2.3422223,0,0,2.3422223,-2872.4702,-1322.9778)"
+       style="opacity:0.4">
+      <text
+         xml:space="preserve"
+         id="text7"
+         style="font-weight:600;font-size:107.11px;line-height:1.9;font-family:'Butler FREE VERSION';-inkscape-font-specification:'Butler FREE VERSION, Semi-Bold';text-align:end;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect7);shape-padding:1.02671;display:inline;opacity:1;fill:#87b7ff;fill-opacity:1;stroke-width:18.8976;stroke-linecap:square;paint-order:markers stroke fill"
+         transform="matrix(0.98370516,0,0,0.98370516,933.88814,129.11145)"
+         x="-270.23859"
+         y="0"><tspan
+           x="1050.4629"
+           y="827.10699"
+           id="tspan8"><tspan
+             style="text-align:start"
+             id="tspan7">Beta</tspan></tspan></text>
+      <text
+         xml:space="preserve"
+         id="text7-1"
+         style="font-weight:600;font-size:107.11px;line-height:1.9;font-family:'Butler FREE VERSION';-inkscape-font-specification:'Butler FREE VERSION, Semi-Bold';text-align:end;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect7-43);shape-padding:1.02671;display:inline;fill:url(#linearGradient7);fill-opacity:1;stroke-width:18.8976;stroke-linecap:square;paint-order:markers stroke fill"
+         transform="matrix(0.98370516,0,0,-0.98370516,937.78664,1757.3186)"
+         x="-270.23859"
+         y="0"><tspan
+           x="1050.4629"
+           y="827.10699"
+           id="tspan10"><tspan
+             style="text-align:start"
+             id="tspan9">Beta</tspan></tspan></text>
+    </g>
     <rect
        style="display:none;fill:url(#pattern7);stroke:none"
        width="320.46466"
@@ -461,19 +434,29 @@
        id="rect8" />
     <text
        xml:space="preserve"
-       style="font-style:italic;font-variant:normal;font-weight:900;font-stretch:normal;font-size:230.434px;line-height:1.9;font-family:'Crimson Pro';-inkscape-font-specification:'Crimson Pro, Heavy Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:45.3609;stroke-linecap:square;paint-order:markers stroke fill;filter:url(#filter18-3-0)"
-       x="1643.6969"
-       y="391.10977"
+       style="font-style:italic;font-variant:normal;font-weight:900;font-stretch:normal;font-size:208.677px;line-height:1.9;font-family:'Crimson Pro';-inkscape-font-specification:'Crimson Pro, Heavy Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:41.0777;stroke-linecap:square;paint-order:markers stroke fill"
+       x="1478.6172"
+       y="883.29675"
        id="text5-0-6"
-       transform="matrix(1.1050166,0,0,1.1050166,-173.84154,495.54861)"
        inkscape:export-filename="SGDB_TextOnly.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96"><tspan
          sodipodi:role="line"
          id="tspan5-9-5"
-         x="1643.6969"
-         y="391.10977"
-         style="stroke-width:45.3609">SideGDB</tspan></text>
+         x="1478.6172"
+         y="883.29675"
+         style="stroke-width:41.0777">SideGDB</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:84.7594px;line-height:1.9;font-family:'Crimson Pro';-inkscape-font-specification:'Crimson Pro, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0.435259px;word-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.512069;stroke-opacity:1;paint-order:stroke fill markers"
+       x="1528.0709"
+       y="942.65796"
+       id="text4"><tspan
+         sodipodi:role="line"
+         id="tspan4"
+         x="1528.0709"
+         y="942.65796"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:84.7594px;font-family:'Crimson Pro';-inkscape-font-specification:'Crimson Pro, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.512069;stroke-opacity:1">Essentials</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
