@@ -100,6 +100,9 @@ class QCodeBrowser(QWidget):
     def loc(self):
         return self.__loc
 
+    def fontHeight(self):
+        return self.fontMetrics().height()
+
     # the height of ONLY the lines, excluding the bottom margin
     def locBarHeight(self):
         return self.__loc * self.fontMetrics().height()
@@ -175,7 +178,7 @@ class QCodeView(QScrollArea):
         self.setWidget(self.__codeBrowser)
 
         self.firstLineOnScreen = 1
-        self.linesOnScreen = floor(self.height() / self.__codeBrowser.fontMetrics().height())
+        self.linesOnScreen = floor(self.height() / self.__codeBrowser.fontHeight())
 
     def codeBrowser(self):
         return self.__codeBrowser
@@ -186,7 +189,7 @@ class QCodeView(QScrollArea):
         if (line > self.firstLineOnScreen and line < self.firstLineOnScreen + self.linesOnScreen):
             return
 
-        fontHeight = self.__codeBrowser.fontMetrics().height()
+        fontHeight = self.__codeBrowser.fontHeight()
         self.firstLineOnScreen = floor(line - (self.linesOnScreen / 2))
         logger.debug(f"First line to show: {self.firstLineOnScreen}")
         if (self.firstLineOnScreen < 1):
@@ -197,6 +200,11 @@ class QCodeView(QScrollArea):
     def loadFile(self, absPath: str):
         self.__codeBrowser.loadFile(absPath)
         self.firstLineOnScreen = 1
+
+    def scrollContentsBy(self, dx: int, dy: int, /) -> None:
+        self.firstLineOnScreen = self.firstLineOnScreen - floor(dy / self.__codeBrowser.fontHeight())
+        logger.debug(f"Scrolled {floor(dy / self.__codeBrowser.fontHeight())} lines {"up" if dx > 0 else "down"}")
+        super().scrollContentsBy(dx, dy)
 
     def resizeEvent(self, event: QResizeEvent):
         vsb = self.verticalScrollBar()
@@ -210,6 +218,6 @@ class QCodeView(QScrollArea):
         vsb.setRange(0, max(0, content_height - viewport_h))
         hsb.setRange(0, 0)
 
-        self.linesOnScreen = floor(self.height() / self.__codeBrowser.fontMetrics().height())
+        self.linesOnScreen = floor(self.height() / self.__codeBrowser.fontHeight())
 
         super().resizeEvent(event)
