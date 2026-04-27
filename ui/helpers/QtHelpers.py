@@ -166,7 +166,7 @@ class QCodeBrowser(QWidget):
 
         painter.end()
 
-class QCodeArea(QScrollArea):
+class QCodeView(QScrollArea):
     def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
         self.setAttribute(Qt.WidgetAttribute.WA_Hover)
