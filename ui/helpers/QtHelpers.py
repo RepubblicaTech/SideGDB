@@ -5,10 +5,9 @@ Some useful macro-widgets for common components for SideGDB
 from math import floor
 import os
 from pathlib import Path
-import traceback
 from PySide6 import QtCore
-from PySide6.QtCore import QEvent, QPoint, QRect, Qt
-from PySide6.QtGui import QHoverEvent, QPaintEvent, QPainter, QPalette, QResizeEvent
+from PySide6.QtCore import QRect, Qt
+from PySide6.QtGui import QPaintEvent, QPainter, QPalette, QResizeEvent
 from PySide6.QtWidgets import QFileDialog, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QScrollArea, QVBoxLayout, QWidget
 from loguru import logger
 from enum import Enum
