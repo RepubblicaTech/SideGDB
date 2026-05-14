@@ -148,22 +148,21 @@ class QCodeBrowser(QWidget):
         self.__highlightedLine = line
 
     def paintEvent(self, event: QPaintEvent):
+        print(f"QCodeBrowser width: {self.width()}")
         painter = QPainter(self)
 
         locBar = QRect(0, 0, self.locBarWidth(), self.locBarHeight() + QCodeBrowser.LOCBAR_BMARGIN)
-        painter.fillRect(self.locBarWidth(), 0, self.width(), self.locBarHeight() + QCodeBrowser.LOCBAR_BMARGIN, self.palette().color(QPalette.ColorRole.Base))
+        codeRect = QRect(self.locBarWidth(), 0, self.width(), self.locBarHeight() + QCodeBrowser.LOCBAR_BMARGIN)
         painter.fillRect(locBar, self.palette().color(QPalette.ColorRole.Mid))
+        painter.fillRect(codeRect, self.palette().color(QPalette.ColorRole.Base))
 
         file = open(self.__currentSource)
         for i in range(self.__loc):
             painter.drawText(QCodeBrowser.LOCBAR_RMARGIN, self.fontMetrics().height() * (i + 1), f"{i + 1}")
             textfromLine = file.readline()
             if (i + 1 == self.__highlightedLine):
-                painter.fillRect(self.locBarWidth(),
-                                 (self.fontMetrics().height() * i),
-                                 self.width(),
-                                 self.fontMetrics().lineSpacing(),
-                                 self.palette().color(QPalette.ColorRole.Accent))
+                highlighterRect = QRect(self.locBarWidth(), self.fontMetrics().height() * i, self.width(), self.fontMetrics().lineSpacing())
+                painter.fillRect(highlighterRect, self.palette().color(QPalette.ColorRole.Accent))
             painter.drawText(self.locBarWidth(), self.fontMetrics().height() * (i + 1), textfromLine)
 
         painter.end()
@@ -176,6 +175,8 @@ class QCodeView(QScrollArea):
 
         self.__codeBrowser = QCodeBrowser()
         self.setWidget(self.__codeBrowser)
+
+        print(f"QCodeView width: {self.width()}")
 
         self.firstLineOnScreen = 1
         self.linesOnScreen = floor(self.height() / self.__codeBrowser.fontHeight())
@@ -203,7 +204,7 @@ class QCodeView(QScrollArea):
 
     def scrollContentsBy(self, dx: int, dy: int, /) -> None:
         self.firstLineOnScreen = self.firstLineOnScreen - floor(dy / self.__codeBrowser.fontHeight())
-        logger.debug(f"Scrolled {floor(dy / self.__codeBrowser.fontHeight())} lines {"up" if dx > 0 else "down"}")
+        logger.debug(f"Scrolled {abs(floor(dy / self.__codeBrowser.fontHeight()))} lines {"up" if dy > 0 else "down"}")
         super().scrollContentsBy(dx, dy)
 
     def resizeEvent(self, event: QResizeEvent):

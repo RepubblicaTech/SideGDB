@@ -3,6 +3,7 @@ from pathlib import Path
 from pprint import pformat
 import subprocess
 from typing import List, override
+from PySide6 import QtCore
 from loguru import logger
 
 from assets.QFugueAssets import FugueIconSize, QFugueManager
@@ -92,8 +93,6 @@ class DebuggerUI(QMainWindow):
         self.debugToolbar = DebugToolbar("Debugging toolbar")
         self.widgetsToolbar = ShowHideToolbar("Widgets toolbar")
         self.addToolBar(self.mainToolbar)
-
-        self.codeDock = CodeDock()
 
         self.__fileDialog = QFileDialog()
 
@@ -271,7 +270,7 @@ class DebuggerUI(QMainWindow):
         # they may have been hidden
         self.debugToolbar.show()
         self.widgetsToolbar.show()
-
+        self.codeDock = CodeDock()
         self.addDockWidget(Qt.DockWidgetArea.TopDockWidgetArea, self.codeDock)
         self.codeDock.setMinimumHeight(400)
 
@@ -282,7 +281,8 @@ class DebuggerUI(QMainWindow):
         self.centralWidget().close()
         self.debugToolbar.close()
         self.widgetsToolbar.close()
-        self.codeDock.close()
+
+        self.removeDockWidget(self.codeDock)
 
         self.miPrompt.reset()
 
@@ -312,3 +312,5 @@ class DebuggerUI(QMainWindow):
             self.statusBar().showMessage("Debugger terminated.")
         except AttributeError:
             logger.debug("No GDBMI instance...")
+
+        logger.success("Bye!")
