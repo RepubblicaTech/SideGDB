@@ -288,7 +288,7 @@ class DebuggerUI(QMainWindow):
 
         # reset toolbars
         for resettable in self.resettables:
-            resettable.reset()
+            resettable.sgReset()
 
         self.setWindowTitle(self.appTitle)
 

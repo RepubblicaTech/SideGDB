@@ -73,7 +73,7 @@ class QPathChoose(QWidget):
         return self.pathLine.text()
 
 class Resettable:
-    def reset(self):
+    def sgReset(self):
         raise NotImplementedError("This function should be overridden!")
 
 class Updateable:
