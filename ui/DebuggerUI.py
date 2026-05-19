@@ -65,7 +65,7 @@ class ShowHideToolbar(QToolBar, Resettable):
         self.showRegs.setToolTip("Show registers")
 
     @override
-    def reset(self):
+    def sgReset(self):
         self.showCode.setChecked(False)
         self.showDisasm.setChecked(False)
         self.showVars.setChecked(False)

@@ -29,7 +29,7 @@ class MIPrompt(QWidget):
         self.model = model
         self.model.read(-1)
 
-    def sgReset(self):
+    def reset(self):
         self.miPrompt.setText("")
         self.miOutput.setPlainText("")
 
