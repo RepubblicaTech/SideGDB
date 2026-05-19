@@ -3,7 +3,6 @@ from pathlib import Path
 from pprint import pformat
 import subprocess
 from typing import List, override
-from PySide6 import QtCore
 from loguru import logger
 
 from assets.QFugueAssets import FugueIconSize, QFugueManager

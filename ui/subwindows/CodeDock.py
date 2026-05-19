@@ -1,24 +1,28 @@
 from PySide6.QtWidgets import QDockWidget
-from ui.helpers.QtHelpers import QCodeView, Updateable
+from ui.helpers.QtHelpers import QCodeArea, Updateable
 
 class CodeDock(QDockWidget, Updateable):
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle("Code")
+        self.codeView = QCodeArea()
+        self.setWidget(self.codeView)
 
-        self.codeArea = QCodeView()
-        self.setWidget(self.codeArea)
+    def loadSource(self, path: str):
+        self.codeView.loadSource(path)
+
+    def highlightLine(self, line: int):
+        self.codeView.highlightLine(line)
+        self.codeView.scrollTo(line)
 
     def sgUpdate(self, frame: dict):
         file = frame.get("fullname", None)
         if (file):
-            self.codeArea.codeBrowser().loadFile(file)
+            self.loadSource(file)
         try:
             line = int(frame["line"])
             if (line):
-                self.codeArea.codeBrowser().highlightLine(line)
-                self.codeArea.scrollTo(line)
-                self.codeArea.update()
+                self.highlightLine(line)
         except Exception as e:
             print(str(e))

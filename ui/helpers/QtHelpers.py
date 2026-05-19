@@ -2,13 +2,14 @@
 Some useful macro-widgets for common components for SideGDB
 """
 
+from io import SEEK_SET
 from math import floor
 import os
 from pathlib import Path
 from PySide6 import QtCore
 from PySide6.QtCore import QRect, Qt
 from PySide6.QtGui import QPaintEvent, QPainter, QPalette, QResizeEvent
-from PySide6.QtWidgets import QFileDialog, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QScrollArea, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFileDialog, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QScrollArea, QSizePolicy, QTextBrowser, QVBoxLayout, QWidget
 from loguru import logger
 from enum import Enum
 
@@ -80,145 +81,117 @@ class Updateable:
     def sgUpdate(self, frame: dict):
         raise NotImplementedError("This function should be overridden!")
 
-class QCodeBrowser(QWidget):
-    LOCBAR_W_BASE = 40
-    LOCBAR_RMARGIN = 8
-    LOCBAR_BMARGIN = 50
-    LOCBAR_MINMARGIN = 4
-    BCIRCLE_RAD = 4
+class QSourceWidget(QWidget):
+    BAR_BASEW = 40
+    BAR_RPADD = 10
+    BAR_BPADD = 50
 
-    def __init__(self, parent: QWidget | None = None):
-        self.__loc = 0
-        self.__currentSource = ""     # File we are showing on screen
-        self.__currentLine = 0
-        self.__highlightedLine = 0
+    def __init__(self):
+        self.currentFile = ""
+        self.lines = 0
+        self.lineToHighlight = 0
 
-        self.OverLOCBar = False
+        super().__init__()
 
-        super().__init__(parent)
+    @staticmethod
+    def digits(n):
+        d = 1
+        while (n >= 10):
+            n /= 10
+            d += 1
+        return d
 
-    def loc(self):
-        return self.__loc
+    def barWidth(self):
+        return self.BAR_BASEW + (self.fontMetrics().horizontalAdvance("9") * self.digits(self.lines)) + self.BAR_RPADD
 
-    def fontHeight(self):
-        return self.fontMetrics().height()
+    def barHeight(self):
+        return self.BAR_BPADD + (self.fontMetrics().height() * self.lines)
 
-    # the height of ONLY the lines, excluding the bottom margin
-    def locBarHeight(self):
-        return self.__loc * self.fontMetrics().height()
-
-    def locBarWidth(self):
-        loc = self.__loc
-        digits = 1
-        while (loc >= 10):
-            digits += 1
-            loc /= 10
-
-        return QCodeBrowser.LOCBAR_W_BASE + (self.fontMetrics().horizontalAdvance("9") * digits)
-
-    def maxLineLength(self, path: str):
-        file = open(path, "r")
-
-        maxLength = 0
-        for line in file.readlines():
-            if (len(line) > maxLength):
-                maxLength = len(line)
-
-        return self.fontMetrics().horizontalAdvance("W") * maxLength
-
-    def loadFile(self, absPath: str):
-        if (self.__currentSource == absPath or not(Path(absPath).exists)):
+    def loadSource(self, path: str):
+        if (path == self.currentFile or not path or not Path(path).exists()):
             return
 
-        self.__currentSource = absPath
-        file = open(self.__currentSource, "r")
-        self.__loc = len(file.readlines())
-        logger.debug(f"LOC: {self.__loc}")
-        self.setMinimumWidth(self.locBarWidth() + self.maxLineLength(self.__currentSource))
-        self.setMinimumHeight(self.locBarHeight() + QCodeBrowser.LOCBAR_BMARGIN)
-        file.close()
+        self.currentFile = path
+        f = open(path)
+        self.lines = len(f.readlines())
+
+        f.seek(0, SEEK_SET)
+        maxLineLength = 0
+        for line in f.readlines():
+            if (len(line) > maxLineLength):
+                maxLineLength = len(line)
+        f.close()
+
+        self.setMinimumHeight(self.barHeight())
+        self.setMinimumWidth(self.barWidth() + (self.fontMetrics().horizontalAdvance("9") * maxLineLength))
 
         self.update()
 
     def highlightLine(self, line: int):
-        logger.debug(f"Highlight {line}")
-        if (line > self.__loc):
+        if (line < 0 or line > self.lines):
             return
 
-        self.__highlightedLine = line
+        self.lineToHighlight = line
+        self.update()
 
-    def paintEvent(self, event: QPaintEvent):
-        print(f"QCodeBrowser width: {self.width()}")
+    def paintEvent(self, e: QPaintEvent, /) -> None:
+        if (not self.currentFile):
+            return
+
         painter = QPainter(self)
 
-        locBar = QRect(0, 0, self.locBarWidth(), self.locBarHeight() + QCodeBrowser.LOCBAR_BMARGIN)
-        codeRect = QRect(self.locBarWidth(), 0, self.width(), self.locBarHeight() + QCodeBrowser.LOCBAR_BMARGIN)
-        painter.fillRect(locBar, self.palette().color(QPalette.ColorRole.Mid))
-        painter.fillRect(codeRect, self.palette().color(QPalette.ColorRole.Base))
+        painter.fillRect(0, 0, self.width(), self.height(), self.palette().color(QPalette.ColorRole.Base))
+        barRect = QRect(0, 0, self.barWidth(), self.barHeight())
+        painter.fillRect(barRect, self.palette().color(QPalette.ColorRole.AlternateBase))
 
-        file = open(self.__currentSource)
-        for i in range(self.__loc):
-            painter.drawText(QCodeBrowser.LOCBAR_RMARGIN, self.fontMetrics().height() * (i + 1), f"{i + 1}")
-            textfromLine = file.readline()
-            if (i + 1 == self.__highlightedLine):
-                highlighterRect = QRect(self.locBarWidth(), self.fontMetrics().height() * i, self.width(), self.fontMetrics().lineSpacing())
-                painter.fillRect(highlighterRect, self.palette().color(QPalette.ColorRole.Accent))
-            painter.drawText(self.locBarWidth(), self.fontMetrics().height() * (i + 1), textfromLine)
+        f = open(self.currentFile)
+        for i in range(self.lines):
+            painter.drawText(self.barWidth() - (self.fontMetrics().horizontalAdvance("9") * self.digits(i + 1)) - self.BAR_RPADD,
+                             self.fontMetrics().height() * (i + 1),
+                             str(i + 1))
+            if (i + 1 == self.lineToHighlight):
+                painter.fillRect(self.barWidth(),
+                                 self.fontMetrics().height() * i,
+                                 self.width(),
+                                 self.fontMetrics().lineSpacing(),
+                                 self.palette().color(QPalette.ColorRole.Accent))
+            painter.drawText(self.barWidth(), self.fontMetrics().height() * (i + 1), f.readline())
+        f.close()
 
         painter.end()
+        return super().paintEvent(e)
 
-class QCodeView(QScrollArea):
-    def __init__(self, parent: QWidget | None = None):
-        super().__init__(parent)
-        self.setAttribute(Qt.WidgetAttribute.WA_Hover)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+class QCodeArea(QScrollArea):
+    def __init__(self):
+        self.firstLine = 0  # first line on screen
+        self.linesOnScreen = 0
 
-        self.__codeBrowser = QCodeBrowser()
-        self.setWidget(self.__codeBrowser)
+        super().__init__()
 
-        print(f"QCodeView width: {self.width()}")
+        self.sourceWidget = QSourceWidget()
+        self.setWidget(self.sourceWidget)
+        self.setWidgetResizable(True)
 
-        self.firstLineOnScreen = 1
-        self.linesOnScreen = floor(self.height() / self.__codeBrowser.fontHeight())
+    def loadSource(self, path: str):
+        self.sourceWidget.loadSource(path)
 
-    def codeBrowser(self):
-        return self.__codeBrowser
+    def highlightLine(self, line: int):
+        self.sourceWidget.highlightLine(line)
 
-    def scrollTo(self, line):
-        logger.debug(f"Line to display: {line}")
-        logger.debug(f"Lines on screen: {self.firstLineOnScreen}-{self.firstLineOnScreen + self.linesOnScreen}")
-        if (line > self.firstLineOnScreen and line < self.firstLineOnScreen + self.linesOnScreen):
+    def scrollTo(self, line: int):
+        if (line >= self.firstLine and line <= self.firstLine + self.linesOnScreen):
             return
 
-        fontHeight = self.__codeBrowser.fontHeight()
-        self.firstLineOnScreen = floor(line - (self.linesOnScreen / 2))
-        logger.debug(f"First line to show: {self.firstLineOnScreen}")
-        if (self.firstLineOnScreen < 1):
-            self.firstLineOnScreen = 1
+        firstLine = floor(line - (self.linesOnScreen / 2))
+        if (firstLine < 1):
+            firstLine = 1
 
-        self.verticalScrollBar().setValue(self.firstLineOnScreen * fontHeight)
-
-    def loadFile(self, absPath: str):
-        self.__codeBrowser.loadFile(absPath)
-        self.firstLineOnScreen = 1
+        self.verticalScrollBar().setValue(firstLine * self.viewport().fontMetrics().height())
 
     def scrollContentsBy(self, dx: int, dy: int, /) -> None:
-        self.firstLineOnScreen = self.firstLineOnScreen - floor(dy / self.__codeBrowser.fontHeight())
-        logger.debug(f"Scrolled {abs(floor(dy / self.__codeBrowser.fontHeight()))} lines {"up" if dy > 0 else "down"}")
-        super().scrollContentsBy(dx, dy)
+        self.firstLine = self.firstLine - floor(dy / self.viewport().fontMetrics().height())
+        return super().scrollContentsBy(dx, dy)
 
-    def resizeEvent(self, event: QResizeEvent):
-        vsb = self.verticalScrollBar()
-        hsb = self.horizontalScrollBar()
-
-        content_height = self.__codeBrowser.height()
-        viewport_h = self.viewport().height()
-
-        # Range: [0, contentHeight - viewportHeight]
-        vsb.setPageStep(viewport_h)
-        vsb.setRange(0, max(0, content_height - viewport_h))
-        hsb.setRange(0, 0)
-
-        self.linesOnScreen = floor(self.height() / self.__codeBrowser.fontHeight())
-
-        super().resizeEvent(event)
+    def resizeEvent(self, arg__1: QResizeEvent, /) -> None:
+        self.linesOnScreen = floor(self.viewport().height() / self.viewport().fontMetrics().height())
+        return super().resizeEvent(arg__1)
