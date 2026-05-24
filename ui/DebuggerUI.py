@@ -58,7 +58,7 @@ class ShowHideToolbar(QToolBar, Resettable):
         self.showDisasm.setCheckable(True)
         self.showVars.setCheckable(True)
         self.showRegs.setCheckable(True)
-        self.showCode.setToolTip("Show code")
+        self.showCode.setToolTip("Show source code")
         self.showDisasm.setToolTip("Show disassembly")
         self.showVars.setToolTip("Show variables")
         self.showRegs.setToolTip("Show registers")
@@ -70,7 +70,7 @@ class ShowHideToolbar(QToolBar, Resettable):
         self.showVars.setChecked(False)
         self.showRegs.setChecked(False)
 
-class DebuggerUI(QMainWindow):
+class DebuggerUI(QMainWindow, Resettable):
     def __init__(self, appTitle: str):
         super().__init__()
         self.appTitle = appTitle or "pyDearGDB"     # easter egg
@@ -111,9 +111,28 @@ class DebuggerUI(QMainWindow):
         self.aboutProgram.triggered.connect(self.showAboutBox)
 
         self.resettables.append(self.widgetsToolbar)
+        self.resettables.append(self)
 
         # to check if a program is being debugged.
         self.running = False
+
+    @override
+    def sgReset(self):
+        # reset the widgets toolbar buttons to OFF
+        self.centralWidget().close()
+        self.debugToolbar.close()
+        self.widgetsToolbar.close()
+
+        self.removeDockWidget(self.codeDock)
+
+        self.miPrompt.reset()
+
+        self.setWindowTitle(self.appTitle)
+
+    def reset(self):
+        # reset toolbars
+        for resettable in self.resettables:
+            resettable.sgReset()
 
     def saveAs(self):
         try:
@@ -271,25 +290,14 @@ class DebuggerUI(QMainWindow):
         self.widgetsToolbar.show()
         self.codeDock = CodeDock()
         self.addDockWidget(Qt.DockWidgetArea.TopDockWidgetArea, self.codeDock)
+        self.widgetsToolbar.showCode.setChecked(True)
+        self.widgetsToolbar.showCode.triggered.connect(self.showHideSourceView)
         self.codeDock.setMinimumHeight(400)
 
         self.setWindowTitle(f"{config.sessionTitle} - {self.appTitle}")
 
-    def resetDebuggerUI(self):
-        # reset the widgets toolbar buttons to OFF
-        self.centralWidget().close()
-        self.debugToolbar.close()
-        self.widgetsToolbar.close()
-
-        self.removeDockWidget(self.codeDock)
-
-        self.miPrompt.reset()
-
-        # reset toolbars
-        for resettable in self.resettables:
-            resettable.sgReset()
-
-        self.setWindowTitle(self.appTitle)
+    def showHideSourceView(self):
+        self.codeDock.setVisible(self.widgetsToolbar.showCode.isChecked())
 
     def closeEvent(self, event: QCloseEvent):
             logger.debug("Wooo i'm overriding the close event!!!")
@@ -305,7 +313,7 @@ class DebuggerUI(QMainWindow):
             self.gdbMi = None
             logger.success("GDBMI terminated.")
 
-            self.resetDebuggerUI()
+            self.reset()
 
             self.running = False
             self.statusBar().showMessage("Debugger terminated.")
