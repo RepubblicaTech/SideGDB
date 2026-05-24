@@ -21,19 +21,13 @@ class GdbMI(GdbController):
             gdbCommand.extend(gdbArgs)
 
         super().__init__(gdbCommand)
-        self.lock = Lock()
 
     def sendCmd(self, command: str):
-        self.lock.acquire()
-        resp = self.write(f"{command}")
-        self.lock.release()
-
-        return resp
+        return self.write(f"{command}")
 
     def readResponse(self, attempts: int = -1):
         att = attempts
         responses = {}
-        self.lock.acquire()
         while True:
             try:
                 responses = self.get_gdb_response(timeout_sec=1)
@@ -50,7 +44,6 @@ class GdbMI(GdbController):
                 logger.warning("No more attempts.")
                 break
 
-        self.lock.release()
         return responses
 
     def terminate(self):
