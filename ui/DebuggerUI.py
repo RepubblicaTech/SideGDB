@@ -302,6 +302,7 @@ class DebuggerUI(QMainWindow, Resettable):
     def closeEvent(self, event: QCloseEvent):
             logger.debug("Wooo i'm overriding the close event!!!")
             self.terminateSession()
+            logger.success("Bye!")
 
             event.accept()
 
@@ -319,5 +320,3 @@ class DebuggerUI(QMainWindow, Resettable):
             self.statusBar().showMessage("Debugger terminated.")
         except AttributeError:
             logger.debug("No GDBMI instance...")
-
-        logger.success("Bye!")
