@@ -5,7 +5,9 @@ from backend.MIResponseManager import MIPromptManager
 from backend.SideModel import SideModel
 from PySide6.QtWidgets import QLineEdit, QTextBrowser, QVBoxLayout, QWidget
 
-class MIPrompt(QWidget):
+from ui.helpers.QtHelpers import Resettable
+
+class MIPrompt(QWidget, Resettable):
     def __init__(self, model: SideModel):
         self.canAutoscroll = True
         super().__init__()
@@ -29,7 +31,7 @@ class MIPrompt(QWidget):
         self.model = model
         self.model.read(-1)
 
-    def reset(self):
+    def sgReset(self):
         self.miPrompt.setText("")
         self.miOutput.setPlainText("")
 

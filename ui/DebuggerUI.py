@@ -124,9 +124,6 @@ class DebuggerUI(QMainWindow, Resettable):
         self.widgetsToolbar.close()
 
         self.removeDockWidget(self.codeDock)
-
-        self.miPrompt.reset()
-
         self.setWindowTitle(self.appTitle)
 
     def reset(self):
@@ -281,6 +278,8 @@ class DebuggerUI(QMainWindow, Resettable):
         self.miPrompt = MIPrompt(self.model)
         self.setCentralWidget(self.miPrompt)
         self.mainToolbar.terminateDebug.toggled.connect(self.terminateSession)
+
+        self.resettables.append(self.miPrompt)
 
         self.addToolBar(self.debugToolbar)
         self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.widgetsToolbar)
