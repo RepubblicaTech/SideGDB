@@ -86,7 +86,7 @@ class DebuggerUI(QMainWindow, Resettable):
         helpQMenu = menuBar.addMenu("Help")
         self.newSession = fileQMenu.addAction("New Session...")
         self.openSession = fileQMenu.addAction("Open configuration...")
-        self.aboutProgram = helpQMenu.addAction(f"About{f" {appTitle}" if appTitle else ""}")
+        self.aboutProgram = helpQMenu.addAction(f"About {f"{appTitle}" or "[WHERE_APP_NAME]"}")
 
         self.mainToolbar = MainToolbar("Main toolbar")
         self.debugToolbar = DebugToolbar("Debugging toolbar")
