@@ -81,13 +81,13 @@ class Updateable:
     def sgUpdate(self, frame: dict):
         raise NotImplementedError("This function should be overridden!")
 
-class QSourceWidget(QWidget):
+class QSourceWidget(QWidget, Resettable):
     BAR_BASEW = 40
     BAR_RPADD = 10
     BAR_BPADD = 50
 
     def __init__(self):
-        self.currentFile = ""
+        self.currentSource = ""
         self.lines = 0
         self.lineToHighlight = 0
 
@@ -108,10 +108,10 @@ class QSourceWidget(QWidget):
         return self.BAR_BPADD + (self.fontMetrics().height() * self.lines)
 
     def loadSource(self, path: str):
-        if (path == self.currentFile or not path or not Path(path).exists()):
+        if (path == self.currentSource or not path or not Path(path).exists()):
             return
 
-        self.currentFile = path
+        self.currentSource = path
         f = open(path)
         self.lines = len(f.readlines())
 
@@ -135,7 +135,7 @@ class QSourceWidget(QWidget):
         self.update()
 
     def paintEvent(self, e: QPaintEvent, /) -> None:
-        if (not self.currentFile):
+        if (not self.currentSource):
             return
 
         painter = QPainter(self)
@@ -144,7 +144,7 @@ class QSourceWidget(QWidget):
         barRect = QRect(0, 0, self.barWidth(), self.barHeight())
         painter.fillRect(barRect, self.palette().color(QPalette.ColorRole.AlternateBase))
 
-        f = open(self.currentFile)
+        f = open(self.currentSource)
         for i in range(self.lines):
             painter.drawText(self.barWidth() - (self.fontMetrics().horizontalAdvance("9") * self.digits(i + 1)) - self.BAR_RPADD,
                              self.fontMetrics().height() * (i + 1),
@@ -161,7 +161,14 @@ class QSourceWidget(QWidget):
         painter.end()
         return super().paintEvent(e)
 
-class QCodeArea(QScrollArea):
+    def sgReset(self):
+        self.currentSource = ""
+        self.lines = 0
+        self.lineToHighlight = 0
+
+        self.update()
+
+class QCodeArea(QScrollArea, Resettable):
     def __init__(self):
         self.firstLine = 0  # first line on screen
         self.linesOnScreen = 0
@@ -195,3 +202,10 @@ class QCodeArea(QScrollArea):
     def resizeEvent(self, arg__1: QResizeEvent, /) -> None:
         self.linesOnScreen = floor(self.viewport().height() / self.viewport().fontMetrics().height())
         return super().resizeEvent(arg__1)
+
+    def sgReset(self):
+        self.firstLine = 0
+        self.linesOnScreen = 0
+
+        self.sourceWidget.sgReset()
+        self.update()

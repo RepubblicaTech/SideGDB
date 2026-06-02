@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QDockWidget
-from ui.helpers.QtHelpers import QCodeArea, Updateable
+from ui.helpers.QtHelpers import QCodeArea, Resettable, Updateable
 
-class CodeDock(QDockWidget, Updateable):
+class CodeDock(QDockWidget, Updateable, Resettable):
     def __init__(self):
         super().__init__()
 
@@ -18,11 +18,11 @@ class CodeDock(QDockWidget, Updateable):
 
     def sgUpdate(self, frame: dict):
         file = frame.get("fullname", None)
+        line = int(frame["line"])
         if (file):
             self.loadSource(file)
-        try:
-            line = int(frame["line"])
-            if (line):
-                self.highlightLine(line)
-        except Exception as e:
-            print(str(e))
+        if (line):
+            self.highlightLine(line)
+
+    def sgReset(self):
+        self.codeView.sgReset()

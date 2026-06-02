@@ -21,7 +21,7 @@ from ui.subwindows.CodeDock import CodeDock
 from ui.subwindows.MIPrompt import MIPrompt
 from ui.subwindows.SideConfigurator import SideConfigurator
 
-class MainToolbar(QToolBar, Resettable):
+class MainToolbar(QToolBar):
     def __init__(self, title: str):
         super().__init__(title)
 
@@ -34,7 +34,7 @@ class MainToolbar(QToolBar, Resettable):
         self.saveAsConfig.setToolTip("Save As...")
         # self.saveQAction.setToolTip("Save")
 
-class DebugToolbar(QToolBar, Resettable):
+class DebugToolbar(QToolBar):
     def __init__(self, title: str):
         super().__init__(title)
 
@@ -110,8 +110,7 @@ class DebuggerUI(QMainWindow, Resettable):
 
         self.aboutProgram.triggered.connect(self.showAboutBox)
 
-        self.resettables.append(self.widgetsToolbar)
-        self.resettables.append(self)
+        self.resettables.extend([self.widgetsToolbar, self])
 
         # to check if a program is being debugged.
         self.running = False
@@ -279,7 +278,6 @@ class DebuggerUI(QMainWindow, Resettable):
         self.setCentralWidget(self.miPrompt)
         self.mainToolbar.terminateDebug.toggled.connect(self.terminateSession)
 
-        self.resettables.append(self.miPrompt)
 
         self.addToolBar(self.debugToolbar)
         self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.widgetsToolbar)
@@ -294,6 +292,8 @@ class DebuggerUI(QMainWindow, Resettable):
         self.codeDock.setMinimumHeight(400)
 
         self.setWindowTitle(f"{config.sessionTitle} - {self.appTitle}")
+
+        self.resettables.extend([self.miPrompt, self.codeDock])
 
     def showHideSourceView(self):
         self.codeDock.setVisible(self.widgetsToolbar.showCode.isChecked())
