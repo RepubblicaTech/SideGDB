@@ -25,8 +25,6 @@ class BreakManager(QDialog):
         layout.addWidget(self.table, 1, 0, 1, 2)
         layout.addWidget(self.deleteButton, 2, 0, 1, 2)
 
-        self.statusTip().__init__()
-
         self.setLayout(layout)
 
         self.model.loadBreakpointsListToModel()
