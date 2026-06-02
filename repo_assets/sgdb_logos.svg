@@ -9,6 +9,9 @@
    id="svg1"
    inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
    sodipodi:docname="sgdb_logos.svg"
+   inkscape:export-filename="/home/repubblicatech/Scaricati/sgdb_banner.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -24,15 +27,16 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="0.70011949"
-     inkscape:cx="1539.023"
-     inkscape:cy="836.99998"
+     inkscape:zoom="0.62354392"
+     inkscape:cx="1671.0932"
+     inkscape:cy="894.88484"
      inkscape:window-width="1920"
      inkscape:window-height="1014"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer5">
+     inkscape:current-layer="layer4"
+     showgrid="true">
     <inkscape:page
        x="0"
        y="0"
@@ -69,6 +73,17 @@
        width="1200"
        height="300"
        id="page4"
+       margin="0"
+       bleed="0"
+       inkscape:export-filename="../assets/sidegdb_banner.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <inkscape:page
+       x="1054.741"
+       y="1028.1598"
+       width="1200"
+       height="300"
+       id="page5"
        margin="0"
        bleed="0"
        inkscape:export-filename="../assets/sidegdb_banner.png"
@@ -312,7 +327,7 @@
          transform="matrix(0.96048884,0,0,0.96048884,-1089.8406,-721.0142)"><tspan
            x="1134.6729"
            y="826.07965"
-           id="tspan6">ALPHA</tspan></text>
+           id="tspan11">ALPHA</tspan></text>
     </pattern>
     <rect
        x="1049.436"
@@ -329,6 +344,37 @@
        x2="1189.5453"
        y2="654.76697"
        gradientUnits="userSpaceOnUse" />
+    <rect
+       x="1049.436"
+       y="699.15393"
+       width="418.88474"
+       height="228.57747"
+       id="rect7-5" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5"
+       id="linearGradient7-5"
+       x1="1189.5453"
+       y1="925.00549"
+       x2="1189.5453"
+       y2="654.76697"
+       gradientUnits="userSpaceOnUse" />
+    <rect
+       x="1049.436"
+       y="699.15393"
+       width="418.88474"
+       height="228.57747"
+       id="rect7-43-6" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1"
+       id="linearGradient8"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.2,0,0,0.30000001,1054.7409,1028.1598)"
+       x1="0"
+       y1="1000"
+       x2="1000"
+       y2="0" />
   </defs>
   <g
      inkscape:label="P1"
@@ -409,9 +455,9 @@
          y="0"><tspan
            x="1050.4629"
            y="827.10699"
-           id="tspan8"><tspan
+           id="tspan13"><tspan
              style="text-align:start"
-             id="tspan7">Beta</tspan></tspan></text>
+             id="tspan12">Beta</tspan></tspan></text>
       <text
          xml:space="preserve"
          id="text7-1"
@@ -421,9 +467,9 @@
          y="0"><tspan
            x="1050.4629"
            y="827.10699"
-           id="tspan10"><tspan
+           id="tspan15"><tspan
              style="text-align:start"
-             id="tspan9">Beta</tspan></tspan></text>
+             id="tspan14">Beta</tspan></tspan></text>
     </g>
     <rect
        style="display:none;fill:url(#pattern7);stroke:none"
@@ -457,6 +503,73 @@
          x="1528.0709"
          y="942.65796"
          style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:84.7594px;font-family:'Crimson Pro';-inkscape-font-specification:'Crimson Pro, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.512069;stroke-opacity:1">Essentials</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="P5">
+    <rect
+       style="display:inline;fill:url(#linearGradient8);fill-opacity:1;stroke-width:11.3386;stroke-linecap:square;paint-order:markers stroke fill"
+       id="rect1-7-6-61"
+       width="1200.0001"
+       height="300"
+       x="1054.7408"
+       y="1028.1598" />
+    <g
+       id="g7-8"
+       inkscape:label="Mirror"
+       transform="matrix(2.3422223,0,0,2.3422223,-2867.0894,-996.21051)"
+       style="opacity:0.4">
+      <text
+         xml:space="preserve"
+         id="text7-7"
+         style="font-weight:600;font-size:107.11px;line-height:1.9;font-family:'Butler FREE VERSION';-inkscape-font-specification:'Butler FREE VERSION, Semi-Bold';text-align:end;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect7-5);shape-padding:1.02671;display:inline;opacity:1;fill:#87b7ff;fill-opacity:1;stroke-width:18.8976;stroke-linecap:square;paint-order:markers stroke fill"
+         transform="matrix(0.98370516,0,0,0.98370516,933.88814,129.11145)"
+         x="-270.23859"
+         y="0"><tspan
+           x="1050.4629"
+           y="827.10699"
+           id="tspan17"><tspan
+             style="text-align:start"
+             id="tspan16">Beta</tspan></tspan></text>
+      <text
+         xml:space="preserve"
+         id="text7-1-5"
+         style="font-weight:600;font-size:107.11px;line-height:1.9;font-family:'Butler FREE VERSION';-inkscape-font-specification:'Butler FREE VERSION, Semi-Bold';text-align:end;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect7-43-6);shape-padding:1.02671;display:inline;fill:url(#linearGradient7-5);fill-opacity:1;stroke-width:18.8976;stroke-linecap:square;paint-order:markers stroke fill"
+         transform="matrix(0.98370516,0,0,-0.98370516,937.78664,1757.3186)"
+         x="-270.23859"
+         y="0"><tspan
+           x="1050.4629"
+           y="827.10699"
+           id="tspan19"><tspan
+             style="text-align:start"
+             id="tspan18">Beta</tspan></tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:208.677px;line-height:1.9;font-family:Genos;-inkscape-font-specification:'Genos, Bold Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:41.0777;stroke-linecap:square;paint-order:markers stroke fill"
+       x="1481.8459"
+       y="1211.9077"
+       id="text5-0-6-1"
+       inkscape:export-filename="SGDB_TextOnly.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"><tspan
+         sodipodi:role="line"
+         id="tspan5-9-5-0"
+         x="1481.8459"
+         y="1211.9077"
+         style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:208.677px;font-family:Genos;-inkscape-font-specification:'Genos, Bold Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:41.0777">SideGDB</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:84.7594px;line-height:1.9;font-family:Goldman;-inkscape-font-specification:'Goldman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0.435259px;word-spacing:0px;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.512069;stroke-opacity:1;paint-order:stroke fill markers"
+       x="1407.6969"
+       y="1272.4905"
+       id="text4-3"><tspan
+         sodipodi:role="line"
+         id="tspan4-0"
+         x="1407.6969"
+         y="1272.4905"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:84.7594px;font-family:Goldman;-inkscape-font-specification:'Goldman, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.512069;stroke-opacity:1">Essentials</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
