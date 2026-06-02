@@ -14,7 +14,6 @@ if __name__ == "__main__":
     view.resize(800, 400)
     codeDock = CodeDock()
     view.addDockWidget(Qt.DockWidgetArea.TopDockWidgetArea, codeDock)
-    # helpers?
-    # loadFile(file)
+    codeDock.loadSource("test/helloworld.c")
     view.show()
     sys.exit(app.exec())
