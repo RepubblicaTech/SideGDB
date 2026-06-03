@@ -197,7 +197,7 @@ class QCodeArea(QScrollArea, Resettable):
         self.verticalScrollBar().setValue(firstLine * self.viewport().fontMetrics().height())
 
     def scrollContentsBy(self, dx: int, dy: int, /) -> None:
-        self.firstLine = self.firstLine - floor(dy / self.viewport().fontMetrics().height())
+        self.firstLine = self.firstLine - round(dy / self.viewport().fontMetrics().height())
         return super().scrollContentsBy(dx, dy)
 
     def resizeEvent(self, arg__1: QResizeEvent, /) -> None:
