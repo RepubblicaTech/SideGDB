@@ -37,15 +37,10 @@ class MIPrompt(QWidget, Resettable):
 
     def sendCommand(self):
         toSend = self.miPrompt.text()
-        scrollbar = self.miOutput.verticalScrollBar()
-        atBottom = scrollbar.value() >= scrollbar.maximum() - 10
-
         if (not toSend):
             return
+
         print(f"command: {toSend}")
         self.model.send(toSend)
-
-        if atBottom and self.canAutoscroll:
-            QTimer.singleShot(0, lambda: scrollbar.setValue(scrollbar.maximum()))
 
         self.miPrompt.setText("")
