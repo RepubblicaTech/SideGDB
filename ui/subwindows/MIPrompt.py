@@ -1,4 +1,3 @@
-from PySide6.QtCore import QTimer
 from PySide6.QtGui import Qt
 
 from backend.MIResponseManager import MIPromptManager
