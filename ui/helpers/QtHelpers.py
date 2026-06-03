@@ -2,16 +2,17 @@
 Some useful macro-widgets for common components for SideGDB
 """
 
-from io import SEEK_SET
+from enum import Enum
+from loguru import logger
 from math import floor
 import os
 from pathlib import Path
+
 from PySide6 import QtCore
-from PySide6.QtCore import QRect, Qt
-from PySide6.QtGui import QPaintEvent, QPainter, QPalette, QResizeEvent
-from PySide6.QtWidgets import QFileDialog, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QScrollArea, QSizePolicy, QTextBrowser, QVBoxLayout, QWidget
-from loguru import logger
-from enum import Enum
+from PySide6.QtCore import QRect
+from PySide6.QtGui import QResizeEvent, QPaintEvent, QPainter, QPalette
+from PySide6.QtWidgets import QFileDialog, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QScrollArea
+
 
 class QDirectionFlag(Enum):
     QHorizontal = 0
