@@ -89,7 +89,7 @@ class QSourceWidget(QWidget, Resettable):
 
     def __init__(self):
         self.currentSource = ""
-        self.lines = 0
+        self.lines: list = []
         self.lineToHighlight = 0
 
         super().__init__()
@@ -102,11 +102,14 @@ class QSourceWidget(QWidget, Resettable):
             d += 1
         return d
 
+    def totalLines(self):
+        return len(self.lines)
+
     def barWidth(self):
-        return self.BAR_BASEW + (self.fontMetrics().horizontalAdvance("9") * self.digits(self.lines)) + self.BAR_RPADD
+        return self.BAR_BASEW + (self.fontMetrics().horizontalAdvance("9") * self.digits(self.totalLines())) + self.BAR_RPADD
 
     def barHeight(self):
-        return self.BAR_BPADD + (self.fontMetrics().height() * self.lines)
+        return self.BAR_BPADD + (self.fontMetrics().height() * self.totalLines())
 
     def loadSource(self, path: str):
         if (path == self.currentSource or not path or not Path(path).exists()):
@@ -114,14 +117,12 @@ class QSourceWidget(QWidget, Resettable):
 
         self.currentSource = path
         f = open(path)
-        self.lines = len(f.readlines())
+        self.lines = f.readlines()
 
-        f.seek(0, SEEK_SET)
         maxLineLength = 0
-        for line in f.readlines():
+        for line in self.lines:
             if (len(line) > maxLineLength):
                 maxLineLength = len(line)
-        f.close()
 
         self.setMinimumHeight(self.barHeight())
         self.setMinimumWidth(self.barWidth() + (self.fontMetrics().horizontalAdvance("9") * maxLineLength))
@@ -129,7 +130,7 @@ class QSourceWidget(QWidget, Resettable):
         self.update()
 
     def highlightLine(self, line: int):
-        if (line < 0 or line > self.lines):
+        if (line < 0 or line > self.totalLines()):
             return
 
         self.lineToHighlight = line
@@ -145,8 +146,7 @@ class QSourceWidget(QWidget, Resettable):
         barRect = QRect(0, 0, self.barWidth(), self.barHeight())
         painter.fillRect(barRect, self.palette().color(QPalette.ColorRole.AlternateBase))
 
-        f = open(self.currentSource)
-        for i in range(self.lines):
+        for i in range(self.totalLines()):
             painter.drawText(self.barWidth() - (self.fontMetrics().horizontalAdvance("9") * self.digits(i + 1)) - self.BAR_RPADD,
                              self.fontMetrics().height() * (i + 1),
                              str(i + 1))
@@ -156,15 +156,14 @@ class QSourceWidget(QWidget, Resettable):
                                  self.width(),
                                  self.fontMetrics().lineSpacing(),
                                  self.palette().color(QPalette.ColorRole.Accent))
-            painter.drawText(self.barWidth(), self.fontMetrics().height() * (i + 1), f.readline())
-        f.close()
+            painter.drawText(self.barWidth(), self.fontMetrics().height() * (i + 1), self.lines[i])
 
         painter.end()
         return super().paintEvent(e)
 
     def sgReset(self):
         self.currentSource = ""
-        self.lines = 0
+        self.lines.clear()
         self.lineToHighlight = 0
 
         self.update()
