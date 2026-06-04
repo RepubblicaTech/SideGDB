@@ -8,7 +8,6 @@ from ui.helpers.QtHelpers import Resettable
 
 class MIPrompt(QWidget, Resettable):
     def __init__(self, model: SideModel):
-        self.canAutoscroll = True
         super().__init__()
 
         layout = QVBoxLayout()
@@ -41,5 +40,4 @@ class MIPrompt(QWidget, Resettable):
 
         print(f"command: {toSend}")
         self.model.send(toSend)
-
         self.miPrompt.setText("")

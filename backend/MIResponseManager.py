@@ -2,10 +2,12 @@ from pprint import pformat
 from typing import List
 from PySide6.QtGui import QPalette
 from PySide6.QtWidgets import QTextBrowser
+from loguru import logger
 
 
 class MIPromptManager:
     miOutput: QTextBrowser
+    canAutoscroll: bool = True
 
     @staticmethod
     def setOutputView(p: QTextBrowser):
@@ -95,3 +97,10 @@ class MIPromptManager:
             MIPromptManager.miOutput.insertPlainText(MIPromptManager.formatResponseMessage(response))
             if (response.get("payload", None)):
                 MIPromptManager.miOutput.insertPlainText(MIPromptManager.formatResponsePayload(response))
+
+            currentScrollValue = MIPromptManager.miOutput.verticalScrollBar().value()
+            currentMaximum = MIPromptManager.miOutput.verticalScrollBar().maximum()
+            logger.debug(f"Current scrollbar value: {currentScrollValue}; Maximum: {currentMaximum}")
+
+            if (MIPromptManager.canAutoscroll and (currentScrollValue < currentMaximum)):
+                MIPromptManager.miOutput.verticalScrollBar().setValue(MIPromptManager.miOutput.verticalScrollBar().maximum())
