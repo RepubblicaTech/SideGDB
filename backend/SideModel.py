@@ -1,4 +1,3 @@
-from pprint import pformat
 from typing import Any, List
 
 from PySide6.QtGui import QStandardItem, QStandardItemModel
