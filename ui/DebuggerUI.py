@@ -185,6 +185,7 @@ class DebuggerUI(QMainWindow, Resettable):
 
     def showBreakpointsManager(self):
         breakpointsManager = BreakManager(self, self.model)
+        breakpointsManager.table.resizeColumnsToContents()
         breakpointsManager.show()
 
     def openConfig(self):
