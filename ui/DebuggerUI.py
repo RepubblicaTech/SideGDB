@@ -311,12 +311,14 @@ class DebuggerUI(QMainWindow, Resettable):
 
         try:
             self.gdbMi.terminate()
-            self.gdbMi = None
-            logger.success("GDBMI terminated.")
-
-            self.reset()
-
-            self.running = False
-            self.statusBar().showMessage("Debugger terminated.")
         except AttributeError:
             logger.debug("No GDBMI instance...")
+            return
+
+        self.gdbMi = None
+        logger.success("GDBMI terminated.")
+
+        self.reset()
+
+        self.running = False
+        self.statusBar().showMessage("Debugger terminated.")
