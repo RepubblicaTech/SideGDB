@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QDockWidget
-from ui.helpers.QtHelpers import Resettable, Updateable
+from ui.QtHelpers import Resettable, Updateable
 from ui.subwindows.QCodeWidgets.QCodeArea import QCodeArea
 
 class CodeDock(QDockWidget, Updateable, Resettable):

@@ -4,7 +4,7 @@ from backend.MIResponseManager import MIPromptManager
 from backend.SideModel import SideModel
 from PySide6.QtWidgets import QLineEdit, QTextBrowser, QVBoxLayout, QWidget
 
-from ui.helpers.QtHelpers import Resettable
+from ui.QtHelpers import Resettable
 
 class MIPrompt(QWidget, Resettable):
     def __init__(self, model: SideModel):

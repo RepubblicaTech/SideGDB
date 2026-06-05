@@ -4,7 +4,7 @@ from PySide6.QtCore import QRect
 from PySide6.QtGui import QPaintEvent, QPainter, QPalette
 from PySide6.QtWidgets import QWidget
 
-from ui.helpers.QtHelpers import Resettable
+from ui.QtHelpers import Resettable
 
 
 class QSourceWidget(QWidget, Resettable):

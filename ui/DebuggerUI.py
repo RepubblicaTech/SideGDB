@@ -14,7 +14,7 @@ from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import QFileDialog, QMainWindow, QMessageBox, QToolBar
 
 from backend.SideModel import SideModel
-from ui.helpers.QtHelpers import Resettable
+from ui.QtHelpers import Resettable
 from ui.subwindows.AboutBox import AboutBox
 from ui.subwindows.BreakManager import BreakManager
 from ui.subwindows.CodeDock import CodeDock

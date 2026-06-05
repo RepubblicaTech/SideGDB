@@ -3,7 +3,7 @@ from math import floor
 from PySide6.QtGui import QResizeEvent
 from PySide6.QtWidgets import QScrollArea
 
-from ui.helpers.QtHelpers import Resettable
+from ui.QtHelpers import Resettable
 from ui.subwindows.QCodeWidgets.QSourceWidget import QSourceWidget
 
 
