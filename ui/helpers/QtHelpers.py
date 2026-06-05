@@ -4,14 +4,10 @@ Some useful macro-widgets for common components for SideGDB
 
 from enum import Enum
 from loguru import logger
-from math import floor
 import os
-from pathlib import Path
 
 from PySide6 import QtCore
-from PySide6.QtCore import QRect
-from PySide6.QtGui import QResizeEvent, QPaintEvent, QPainter, QPalette
-from PySide6.QtWidgets import QFileDialog, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QScrollArea
+from PySide6.QtWidgets import QFileDialog, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
 
 
 class QDirectionFlag(Enum):
@@ -81,131 +77,3 @@ class Resettable:
 class Updateable:
     def sgUpdate(self, frame: dict):
         raise NotImplementedError("This function should be overridden!")
-
-class QSourceWidget(QWidget, Resettable):
-    BAR_BASEW = 40
-    BAR_RPADD = 10
-    BAR_BPADD = 50
-
-    def __init__(self):
-        self.currentSource = ""
-        self.lines: list = []
-        self.lineToHighlight = 0
-
-        super().__init__()
-
-    @staticmethod
-    def digits(n):
-        d = 1
-        while (n >= 10):
-            n /= 10
-            d += 1
-        return d
-
-    def totalLines(self):
-        return len(self.lines)
-
-    def barWidth(self):
-        return self.BAR_BASEW + (self.fontMetrics().horizontalAdvance("9") * self.digits(self.totalLines())) + self.BAR_RPADD
-
-    def barHeight(self):
-        return self.BAR_BPADD + (self.fontMetrics().height() * self.totalLines())
-
-    def loadSource(self, path: str):
-        if (path == self.currentSource or not path or not Path(path).exists()):
-            return
-
-        self.currentSource = path
-        f = open(path)
-        self.lines = f.readlines()
-
-        maxLineLength = 0
-        for line in self.lines:
-            if (len(line) > maxLineLength):
-                maxLineLength = len(line)
-
-        self.setMinimumHeight(self.barHeight())
-        self.setMinimumWidth(self.barWidth() + (self.fontMetrics().horizontalAdvance("9") * maxLineLength))
-
-        self.update()
-
-    def highlightLine(self, line: int):
-        if (line < 0 or line > self.totalLines()):
-            return
-
-        self.lineToHighlight = line
-        self.update()
-
-    def paintEvent(self, e: QPaintEvent, /) -> None:
-        if (not self.currentSource):
-            return
-
-        painter = QPainter(self)
-
-        painter.fillRect(0, 0, self.width(), self.height(), self.palette().color(QPalette.ColorRole.Base))
-        barRect = QRect(0, 0, self.barWidth(), self.barHeight())
-        painter.fillRect(barRect, self.palette().color(QPalette.ColorRole.AlternateBase))
-
-        for i in range(self.totalLines()):
-            painter.drawText(self.barWidth() - (self.fontMetrics().horizontalAdvance("9") * self.digits(i + 1)) - self.BAR_RPADD,
-                             self.fontMetrics().height() * (i + 1),
-                             str(i + 1))
-            if (i + 1 == self.lineToHighlight):
-                painter.fillRect(self.barWidth(),
-                                 self.fontMetrics().height() * i,
-                                 self.width(),
-                                 self.fontMetrics().lineSpacing(),
-                                 self.palette().color(QPalette.ColorRole.Accent))
-            painter.drawText(self.barWidth(), self.fontMetrics().height() * (i + 1), self.lines[i])
-
-        painter.end()
-        return super().paintEvent(e)
-
-    def sgReset(self):
-        self.currentSource = ""
-        self.lines.clear()
-        self.lineToHighlight = 0
-
-        self.update()
-
-class QCodeArea(QScrollArea, Resettable):
-    def __init__(self):
-        self.firstLine = 0  # first line on screen
-        self.linesOnScreen = 0
-
-        super().__init__()
-
-        self.sourceWidget = QSourceWidget()
-        self.setWidget(self.sourceWidget)
-        self.setWidgetResizable(True)
-
-    def loadSource(self, path: str):
-        self.sourceWidget.loadSource(path)
-
-    def highlightLine(self, line: int):
-        self.sourceWidget.highlightLine(line)
-
-    def scrollTo(self, line: int):
-        if (line >= self.firstLine and line <= self.firstLine + self.linesOnScreen):
-            return
-
-        firstLine = floor(line - (self.linesOnScreen / 2))
-        if (firstLine < 1):
-            firstLine = 1
-
-        self.verticalScrollBar().setValue(firstLine * self.viewport().fontMetrics().height())
-
-    def scrollContentsBy(self, dx: int, dy: int, /) -> None:
-        self.firstLine = self.firstLine - round(dy / self.viewport().fontMetrics().height())
-        return super().scrollContentsBy(dx, dy)
-
-    def resizeEvent(self, arg__1: QResizeEvent, /) -> None:
-        self.linesOnScreen = floor(self.viewport().height() / self.viewport().fontMetrics().height())
-        return super().resizeEvent(arg__1)
-
-    def sgReset(self):
-        self.firstLine = 0
-        self.linesOnScreen = 0
-
-        self.sourceWidget.sgReset()
-        self.update()
