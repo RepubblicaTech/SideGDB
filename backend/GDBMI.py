@@ -2,8 +2,6 @@ from typing import List, Optional
 from pygdbmi import constants
 from pygdbmi.gdbcontroller import GdbController
 
-from threading import Lock
-
 from loguru import logger
 
 class GdbMI(GdbController):
@@ -21,9 +19,6 @@ class GdbMI(GdbController):
             gdbCommand.extend(gdbArgs)
 
         super().__init__(gdbCommand)
-
-    def sendCmd(self, command: str):
-        return self.write(f"{command}")
 
     def readResponse(self, attempts: int = -1):
         att = attempts
@@ -45,6 +40,3 @@ class GdbMI(GdbController):
                 break
 
         return responses
-
-    def terminate(self):
-        return self.exit()

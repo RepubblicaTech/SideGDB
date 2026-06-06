@@ -310,7 +310,7 @@ class DebuggerUI(QMainWindow, Resettable):
         logger.debug("Terminating GDBMI...")
 
         try:
-            self.gdbMi.terminate()
+            self.gdbMi.exit()
         except AttributeError:
             logger.debug("No GDBMI instance...")
             return
