@@ -26,7 +26,7 @@ class SideModel:
         return self.currentToken - 1
 
     def send(self, cmd):
-        r =  self.__gdbMI.sendCmd(f"{self.currentToken}{cmd}")
+        r =  self.__gdbMI.write(f"{self.currentToken}{cmd}")
         MIPromptManager.printFormatted(r)
         self.currentToken += 1
         return r

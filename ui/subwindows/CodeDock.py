@@ -1,11 +1,12 @@
 from PySide6.QtWidgets import QDockWidget
-from ui.helpers.QtHelpers import QCodeArea, Resettable, Updateable
+from ui.QtHelpers import Resettable, Updateable
+from ui.subwindows.QCodeWidgets.QCodeArea import QCodeArea
 
 class CodeDock(QDockWidget, Updateable, Resettable):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Code")
+        self.setWindowTitle("Source code")
         self.codeView = QCodeArea()
         self.setWidget(self.codeView)
 
