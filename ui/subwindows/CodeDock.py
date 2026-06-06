@@ -6,7 +6,7 @@ class CodeDock(QDockWidget, Updateable, Resettable):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Source code view")
+        self.setWindowTitle("Source code")
         self.codeView = QCodeArea()
         self.setWidget(self.codeView)
 
