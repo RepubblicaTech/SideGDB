@@ -1,29 +1,19 @@
-from enum import Enum
-from typing import Callable
+from typing import Callable, List
 
-class SGSignals(Enum):
-    SGDB_SIGCREATE = "GDB_SIGCREATE"    # Create a GDB instance
-    SGDB_SIGLAUNCH = "UI_SIGSTART"      # Launch the debugger
-    SGDB_SIGEND = "SGDB_SIGEND"         # Terminate the debugger/GDBMI
 
-__observers = dict()
+class Signal:
+    def __init__(self):
+        self.callables: List[Callable] = list()
 
-def subscribe(signal: SGSignals, function: Callable):
-    if (signal not in __observers):
-        __observers[signal] = list()
+    def connectHandler(self, callable: Callable):
+        self.callables.append(callable)
 
-    __observers[signal].append(function)
-
-def unsubscribe(function: Callable):
-    for signal in __observers:
+    def removeHandler(self, callable: Callable):
         try:
-            signal.remove(function)
+            self.callables.remove(callable)
         except ValueError:
-            continue
+            return
 
-def notify(signal: SGSignals, **kwargs):
-    if (signal not in __observers):
-        return -1
-
-    for fun in __observers[signal]:
-        fun(**kwargs)
+    def trigger(self, *args):
+        for callable in self.callables:
+            callable(*args)
