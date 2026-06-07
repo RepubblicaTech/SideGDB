@@ -240,8 +240,6 @@ class DebuggerUI(QMainWindow, Resettable):
         self.statusBar().showMessage("Debugger launched.")
 
     def updateDebugger(self, threadInfo):
-        logger.debug(pformat(threadInfo))
-
         threadId = threadInfo.get("currentThread")
         threads = threadInfo.get("threads")
         if ((threadId == 0) or ((not threads) or (type(threads) is not list))):
