@@ -21,11 +21,18 @@ if __name__ == "__main__":
     with open(ABOUTJSON_PATH, "r") as f:
         obj = json.load(f)
         if (obj.get("prerelease", None)):
-            QMessageBox(QMessageBox.Icon.Warning,
-                        "SideGDB development release",
-                        "This is alpha/prerelease software.\n"
-                        "It might be subject to unknown bugs or straight up crashes/hangups.\n"
-                        "Do NOT report these issues as the developer might be fixing them.").exec()
+            match (obj["prerelease"]["version"]):
+                case "alpha":
+                    QMessageBox(QMessageBox.Icon.Warning,
+                                "SideGDB development release",
+                                "This is alpha software.\n"
+                                "Do NOT report bugs to the developer as he might be fixing them right now...").exec()
+                case _:
+                    QMessageBox(QMessageBox.Icon.Warning,
+                                "SideGDB development release",
+                                "This is beta/prerelease software.\n"
+                                "Make sure to report any bugs on the repo's Issues tab.\n"
+                                "https://github.com/RepubblicaTech/SideGDB/issues").exec()
 
     window.show()
     window.statusBar().showMessage("Ready.")
