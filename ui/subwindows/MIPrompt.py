@@ -1,4 +1,7 @@
-from PySide6.QtGui import Qt
+from typing import List
+
+from PySide6.QtGui import QPalette, Qt
+from loguru import logger
 
 from backend.MIResponseManager import MIPromptManager
 from backend.SideModel import SideModel
@@ -8,6 +11,8 @@ from ui.QtHelpers import Resettable
 
 class MIPrompt(QWidget, Resettable):
     def __init__(self, model: SideModel):
+        self.canAutoscroll = True
+
         super().__init__()
 
         layout = QVBoxLayout()
@@ -25,8 +30,8 @@ class MIPrompt(QWidget, Resettable):
 
         self.miPrompt.returnPressed.connect(self.sendCommand)
 
-        MIPromptManager.setOutputView(self.miOutput)
         self.model = model
+        self.model.miResponseReceived.connectHandler(self.miResponseHandler)
         self.model.read(-1)
 
     def sgReset(self):
@@ -41,3 +46,28 @@ class MIPrompt(QWidget, Resettable):
         print(f"command: {toSend}")
         self.model.send(toSend)
         self.miPrompt.setText("")
+
+    def miResponseHandler(self, response: List[dict] | dict):
+        if (type(response) is list):
+            for r in response:
+                self.miResponseHandler(r)
+            return
+
+        match (response.get("message")):
+            case "done":
+                self.miOutput.setTextColor("#23c417")
+            case "error":
+                self.miOutput.setTextColor("#e93e3e")
+            case _:
+                self.miOutput.setTextColor(self.palette().color(QPalette.ColorRole.Text))
+
+        self.miOutput.insertPlainText(MIPromptManager.formatResponseMessage(response))
+        if (response.get("payload", None)):
+            self.miOutput.insertPlainText(MIPromptManager.formatResponsePayload(response))
+
+        currentScrollValue = self.miOutput.verticalScrollBar().value()
+        currentMaximum = self.miOutput.verticalScrollBar().maximum()
+        logger.debug(f"Current scrollbar value: {currentScrollValue}; Maximum: {currentMaximum}")
+
+        if (self.canAutoscroll and (currentScrollValue < currentMaximum)):
+            self.miOutput.verticalScrollBar().setValue(self.miOutput.verticalScrollBar().maximum())

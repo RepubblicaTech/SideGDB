@@ -4,22 +4,16 @@ from PySide6.QtGui import QStandardItem, QStandardItemModel
 from loguru import logger
 
 from backend import GDBMI
-from backend.MIResponseManager import MIPromptManager
+from ui.observer import Signal
 
 class SideModel:
-    currentToken: int = 0
-    currentThreadId: int
-    currentBreakpoint: str
-
-    registers: dict
-    breakpointsStandardModel: QStandardItemModel
-
-    variables: list[dict]
-
     def __init__(self, gdbMI: GDBMI.GdbMI) -> None:
         self.__gdbMI = gdbMI
 
         self.breakpointsStandardModel = QStandardItemModel(0, 2)
+        self.currentToken = 0
+
+        self.miResponseReceived = Signal()
 
     # Request the last token that was sent to GDBMI.
     def token(self):
@@ -27,13 +21,15 @@ class SideModel:
 
     def send(self, cmd):
         r =  self.__gdbMI.write(f"{self.currentToken}{cmd}")
-        MIPromptManager.printFormatted(r)
         self.currentToken += 1
+
+        self.miResponseReceived.trigger(r)
         return r
 
     def read(self, attempts):
         r = self.__gdbMI.readResponse(attempts)
-        MIPromptManager.printFormatted(list(r))
+
+        self.miResponseReceived.trigger(r)
         return r
 
     def deleteBreakpoint(self, number):
