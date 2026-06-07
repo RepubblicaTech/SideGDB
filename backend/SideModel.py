@@ -45,6 +45,9 @@ class SideModel:
 
         responses = self.send(f"-break-insert {where}")
         r = self.selectResponse(responses, ("token", self.token()))
+        if (type(r) is not dict):
+            return
+
         if (r.get("message", None) != "done"):
             payload = dict(r["payload"])
             raise RuntimeError(payload.get("msg", r.get("payload", "Unknown error.")))
