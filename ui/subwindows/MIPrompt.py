@@ -52,6 +52,8 @@ class MIPrompt(QWidget, Resettable):
             for r in response:
                 self.miResponseHandler(r)
             return
+        elif (type(response) is not dict):
+            return
 
         match (response.get("message")):
             case "done":
