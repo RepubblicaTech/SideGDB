@@ -122,6 +122,9 @@ class DebuggerUI(QMainWindow, Resettable):
         self.removeDockWidget(self.codeDock)
         self.setWindowTitle(self.appTitle)
 
+        self.model.miExecutionChanged.removeHandler(self.updateDebugger)
+        self.resettables.clear()
+
     def reset(self):
         # reset toolbars
         for resettable in self.resettables:
