@@ -1,9 +1,11 @@
+from threading import Thread
 from typing import Any, List
 
 from PySide6.QtGui import QStandardItem, QStandardItemModel
 from loguru import logger
 
 from backend import GDBMI
+from pygdbmi.constants import GdbTimeoutError
 from ui.observer import Signal
 
 class SideModel:
@@ -14,6 +16,7 @@ class SideModel:
         self.currentToken = 0
 
         self.miResponseReceived = Signal()
+        self.miExecutionChanged = Signal()
 
     # Request the last token that was sent to GDBMI.
     def token(self):
@@ -24,6 +27,12 @@ class SideModel:
         self.currentToken += 1
 
         self.miResponseReceived.trigger(r)
+
+        match(cmd):
+            case str(cmd) if MICommands.MIPREFIX_EXEC in cmd:
+                self.getThreadInfoAtExecStopped(r)
+            case _:
+                pass
         return r
 
     def read(self, attempts):

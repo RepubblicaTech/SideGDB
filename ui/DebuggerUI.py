@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from pprint import pformat
 import subprocess
 from typing import List, override
 from loguru import logger
@@ -255,20 +254,16 @@ class DebuggerUI(QMainWindow, Resettable):
         self.codeDock.sgUpdate(frame)
 
     def sendContinue(self):
-        threadInfo = self.model.continueExecution()
-        self.updateDebugger(threadInfo)
+        self.model.continueExecution()
 
     def sendStepOver(self):
-        frame = self.model.stepOver()
-        self.updateDebugger(frame)
+        self.model.stepOver()
 
     def sendStepInto(self):
-        frame = self.model.stepInto()
-        self.updateDebugger(frame)
+        self.model.stepInto()
 
     def sendStepOut(self):
-        frame = self.model.stepOut()
-        self.updateDebugger(frame)
+        self.model.stepOut()
 
     def setDebuggerUI(self, config: SGDBConfig):
         self.miPrompt = MIPrompt(self.model)
