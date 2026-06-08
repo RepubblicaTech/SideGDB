@@ -33,13 +33,13 @@ class SideModel:
         return r
 
     def deleteBreakpoint(self, number):
-        return self.send(f"-break-delete {number}")
+        return self.send(f"{MICommands.MI_BREAKREM} {number}")
 
     def setBreakpoint(self, where: str) -> dict | None:
         if (not str):
             return None
 
-        responses = self.send(f"-break-insert {where}")
+        responses = self.send(f"{MICommands.MI_BREAKADD} {where}")
         r = self.selectResponse(responses, ("token", self.token()))
         if (type(r) is not dict):
             return
@@ -65,7 +65,7 @@ class SideModel:
         }
 
     def getBreakpointsList(self) -> List[dict[str, Any]] | None:
-        responses =  self.send("-break-list")
+        responses =  self.send(MICommands.MI_BREAKLIST)
         r = self.selectResponse(responses, ("token", self.token()))
         if (not r):
             logger.warning(f"No response with token {self.token()}")
@@ -110,7 +110,7 @@ class SideModel:
             self.breakpointsStandardModel.appendRow([bNo, where])
 
     def threadInfo(self):
-        responses = self.send("-thread-info")
+        responses = self.send(MICommands.MI_THREADINF)
         response = self.selectResponse(responses, ("token", self.token()))
         if (not response):
             return {}
@@ -132,7 +132,7 @@ class SideModel:
         }
 
     def continueExecution(self):
-        responses = self.send("-exec-continue")
+        responses = self.send(MICommands.MI_CONTINUE)
         frameDict = self.selectResponse(responses, ("message", "stopped"))
 
         if (not frameDict):
@@ -142,7 +142,7 @@ class SideModel:
         return self.threadInfo()
 
     def stepOver(self):
-        responses = self.send("-exec-next")
+        responses = self.send(MICommands.MI_STEPNX)
         frameDict = self.selectResponse(responses, ("message", "stopped"))
         if (not frameDict):
             # wait until finishing
@@ -151,12 +151,12 @@ class SideModel:
         return self.threadInfo()
 
     def stepInto(self):
-        self.send("-exec-step")
+        responses = self.send(MICommands.MI_STEPIN)
 
         return self.threadInfo()
 
     def stepOut(self):
-        responses = self.send("-exec-finish")
+        responses = self.send(MICommands.MI_STEPOUT)
         frameDict = self.selectResponse(responses, ("message", "stopped"))
         if (not frameDict):
             # wait until finishing
@@ -185,3 +185,17 @@ class SideModel:
                 return gdbMIResponse
 
         return None
+
+class MICommands:
+    MI_CONTINUE = "-exec-continue"
+    MI_STEPNX = "-exec-next"
+    MI_STEPIN = "-exec-step"
+    MI_STEPOUT = "-exec-finish"
+
+    MI_THREADINF = "-thread-info"
+
+    MI_BREAKLIST = "-break-list"
+    MI_BREAKADD = "-break-insert"
+    MI_BREAKREM = "-break-delete"
+
+    MIPREFIX_EXEC = "-exec"
