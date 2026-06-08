@@ -295,7 +295,6 @@ class DebuggerUI(QMainWindow, Resettable):
         self.codeDock.setVisible(self.widgetsToolbar.showCode.isChecked())
 
     def closeEvent(self, event: QCloseEvent):
-            logger.debug("Wooo i'm overriding the close event!!!")
             self.terminateSession()
             logger.success("Bye!")
 
