@@ -131,38 +131,30 @@ class SideModel:
             "threads": threads
         }
 
+    def getThreadInfoAtExecStopped(self, execResponse):
+        t = Thread(target=lambda: self.read(-1))
+        if (self.selectResponse(execResponse, ("message", "stopped")) is None):
+            t.start()
+            # TODO: check for any input from program (idk how, but at least i don't hang up the whole program in the meanwhile)
+            t.join()
+
+        self.miExecutionChanged.trigger(self.threadInfo())
+
     def continueExecution(self):
         responses = self.send(MICommands.MI_CONTINUE)
-        frameDict = self.selectResponse(responses, ("message", "stopped"))
-
-        if (not frameDict):
-            # wait until breakpoint
-            self.read(-1)
-
-        return self.threadInfo()
+        self.getThreadInfoAtExecStopped(responses)
 
     def stepOver(self):
         responses = self.send(MICommands.MI_STEPNX)
-        frameDict = self.selectResponse(responses, ("message", "stopped"))
-        if (not frameDict):
-            # wait until finishing
-            self.read(-1)
-
-        return self.threadInfo()
+        self.getThreadInfoAtExecStopped(responses)
 
     def stepInto(self):
         responses = self.send(MICommands.MI_STEPIN)
-
-        return self.threadInfo()
+        self.getThreadInfoAtExecStopped(responses)
 
     def stepOut(self):
         responses = self.send(MICommands.MI_STEPOUT)
-        frameDict = self.selectResponse(responses, ("message", "stopped"))
-        if (not frameDict):
-            # wait until finishing
-            self.read(-1)
-
-        return self.threadInfo()
+        self.getThreadInfoAtExecStopped(responses)
 
     def terminate(self):
         self.__gdbMI.exit()
