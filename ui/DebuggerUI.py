@@ -110,8 +110,6 @@ class DebuggerUI(QMainWindow, Resettable):
 
         self.aboutProgram.triggered.connect(self.showAboutBox)
 
-        self.resettables.extend([self.widgetsToolbar, self])
-
         # to check if a program is being debugged.
         self.running = False
 
@@ -277,22 +275,23 @@ class DebuggerUI(QMainWindow, Resettable):
         self.setCentralWidget(self.miPrompt)
         self.mainToolbar.terminateDebug.toggled.connect(self.terminateSession)
 
-
-        self.addToolBar(self.debugToolbar)
-        self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.widgetsToolbar)
-
-        # they may have been hidden
-        self.debugToolbar.show()
-        self.widgetsToolbar.show()
         self.codeDock = CodeDock()
+        self.codeDock.setMinimumHeight(400)
         self.addDockWidget(Qt.DockWidgetArea.TopDockWidgetArea, self.codeDock)
+
         self.widgetsToolbar.showCode.setChecked(True)
         self.widgetsToolbar.showCode.triggered.connect(self.showHideSourceView)
-        self.codeDock.setMinimumHeight(400)
+        self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.widgetsToolbar)
+        self.addToolBar(self.debugToolbar)
+
+        self.resettables.extend([self, self.widgetsToolbar, self.miPrompt, self.codeDock])
+
+        self.model.miExecutionChanged.connectHandler(self.updateDebugger)
+
+        self.widgetsToolbar.show()
+        self.debugToolbar.show()
 
         self.setWindowTitle(f"{config.sessionTitle} - {self.appTitle}")
-
-        self.resettables.extend([self.miPrompt, self.codeDock])
 
     def showHideSourceView(self):
         self.codeDock.setVisible(self.widgetsToolbar.showCode.isChecked())
