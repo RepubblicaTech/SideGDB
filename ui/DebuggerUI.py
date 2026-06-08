@@ -110,7 +110,7 @@ class DebuggerUI(QMainWindow, Resettable):
         self.aboutProgram.triggered.connect(self.showAboutBox)
 
         # to check if a program is being debugged.
-        self.running = False
+        self.isDebugging = False
 
     @override
     def sgReset(self):
@@ -145,7 +145,7 @@ class DebuggerUI(QMainWindow, Resettable):
         SGDBConfigManager.save(self.currentConfig, Path(destinationFile[0]))
 
     def showConfigureGDB(self):
-        if (self.running):
+        if (self.isDebugging):
             QMessageBox(QMessageBox.Icon.Warning, "Running session", "An instance of GDB is already running. Make sure to terminate the current session before starting a new one.", QMessageBox.StandardButton.Ok).exec()
             return
 
@@ -189,7 +189,7 @@ class DebuggerUI(QMainWindow, Resettable):
         breakpointsManager.show()
 
     def openConfig(self):
-        if (self.running):
+        if (self.isDebugging):
             QMessageBox(QMessageBox.Icon.Warning, "Running session", "An instance of GDB is already running. Make sure to terminate the current session before starting a new one.Another instance of", QMessageBox.StandardButton.Ok).exec()
             return
 
@@ -236,7 +236,7 @@ class DebuggerUI(QMainWindow, Resettable):
 
         self.setDebuggerUI(config)
 
-        self.running = True
+        self.isDebugging = True
         self.statusBar().showMessage("Debugger launched.")
 
     def updateDebugger(self, threadInfo):
@@ -304,14 +304,13 @@ class DebuggerUI(QMainWindow, Resettable):
     def terminateSession(self):
         logger.debug("Terminating GDBMI...")
 
-        try:
+        if (self.isDebugging):
             self.gdbMi.exit()
             self.reset()
-        except AttributeError:
-            logger.debug("No GDBMI instance...")
-            return
 
-        self.gdbMi = None
-        self.running = False
-        logger.success("GDBMI terminated.")
+            self.isDebugging = False
+            logger.success("GDBMI terminated.")
+        else:
+            logger.debug("No GDBMI instance...")
+
         self.statusBar().showMessage("Debugger terminated.")
