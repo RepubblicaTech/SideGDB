@@ -27,10 +27,26 @@ class SideModel:
         return r
 
     def read(self, attempts):
-        r = self.__gdbMI.readResponse(attempts)
+        responses = {}
+        logger.debug("Waiting for response")
+        while True:
+            try:
+                responses = self.__gdbMI.get_gdb_response()
+                break
+            except GdbTimeoutError:
+                if (attempts > 0):
+                    attempts -= 1
+                    continue
 
-        self.miResponseReceived.trigger(r)
-        return r
+                if (attempts == -1):
+                    continue
+
+                logger.warning("\nNo more attempts.")
+                break
+        logger.success("\nRead response OK")
+
+        self.miResponseReceived.trigger(responses)
+        return responses
 
     def deleteBreakpoint(self, number):
         return self.send(f"{MICommands.MI_BREAKREM} {number}")
