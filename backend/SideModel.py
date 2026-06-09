@@ -13,10 +13,12 @@ class SideModel:
         self.__gdbMI = gdbMI
 
         self.breakpointsStandardModel = QStandardItemModel(0, 2)
+        self.breakpointsStandardModel.setHorizontalHeaderLabels(["No.", "Where[file:line]"])
         self.currentToken = 0
 
         self.miResponseReceived = Signal()
         self.miExecutionChanged = Signal()
+        self.miBreakpointChanged = Signal()
 
     # Request the last token that was sent to GDBMI.
     def token(self):
@@ -31,6 +33,9 @@ class SideModel:
         match(cmd):
             case str(cmd) if MICommands.MIPREFIX_EXEC in cmd:
                 self.getThreadInfoAtExecStopped(r)
+            case str(cmd) if MICommands.MIPREFIX_BREAK in cmd and ("-list" not in cmd):
+                logger.debug("Breakpoints changed, updating table...")
+                self.loadBreakpointsListToModel()
             case _:
                 pass
         return r
@@ -61,7 +66,7 @@ class SideModel:
         return self.send(f"{MICommands.MI_BREAKREM} {number}")
 
     def setBreakpoint(self, where: str) -> dict | None:
-        if (not str):
+        if (not where):
             return None
 
         responses = self.send(f"{MICommands.MI_BREAKADD} {where}")
@@ -79,7 +84,7 @@ class SideModel:
             return None
         bkpt = dict(payload["bkpt"])
 
-        return {
+        breakpointDict = {
             "number": bkpt.get("number"),
             "enabled": True if (bkpt.get("enabled") == "y") else False,
             "addr": bkpt.get("addr"),
@@ -88,6 +93,8 @@ class SideModel:
             "sourceFullPath": bkpt.get("fullname", None),
             "line": bkpt.get("line", None)
         }
+
+        return breakpointDict
 
     def getBreakpointsList(self) -> List[dict[str, Any]] | None:
         responses =  self.send(MICommands.MI_BREAKLIST)
@@ -212,3 +219,4 @@ class MICommands:
     MI_BREAKREM = "-break-delete"
 
     MIPREFIX_EXEC = "-exec"
+    MIPREFIX_BREAK = "-break"
