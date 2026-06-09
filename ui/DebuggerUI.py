@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from pprint import pformat
 import subprocess
 from typing import List, override
 from loguru import logger
@@ -110,10 +109,8 @@ class DebuggerUI(QMainWindow, Resettable):
 
         self.aboutProgram.triggered.connect(self.showAboutBox)
 
-        self.resettables.extend([self.widgetsToolbar, self])
-
         # to check if a program is being debugged.
-        self.running = False
+        self.isDebugging = False
 
     @override
     def sgReset(self):
@@ -124,6 +121,9 @@ class DebuggerUI(QMainWindow, Resettable):
 
         self.removeDockWidget(self.codeDock)
         self.setWindowTitle(self.appTitle)
+
+        self.model.miExecutionChanged.removeHandler(self.updateDebugger)
+        self.resettables.clear()
 
     def reset(self):
         # reset toolbars
@@ -145,7 +145,7 @@ class DebuggerUI(QMainWindow, Resettable):
         SGDBConfigManager.save(self.currentConfig, Path(destinationFile[0]))
 
     def showConfigureGDB(self):
-        if (self.running):
+        if (self.isDebugging):
             QMessageBox(QMessageBox.Icon.Warning, "Running session", "An instance of GDB is already running. Make sure to terminate the current session before starting a new one.", QMessageBox.StandardButton.Ok).exec()
             return
 
@@ -189,7 +189,7 @@ class DebuggerUI(QMainWindow, Resettable):
         breakpointsManager.show()
 
     def openConfig(self):
-        if (self.running):
+        if (self.isDebugging):
             QMessageBox(QMessageBox.Icon.Warning, "Running session", "An instance of GDB is already running. Make sure to terminate the current session before starting a new one.Another instance of", QMessageBox.StandardButton.Ok).exec()
             return
 
@@ -236,7 +236,7 @@ class DebuggerUI(QMainWindow, Resettable):
 
         self.setDebuggerUI(config)
 
-        self.running = True
+        self.isDebugging = True
         self.statusBar().showMessage("Debugger launched.")
 
     def updateDebugger(self, threadInfo):
@@ -257,48 +257,44 @@ class DebuggerUI(QMainWindow, Resettable):
         self.codeDock.sgUpdate(frame)
 
     def sendContinue(self):
-        threadInfo = self.model.continueExecution()
-        self.updateDebugger(threadInfo)
+        self.model.continueExecution()
 
     def sendStepOver(self):
-        frame = self.model.stepOver()
-        self.updateDebugger(frame)
+        self.model.stepOver()
 
     def sendStepInto(self):
-        frame = self.model.stepInto()
-        self.updateDebugger(frame)
+        self.model.stepInto()
 
     def sendStepOut(self):
-        frame = self.model.stepOut()
-        self.updateDebugger(frame)
+        self.model.stepOut()
 
     def setDebuggerUI(self, config: SGDBConfig):
         self.miPrompt = MIPrompt(self.model)
         self.setCentralWidget(self.miPrompt)
         self.mainToolbar.terminateDebug.toggled.connect(self.terminateSession)
 
-
-        self.addToolBar(self.debugToolbar)
-        self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.widgetsToolbar)
-
-        # they may have been hidden
-        self.debugToolbar.show()
-        self.widgetsToolbar.show()
         self.codeDock = CodeDock()
+        self.codeDock.setMinimumHeight(400)
         self.addDockWidget(Qt.DockWidgetArea.TopDockWidgetArea, self.codeDock)
+
         self.widgetsToolbar.showCode.setChecked(True)
         self.widgetsToolbar.showCode.triggered.connect(self.showHideSourceView)
-        self.codeDock.setMinimumHeight(400)
+        self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.widgetsToolbar)
+        self.addToolBar(self.debugToolbar)
+
+        self.resettables.extend([self, self.widgetsToolbar, self.miPrompt, self.codeDock])
+
+        self.model.miExecutionChanged.connectHandler(self.updateDebugger)
+
+        self.widgetsToolbar.show()
+        self.debugToolbar.show()
 
         self.setWindowTitle(f"{config.sessionTitle} - {self.appTitle}")
-
-        self.resettables.extend([self.miPrompt, self.codeDock])
 
     def showHideSourceView(self):
         self.codeDock.setVisible(self.widgetsToolbar.showCode.isChecked())
 
     def closeEvent(self, event: QCloseEvent):
-            logger.debug("Wooo i'm overriding the close event!!!")
             self.terminateSession()
             logger.success("Bye!")
 
@@ -307,14 +303,13 @@ class DebuggerUI(QMainWindow, Resettable):
     def terminateSession(self):
         logger.debug("Terminating GDBMI...")
 
-        try:
+        if (self.isDebugging):
             self.gdbMi.exit()
             self.reset()
-        except AttributeError:
-            logger.debug("No GDBMI instance...")
-            return
 
-        self.gdbMi = None
-        self.running = False
-        logger.success("GDBMI terminated.")
+            self.isDebugging = False
+            logger.success("GDBMI terminated.")
+        else:
+            logger.debug("No GDBMI instance...")
+
         self.statusBar().showMessage("Debugger terminated.")

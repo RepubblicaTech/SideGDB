@@ -1,8 +1,5 @@
 from typing import List, Optional
-from pygdbmi import constants
 from pygdbmi.gdbcontroller import GdbController
-
-from loguru import logger
 
 class GdbMI(GdbController):
     GDBMI_TOKENS = {
@@ -19,24 +16,3 @@ class GdbMI(GdbController):
             gdbCommand.extend(gdbArgs)
 
         super().__init__(gdbCommand)
-
-    def readResponse(self, attempts: int = -1):
-        att = attempts
-        responses = {}
-        while True:
-            try:
-                responses = self.get_gdb_response(timeout_sec=1)
-                break
-            except constants.GdbTimeoutError:
-                logger.debug("Waiting...")
-                if (att > 0):
-                    att -= 1
-                    continue
-
-                if (att == -1):
-                    continue
-
-                logger.warning("No more attempts.")
-                break
-
-        return responses

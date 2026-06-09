@@ -14,11 +14,8 @@ class BreakManager(QDialog):
         self.symbolInput = QLineEdit(placeholderText="Type a function or *address...")
         self.insertButton = QPushButton("Insert")
         self.table = QTableView()
-        self.deleteButton = QPushButton("DELETE selected breakpoint")
-
-        self.model.breakpointsStandardModel.setHorizontalHeaderLabels(["No.", "Where[file:line]"])
         self.table.setModel(self.model.breakpointsStandardModel)
-        self.table.resizeColumnsToContents()
+        self.deleteButton = QPushButton("DELETE selected breakpoint")
 
         layout.addWidget(self.symbolInput, 0, 0, 1, 1)
         layout.addWidget(self.insertButton, 0, 1, 1, 1)
@@ -27,7 +24,6 @@ class BreakManager(QDialog):
 
         self.setLayout(layout)
 
-        self.model.loadBreakpointsListToModel()
         self.insertButton.clicked.connect(self.sendInsertBreakpoint)
         self.deleteButton.clicked.connect(self.deleteSelectedBreakpoint)
 
@@ -44,7 +40,6 @@ class BreakManager(QDialog):
             if (response[0]["message"] != "done"):
                 logger.warning(f"Couldn't delete breakpoint {breakpointNumber}: {response[0]["payload"]}".strip("\n"))
                 continue
-            self.model.breakpointsStandardModel.removeRow(row)
             logger.debug(f"Breakpoint {breakpointNumber} deleted.")
 
     def sendInsertBreakpoint(self):
@@ -52,30 +47,7 @@ class BreakManager(QDialog):
         if (not symbol):
             return
 
-        try:
-            breakpoint = self.model.setBreakpoint(symbol)
-        except Exception as e:
-            logger.error(f"Couldn't set breakpoint: {str(e)}")
-            QMessageBox(QMessageBox.Icon.Critical, "Breakpoint error", f"Couldn't set breakpoint: {str(e)}", QMessageBox.StandardButton.Ok).exec()
-            return
-
-        if (not breakpoint):
-            return
-
-        bNumber = breakpoint.get("number")
-        where = breakpoint.get("addr")
-        if (breakpoint.get("where")):
-            where = breakpoint.get("where")
-        file = breakpoint.get("source")
-        line = breakpoint.get("line")
-
-        locationStr = str(where)
-        if (file or line):
-            locationStr += f"[{str(file) if file else "/???.?"}:{str(line) if line else "XX"}]"
-
-        c1 = QStandardItem(str(bNumber))
-        c2 = QStandardItem(locationStr)
-        self.model.breakpointsStandardModel.appendRow([c1, c2])
-
+        self.model.setBreakpoint(symbol)    # table model gets updated in here
         self.table.resizeColumnsToContents()
+
         self.symbolInput.setText("")

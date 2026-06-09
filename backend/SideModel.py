@@ -1,25 +1,24 @@
+from threading import Thread
 from typing import Any, List
 
 from PySide6.QtGui import QStandardItem, QStandardItemModel
 from loguru import logger
 
 from backend import GDBMI
-from backend.MIResponseManager import MIPromptManager
+from pygdbmi.constants import GdbTimeoutError
+from ui.observer import Signal
 
 class SideModel:
-    currentToken: int = 0
-    currentThreadId: int
-    currentBreakpoint: str
-
-    registers: dict
-    breakpointsStandardModel: QStandardItemModel
-
-    variables: list[dict]
-
     def __init__(self, gdbMI: GDBMI.GdbMI) -> None:
         self.__gdbMI = gdbMI
 
         self.breakpointsStandardModel = QStandardItemModel(0, 2)
+        self.breakpointsStandardModel.setHorizontalHeaderLabels(["No.", "Where[file:line]"])
+        self.currentToken = 0
+
+        self.miResponseReceived = Signal()
+        self.miExecutionChanged = Signal()
+        self.miBreakpointChanged = Signal()
 
     # Request the last token that was sent to GDBMI.
     def token(self):
@@ -27,23 +26,50 @@ class SideModel:
 
     def send(self, cmd):
         r =  self.__gdbMI.write(f"{self.currentToken}{cmd}")
-        MIPromptManager.printFormatted(r)
         self.currentToken += 1
+
+        self.miResponseReceived.trigger(r)
+
+        match(cmd):
+            case str(cmd) if MICommands.MIPREFIX_EXEC in cmd:
+                self.getThreadInfoAtExecStopped(r)
+            case str(cmd) if MICommands.MIPREFIX_BREAK in cmd and ("-list" not in cmd):
+                logger.debug("Breakpoints changed, updating table...")
+                self.loadBreakpointsListToModel()
+            case _:
+                pass
         return r
 
     def read(self, attempts):
-        r = self.__gdbMI.readResponse(attempts)
-        MIPromptManager.printFormatted(list(r))
-        return r
+        responses = {}
+        logger.debug("Waiting for response")
+        while True:
+            try:
+                responses = self.__gdbMI.get_gdb_response()
+                break
+            except GdbTimeoutError:
+                if (attempts > 0):
+                    attempts -= 1
+                    continue
+
+                if (attempts == -1):
+                    continue
+
+                logger.warning("\nNo more attempts.")
+                break
+        logger.success("\nRead response OK")
+
+        self.miResponseReceived.trigger(responses)
+        return responses
 
     def deleteBreakpoint(self, number):
-        return self.send(f"-break-delete {number}")
+        return self.send(f"{MICommands.MI_BREAKREM} {number}")
 
     def setBreakpoint(self, where: str) -> dict | None:
-        if (not str):
+        if (not where):
             return None
 
-        responses = self.send(f"-break-insert {where}")
+        responses = self.send(f"{MICommands.MI_BREAKADD} {where}")
         r = self.selectResponse(responses, ("token", self.token()))
         if (type(r) is not dict):
             return
@@ -58,7 +84,7 @@ class SideModel:
             return None
         bkpt = dict(payload["bkpt"])
 
-        return {
+        breakpointDict = {
             "number": bkpt.get("number"),
             "enabled": True if (bkpt.get("enabled") == "y") else False,
             "addr": bkpt.get("addr"),
@@ -68,8 +94,10 @@ class SideModel:
             "line": bkpt.get("line", None)
         }
 
+        return breakpointDict
+
     def getBreakpointsList(self) -> List[dict[str, Any]] | None:
-        responses =  self.send("-break-list")
+        responses =  self.send(MICommands.MI_BREAKLIST)
         r = self.selectResponse(responses, ("token", self.token()))
         if (not r):
             logger.warning(f"No response with token {self.token()}")
@@ -114,7 +142,7 @@ class SideModel:
             self.breakpointsStandardModel.appendRow([bNo, where])
 
     def threadInfo(self):
-        responses = self.send("-thread-info")
+        responses = self.send(MICommands.MI_THREADINF)
         response = self.selectResponse(responses, ("token", self.token()))
         if (not response):
             return {}
@@ -135,38 +163,26 @@ class SideModel:
             "threads": threads
         }
 
+    def getThreadInfoAtExecStopped(self, execResponse):
+        t = Thread(target=lambda: self.read(-1))
+        if (self.selectResponse(execResponse, ("message", "stopped")) is None):
+            t.start()
+            # TODO: check for any input from program (idk how, but at least i don't hang up the whole program in the meanwhile)
+            t.join()
+
+        self.miExecutionChanged.trigger(self.threadInfo())
+
     def continueExecution(self):
-        responses = self.send("-exec-continue")
-        frameDict = self.selectResponse(responses, ("message", "stopped"))
-
-        if (not frameDict):
-            # wait until breakpoint
-            self.read(-1)
-
-        return self.threadInfo()
+        self.send(MICommands.MI_CONTINUE)
 
     def stepOver(self):
-        responses = self.send("-exec-next")
-        frameDict = self.selectResponse(responses, ("message", "stopped"))
-        if (not frameDict):
-            # wait until finishing
-            self.read(-1)
-
-        return self.threadInfo()
+        self.send(MICommands.MI_STEPNX)
 
     def stepInto(self):
-        self.send("-exec-step")
-
-        return self.threadInfo()
+        self.send(MICommands.MI_STEPIN)
 
     def stepOut(self):
-        responses = self.send("-exec-finish")
-        frameDict = self.selectResponse(responses, ("message", "stopped"))
-        if (not frameDict):
-            # wait until finishing
-            self.read(-1)
-
-        return self.threadInfo()
+        self.send(MICommands.MI_STEPOUT)
 
     def terminate(self):
         self.__gdbMI.exit()
@@ -189,3 +205,18 @@ class SideModel:
                 return gdbMIResponse
 
         return None
+
+class MICommands:
+    MI_CONTINUE = "-exec-continue"
+    MI_STEPNX = "-exec-next"
+    MI_STEPIN = "-exec-step"
+    MI_STEPOUT = "-exec-finish"
+
+    MI_THREADINF = "-thread-info"
+
+    MI_BREAKLIST = "-break-list"
+    MI_BREAKADD = "-break-insert"
+    MI_BREAKREM = "-break-delete"
+
+    MIPREFIX_EXEC = "-exec"
+    MIPREFIX_BREAK = "-break"
