@@ -166,20 +166,16 @@ class SideModel:
         self.miExecutionChanged.trigger(self.threadInfo())
 
     def continueExecution(self):
-        responses = self.send(MICommands.MI_CONTINUE)
-        self.getThreadInfoAtExecStopped(responses)
+        self.send(MICommands.MI_CONTINUE)
 
     def stepOver(self):
-        responses = self.send(MICommands.MI_STEPNX)
-        self.getThreadInfoAtExecStopped(responses)
+        self.send(MICommands.MI_STEPNX)
 
     def stepInto(self):
-        responses = self.send(MICommands.MI_STEPIN)
-        self.getThreadInfoAtExecStopped(responses)
+        self.send(MICommands.MI_STEPIN)
 
     def stepOut(self):
-        responses = self.send(MICommands.MI_STEPOUT)
-        self.getThreadInfoAtExecStopped(responses)
+        self.send(MICommands.MI_STEPOUT)
 
     def terminate(self):
         self.__gdbMI.exit()
