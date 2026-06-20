@@ -1,5 +1,4 @@
-from PySide6.QtGui import QStandardItem
-from PySide6.QtWidgets import QDialog, QGridLayout, QLineEdit, QMessageBox, QPushButton, QTableView, QWidget
+from PySide6.QtWidgets import QDialog, QGridLayout, QLineEdit, QPushButton, QTableView, QWidget
 from loguru import logger
 
 from backend.SideModel import SideModel
