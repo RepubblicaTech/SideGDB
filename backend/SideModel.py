@@ -207,16 +207,16 @@ class SideModel:
         return None
 
 class MICommands:
-    MI_CONTINUE = "-exec-continue"
-    MI_STEPNX = "-exec-next"
-    MI_STEPIN = "-exec-step"
-    MI_STEPOUT = "-exec-finish"
-
-    MI_THREADINF = "-thread-info"
-
-    MI_BREAKLIST = "-break-list"
-    MI_BREAKADD = "-break-insert"
-    MI_BREAKREM = "-break-delete"
-
     MIPREFIX_EXEC = "-exec"
     MIPREFIX_BREAK = "-break"
+
+    MI_CONTINUE = f"{MIPREFIX_EXEC}-continue"
+    MI_STEPNX = f"{MIPREFIX_EXEC}-next"
+    MI_STEPIN = f"{MIPREFIX_EXEC}-step"
+    MI_STEPOUT = f"{MIPREFIX_EXEC}-finish"
+
+    MI_BREAKLIST = f"{MIPREFIX_BREAK}-list"
+    MI_BREAKADD = f"{MIPREFIX_BREAK}-insert"
+    MI_BREAKREM = f"{MIPREFIX_BREAK}-delete"
+
+    MI_THREADINF = "-thread-info"
