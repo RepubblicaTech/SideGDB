@@ -25,34 +25,32 @@ class MainToolbar(QToolBar):
         super().__init__(title)
 
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.newConfig = self.addAction(QFugueManager.loadIcon("bug--plus", FugueIconSize.FUGUE_32), "New")
-        self.openConfig = self.addAction(QFugueManager.loadIcon("folder-horizontal-open", FugueIconSize.FUGUE_32), "Open")
-        self.saveAsConfig = self.addAction(QFugueManager.loadIcon("disk-rename", FugueIconSize.FUGUE_32), "")
-        # self.saveQAction = self.addAction(QFugueManager.loadIcon("disk", FugueIconSize.FUGUE_32), "")
-        self.terminateDebug = self.addAction(QFugueManager.loadIcon("plug-disconnect-prohibition", FugueIconSize.FUGUE_32), "Terminate")
+        self.newConfig = self.addAction(QFugueManager.loadIcon("new-debug", FugueIconSize.FUGUE_32), "New")
+        self.openConfig = self.addAction(QFugueManager.loadIcon("folder-open", FugueIconSize.FUGUE_32), "Open")
+        self.saveAsConfig = self.addAction(QFugueManager.loadIcon("floppy-save", FugueIconSize.FUGUE_32), "")
+        self.terminateDebug = self.addAction(QFugueManager.loadIcon("debug-terminate", FugueIconSize.FUGUE_32), "Terminate")
         self.saveAsConfig.setToolTip("Save As...")
-        # self.saveQAction.setToolTip("Save")
 
 class DebugToolbar(QToolBar):
     def __init__(self, title: str):
         super().__init__(title)
 
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.breakpointsMan = self.addAction(QFugueManager.loadIcon("table-delete-row", FugueIconSize.FUGUE_32), "Breakpoints")
-        self.continueExec = self.addAction(QFugueManager.loadIcon("control", FugueIconSize.FUGUE_32), "")
-        self.stepOver = self.addAction(QFugueManager.loadIcon("arrow-step-over", FugueIconSize.FUGUE_32), "")
-        self.stepInto = self.addAction(QFugueManager.loadIcon("arrow-step", FugueIconSize.FUGUE_32), "")
-        self.stepOut = self.addAction(QFugueManager.loadIcon("arrow-step-out", FugueIconSize.FUGUE_32), "")
+        self.breakpointsMan = self.addAction(QFugueManager.loadIcon("breakpoint-delete", FugueIconSize.FUGUE_32), "Breakpoints")
+        self.continueExec = self.addAction(QFugueManager.loadIcon("continue", FugueIconSize.FUGUE_32), "")
+        self.stepOver = self.addAction(QFugueManager.loadIcon("step-over", FugueIconSize.FUGUE_32), "")
+        self.stepInto = self.addAction(QFugueManager.loadIcon("step", FugueIconSize.FUGUE_32), "")
+        self.stepOut = self.addAction(QFugueManager.loadIcon("step-out", FugueIconSize.FUGUE_32), "")
 
 class ShowHideToolbar(QToolBar, Resettable):
     def __init__(self, title: str):
         super().__init__(title)
 
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.showCode = self.addAction(QFugueManager.loadIcon("script-code", FugueIconSize.FUGUE_32), "")
-        self.showDisasm = self.addAction(QFugueManager.loadIcon("script-binary", FugueIconSize.FUGUE_32), "")
-        self.showVars = self.addAction(QFugueManager.loadIcon("block", FugueIconSize.FUGUE_32), "")
-        self.showRegs = self.addAction(QFugueManager.loadIcon("processor", FugueIconSize.FUGUE_32), "")
+        self.showCode = self.addAction(QFugueManager.loadIcon("source-code", FugueIconSize.FUGUE_32), "")
+        self.showDisasm = self.addAction(QFugueManager.loadIcon("disassembly", FugueIconSize.FUGUE_32), "")
+        self.showVars = self.addAction(QFugueManager.loadIcon("variables", FugueIconSize.FUGUE_32), "")
+        self.showRegs = self.addAction(QFugueManager.loadIcon("registers", FugueIconSize.FUGUE_32), "")
         self.showCode.setCheckable(True)
         self.showDisasm.setCheckable(True)
         self.showVars.setCheckable(True)

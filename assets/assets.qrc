@@ -1,0 +1,21 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="fugue-32">
+        <file alias="new-debug">fugue/icons-32/bug--plus.png</file>
+        <file alias="folder-open">fugue/icons-32/folder-horizontal-open.png</file>
+        <file alias="floppy-save">fugue/icons-32/disk-rename.png</file>
+        <file alias="debug-terminate">fugue/icons-32/plug-disconnect-prohibition.png</file>
+
+        <file alias="breakpoint-delete">fugue/icons-32/table-delete-row.png</file>
+        <file alias="continue">fugue/icons-32/control.png</file>
+        <file alias="step-over">fugue/icons-32/arrow-step-over.png</file>
+        <file alias="step">fugue/icons-32/arrow-step.png</file>
+        <file alias="step-out">fugue/icons-32/arrow-step-out.png</file>
+
+        <file alias="source-code">fugue/icons-32/script-code.png</file>
+        <file alias="disassembly">fugue/icons-32/script-binary.png</file>
+        <file alias="variables">fugue/icons-32/block.png</file>
+        <file alias="registers">fugue/icons-32/processor.png</file>
+
+    </qresource>
+</RCC>
