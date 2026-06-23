@@ -16,9 +16,13 @@ If you want to run directly the Python code from the repo, you'll have to do som
 All required libraries are in the [requirements.txt](requirements.txt) file. Anyways, these are the needed libraries:
 - `pygdbmi`:  [A library to parse gdb mi output](https://cs01.github.io/pygdbmi/) and interact with gdb subprocesses
 - `PySide6`: the [official Qt Widgets implementation](https://doc.qt.io/qtforpython-6/) for Python
-- `loguru`: [Python logging](https://pypi.org/project/loguru/) made (stupidly) simple
+- `loguru`: [Python logging made (stupidly) simple](https://pypi.org/project/loguru/)
 
-# Check out the [wiki](https://github.com/RepubblicaTech/SideGDB/wiki) for usage instructions
+You also need to generate an assets file for the various icons:
+```bash
+pyside6-rcc assets/assets.qrc -o assets/assets.py
+```
+
 
 # CREDITS
 
