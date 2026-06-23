@@ -15,3 +15,7 @@ assets/assets.py
 
 # test executable
 test/helloworld
+
+# PyInstaller build things
+build
+dist
