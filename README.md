@@ -23,6 +23,7 @@ You also need to generate an assets file for the various icons:
 pyside6-rcc assets/assets.qrc -o assets/assets.py
 ```
 
+**Check out the [wiki](https://github.com/RepubblicaTech/SideGDB/wiki/Setting-up-the-repository) for installing the icon pack**
 
 # CREDITS
 
