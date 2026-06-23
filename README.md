@@ -1,8 +1,8 @@
 # SideGDB
 
-a custom GDB UI made in Python.
+A graphical frontend for GDB.
 
-## ⚠️⚠️ THIS IS ALPHA SOFTWARE ⚠️⚠️
+## ⚠️⚠️ THIS IS v0 SOFTWARE ⚠️⚠️
 Parts of this project could be rewritten when you least expect it: this documentation can get outdated very easily.
   
 # VERY IMPORTANT NOTE
