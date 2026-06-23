@@ -136,7 +136,7 @@ class DebuggerUI(QMainWindow, Resettable):
             return
 
         self.__fileDialog.setFileMode(QFileDialog.FileMode.AnyFile)
-        destinationFile = self.__fileDialog.getSaveFileName(self, dir=os.getcwd(), filter="JSON (*.json)")
+        destinationFile = self.__fileDialog.getSaveFileName(self, dir=os.getcwd(), filter="JSON (*.json)", options=QFileDialog.Option.DontUseNativeDialog)
         if (destinationFile[0] == ""):
             return
         logger.debug(f"Saving to file {destinationFile[0]}")
@@ -192,7 +192,7 @@ class DebuggerUI(QMainWindow, Resettable):
             return
 
         self.__fileDialog.setFileMode(QFileDialog.FileMode.ExistingFile)
-        openFilename = self.__fileDialog.getOpenFileName(dir=os.getcwd(), filter="JSON (*.json)")
+        openFilename = self.__fileDialog.getOpenFileName(dir=os.getcwd(), filter="JSON (*.json)", options=QFileDialog.Option.DontUseNativeDialog)
         if (openFilename[0] == ""):
             return
         logger.debug(f"Using file {openFilename[0]}")
