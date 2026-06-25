@@ -1,7 +1,7 @@
 import json
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QDialog, QLabel, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QDialog, QLabel, QPushButton, QVBoxLayout, QWidget, QApplication
 
 ABOUTJSON_PATH = "assets/about.json"
 
@@ -20,7 +20,6 @@ class AboutBox(QDialog):
 
         # json thingies
         codeName = ""
-        semVersion = ""
         with open(ABOUTJSON_PATH, "r") as f:
             obj = json.load(f)
             codeName = obj["codename"] or ""
