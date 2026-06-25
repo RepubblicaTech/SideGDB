@@ -20,6 +20,11 @@ if __name__ == "__main__":
 
     with open(ABOUTJSON_PATH, "r") as f:
         obj = json.load(f)
+        semVersion = f"{obj["major"]}.{obj["minor"]}.{obj["patch"]}"
+        if (obj.get("prerelease", None)):
+            semVersion += f"-{obj["prerelease"]["version"]}.{obj["prerelease"]["id"]}"
+        app.setApplicationVersion(semVersion)
+
         if (obj.get("prerelease", None)):
             match (obj["prerelease"]["version"]):
                 case "alpha":

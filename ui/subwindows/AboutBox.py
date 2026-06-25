@@ -24,11 +24,8 @@ class AboutBox(QDialog):
         with open(ABOUTJSON_PATH, "r") as f:
             obj = json.load(f)
             codeName = obj["codename"] or ""
-            semVersion = f"{obj["major"]}.{obj["minor"]}.{obj["patch"]}"
-            if (obj.get("prerelease", None)):
-                semVersion += f"-{obj["prerelease"]["version"]}.{obj["prerelease"]["id"]}"
 
-        aboutLabel = QLabel(f"{self.appTitle} {codeName}\nVersion {semVersion}")
+        aboutLabel = QLabel(f"{self.appTitle} {codeName}\nVersion {QApplication.instance().applicationVersion()}")
         creditsLabel = QLabel("Some icons by <a href=\"http://p.yusukekamiyamane.com/\">Yusuke Kamiyamane</a>")
         creditsLabel.setTextFormat(Qt.TextFormat.RichText)
         creditsLabel.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
