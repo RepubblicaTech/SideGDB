@@ -16,6 +16,7 @@ if __name__ == "__main__":
     app = QApplication([])
     windowIcon = QIcon("assets/sidegdb_logo.png")
     app.setWindowIcon(windowIcon)
+    app.setApplicationName(APPLICATION_TITLE)
     window = DebuggerUI(APPLICATION_TITLE)
 
     with open(ABOUTJSON_PATH, "r") as f:
