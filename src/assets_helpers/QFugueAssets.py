@@ -4,7 +4,7 @@
 from enum import IntEnum
 
 from PySide6.QtGui import QIcon
-from assets import assets
+from assets_helpers import assets
 
 class FugueIconSize(IntEnum):
     FUGUE_NORMAL = 0

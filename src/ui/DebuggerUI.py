@@ -4,7 +4,7 @@ import subprocess
 from typing import List, override
 from loguru import logger
 
-from assets.QFugueAssets import FugueIconSize, QFugueManager
+from assets_helpers.QFugueAssets import FugueIconSize, QFugueManager
 from backend.SGDBConfig import SGDBConfig, SGDBConfigManager
 from backend.GDBMI import GdbMI
 

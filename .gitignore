@@ -11,7 +11,7 @@ venv
 # assets
 assets/fugue*
 # generated from pyside6-rcc
-assets/assets.py
+src/assets_helpers/assets.py
 
 # test executable
 test/helloworld
