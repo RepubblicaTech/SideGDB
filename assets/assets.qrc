@@ -18,4 +18,9 @@
         <file alias="registers">fugue/icons-32/processor.png</file>
 
     </qresource>
+
+    <qresource prefix="app-assets">
+        <file alias="about">about.json</file>
+        <file alias="banner">sidegdb_banner.png</file>
+    </qresource>
 </RCC>
