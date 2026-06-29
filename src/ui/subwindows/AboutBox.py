@@ -1,9 +1,10 @@
 import json
-from PySide6.QtCore import Qt
+from venv import logger
+from PySide6.QtCore import QFile, QIODeviceBase, QTextStream, Qt
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QDialog, QLabel, QPushButton, QVBoxLayout, QWidget, QApplication
 
-ABOUTJSON_PATH = "assets/about.json"
+ABOUTJSON_PATH = ":/app-assets/about"
 
 class AboutBox(QDialog):
     def __init__(self, parent: QWidget, appTitle: str):
@@ -16,13 +17,15 @@ class AboutBox(QDialog):
         self.setLayout(layout)
 
         banner = QLabel()
-        banner.setPixmap(QPixmap("assets/sidegdb_banner.png").scaledToWidth(self.width() - 10, Qt.TransformationMode.SmoothTransformation))
+        banner.setPixmap(QPixmap(":/app-assets/banner").scaledToWidth(self.width() - 10, Qt.TransformationMode.SmoothTransformation))
 
-        # json thingies
-        codeName = ""
-        with open(ABOUTJSON_PATH, "r") as f:
-            obj = json.load(f)
-            codeName = obj["codename"] or ""
+        aboutJson = QFile(ABOUTJSON_PATH)
+        if (not aboutJson.open(QFile.OpenModeFlag.ReadOnly | QIODeviceBase.OpenModeFlag.Text)):
+            logger.error("Missing about.json. Quitting.")
+            return
+        f = QTextStream(aboutJson)
+        obj = json.loads(f.readAll())
+        codeName = obj["codename"] or ""
 
         aboutLabel = QLabel(f"{self.appTitle} {codeName}\nVersion {QApplication.instance().applicationVersion()}")
         creditsLabel = QLabel("Some icons by <a href=\"http://p.yusukekamiyamane.com/\">Yusuke Kamiyamane</a>")
