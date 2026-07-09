@@ -31,8 +31,8 @@ jobs:
           cp -rv --update assets/fugue-2x/icons-shadowless-2x/* assets/fugue/icons-shadowless-32
       - name: Install Python dependencies
         run: |
-            sudo apt install python3-pyside6.{qtcore,qtgui,qtwidgets} python3-loguru pyside6-tools
-            pip install pygdbmi pyinstaller
+            sudo apt install python3-loguru binutils
+            pip install pygdbmi pyinstaller PySide6
       - name: Compile QResouce file
         run: pyside6-rcc assets/assets.qrc -o src/assets_helpers/assets.py
       - name: PyInstaller
