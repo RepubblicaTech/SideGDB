@@ -40,7 +40,7 @@ jobs:
       - name: Create app archive
         run: tar czvf app-x86_64-linux.tar.gz -C dist/sidegdb .
       - name: Upload app package artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sidegdb-${{ github.ref_name }}-x86_64-linux.tar.gz
           path: app-x86_64-linux.tar.gz
