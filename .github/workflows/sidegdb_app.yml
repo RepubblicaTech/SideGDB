@@ -24,9 +24,9 @@ jobs:
             path: 'assets/fugue-2x'
       - name: Copy all icons
         run: |
-          mkdir assets/fugue assets/fugue-zip
+          mkdir -p assets/fugue/{icons{-shadowless,}-{24,32},animated} assets/fugue-zip
           unzip assets/fugue-icons-3.5.6.zip -d assets/fugue-zip
-          cp -rv --update assets/fugue-zip/icons{-shadowless,}-{24,32} assets/fugue-zip/animated -t assets/fugue
+          cp -rv --update assets/fugue-zip/bonus/icons{-shadowless,}-{24,32} assets/fugue-zip/animated -t assets/fugue
           cp -rv --update assets/fugue-2x/icons-2x/* assets/fugue/icons-32
           cp -rv --update assets/fugue-2x/icons-shadowless-2x/* assets/fugue/icons-shadowless-32
       - name: Install Python dependencies
