@@ -38,10 +38,9 @@ jobs:
       - name: PyInstaller
         run: pyinstaller sidegdb.spec
       - name: Create app archive
-        run: tar czvf app-x86_64-linux.tar.gz -C dist/sidegdb .
+        run: tar czvf sidegdb-${{ env.GITHUB_REF_NAME }}-x86_64-linux.tar.gz -C dist/sidegdb .
       - name: Upload app package artifact
         uses: actions/upload-artifact@v7
         with:
-          name: sidegdb-${{ github.ref_name }}-x86_64-linux.tar.gz
-          path: app-x86_64-linux.tar.gz
+          path: sidegdb-${{ github.ref_name }}-x86_64-linux.tar.gz
           archive: false
