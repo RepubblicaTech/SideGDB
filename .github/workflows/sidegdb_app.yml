@@ -44,3 +44,4 @@ jobs:
         with:
           name: sidegdb-${{ github.ref_name }}-x86_64-linux.tar.gz
           path: app-x86_64-linux.tar.gz
+          archive: false
