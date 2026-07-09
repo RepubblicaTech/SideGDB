@@ -1,0 +1,46 @@
+name: Package as application
+run-name: ${{ github.ref_name }}
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+
+jobs:
+  x86_64-linux:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v7
+      - name: Download Fugue Icons
+        uses: suisei-cn/actions-download-file@v1.6.1
+        with:
+            url: "https://p.yusukekamiyamane.com/icon/downloads/fugue-icons-3.5.6.zip"  # I hope mr. yusuke won't get ddos'd for this...
+            target: assets/
+      - name: Download Fugue Upscaled
+        uses: actions/checkout@v7
+        with:
+            repository: 'chrisjbillington/fugue-2x-icons'
+            path: 'assets/fugue-2x'
+      - name: Copy all icons
+        run: |
+          mkdir assets/fugue assets/fugue-zip
+          unzip -v assets/fugue-icons-3.5.6.zip -d assets/fugue-zip
+          cp -rv --update assets/fugue-zip/icons{-shadowless,}-{24,32} assets/fugue-zip/animated -t assets/fugue
+          cp -rv --update assets/fugue-2x/icons-2x/* assets/fugue/icons-32
+          cp -rv --update assets/fugue-2x/icons-shadowless-2x/* assets/fugue/icons-shadowless-32
+      - name: Install Python dependencies
+        run: |
+            sudo apt install python3-pyside6.{qtcore,qtgui,qtwidgets} python3-loguru pyside6-tools
+            pip install pygdbmi pyinstaller
+      - name: Compile QResouce file
+        run: pyside6-rcc assets/assets.qrc -o src/assets_helpers/assets.py
+      - name: PyInstaller
+        run: pyinstaller sidegdb.spec
+      - name: Create app archive
+        run: tar czvf app-x86_64-linux.tar.gz -C dist/sidegdb .
+      - name: Upload app package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sidegdb-${{ github.ref_name }}-x86_64-linux.tar.gz
+          path: app-x86_64-linux.tar.gz
