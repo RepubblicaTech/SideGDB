@@ -24,26 +24,26 @@ jobs:
             path: 'assets/fugue-2x'
       - name: Copy all icons
         run: |
-          mkdir assets/fugue assets/fugue-zip
-          unzip -v assets/fugue-icons-3.5.6.zip -d assets/fugue-zip
-          cp -rv --update assets/fugue-zip/icons{-shadowless,}-{24,32} assets/fugue-zip/animated -t assets/fugue
+          mkdir -p assets/fugue/{icons{-shadowless,}-{24,32},animated} assets/fugue-zip
+          unzip assets/fugue-icons-3.5.6.zip -d assets/fugue-zip
+          cp -rv --update assets/fugue-zip/bonus/{icons{-shadowless,}-{24,32},animated} -t assets/fugue
           cp -rv --update assets/fugue-2x/icons-2x/* assets/fugue/icons-32
           cp -rv --update assets/fugue-2x/icons-shadowless-2x/* assets/fugue/icons-shadowless-32
       - name: Install Python dependencies
         run: |
-            sudo apt install python3-pyside6.{qtcore,qtgui,qtwidgets} python3-loguru pyside6-tools
-            pip install pygdbmi pyinstaller
+            sudo apt install python3-loguru binutils
+            pip install pygdbmi pyinstaller PySide6
       - name: Compile QResouce file
         run: pyside6-rcc assets/assets.qrc -o src/assets_helpers/assets.py
       - name: PyInstaller
         run: pyinstaller sidegdb.spec
       - name: Create app archive
-        run: tar czvf app-x86_64-linux.tar.gz -C dist/sidegdb .
+        run: tar czvf sidegdb-$GITHUB_REF_NAME-x86_64-linux.tar.gz -C dist/sidegdb .
       - name: Upload app package artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: sidegdb-${{ github.ref_name }}-x86_64-linux.tar.gz
-          path: app-x86_64-linux.tar.gz
+          path: sidegdb-${{ github.ref_name }}-x86_64-linux.tar.gz
+          archive: false
   x86_64-macos15:
     runs-on: macos-15-intel
     steps:
@@ -61,9 +61,9 @@ jobs:
             path: 'assets/fugue-2x'
       - name: Copy all icons
         run: |
-          mkdir assets/fugue assets/fugue-zip
-          unzip -v assets/fugue-icons-3.5.6.zip -d assets/fugue-zip
-          cp -rv --update assets/fugue-zip/icons{-shadowless,}-{24,32} assets/fugue-zip/animated -t assets/fugue
+          mkdir -p assets/fugue/{icons{-shadowless,}-{24,32},animated} assets/fugue-zip
+          unzip assets/fugue-icons-3.5.6.zip -d assets/fugue-zip
+          cp -rv --update assets/fugue-zip/bonus/{icons{-shadowless,}-{24,32},animated} -t assets/fugue
           cp -rv --update assets/fugue-2x/icons-2x/* assets/fugue/icons-32
           cp -rv --update assets/fugue-2x/icons-shadowless-2x/* assets/fugue/icons-shadowless-32
       - name: Install Python dependencies
@@ -73,9 +73,9 @@ jobs:
       - name: PyInstaller
         run: pyinstaller sidegdb.spec
       - name: Create app archive
-        run: tar czvf app-x86_64-macos15.tar.gz -C dist/sidegdb .
+        run: tar czvf sidegdb-$GITHUB_REF_NAME-x86_64-linux.tar.gz -C dist/sidegdb .
       - name: Upload app package artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: sidegdb-${{ github.ref_name }}-x86_64-macos15.tar.gz
-          path: app-x86_64-macos15.tar.gz
+          path: sidegdb-${{ github.ref_name }}-x86_64-linux.tar.gz
+          archive: false
