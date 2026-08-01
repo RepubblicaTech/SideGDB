@@ -63,9 +63,15 @@ jobs:
         run: |
           mkdir -p assets/fugue/{icons{-shadowless,}-{24,32},animated} assets/fugue-zip
           unzip assets/fugue-icons-3.5.6.zip -d assets/fugue-zip
-          cp -Rvf assets/fugue-zip/bonus/{icons{-shadowless,}-{24,32},animated} -t assets/fugue
-          cp -Rvf assets/fugue-2x/icons-2x/* assets/fugue/icons-32
-          cp -Rvf assets/fugue-2x/icons-shadowless-2x/* assets/fugue/icons-shadowless-32
+          cp -Rvf assets/fugue-zip/bonus/icons assets/fugue/
+          cp -Rvf assets/fugue-zip/bonus/icons-24 assets/fugue/
+          cp -Rvf assets/fugue-zip/bonus/icons-32 assets/fugue/
+          cp -Rvf assets/fugue-zip/bonus/icons-shadowless assets/fugue/
+          cp -Rvf assets/fugue-zip/bonus/icons-shadowless-24 assets/fugue/
+          cp -Rvf assets/fugue-zip/bonus/icons-shadowless-32 assets/fugue/
+          cp -Rvf assets/fugue-zip/bonus/animated assets/fugue/
+          cp -Rvf assets/fugue-2x/icons-2x/* assets/fugue/icons-32/
+          cp -Rvf assets/fugue-2x/icons-shadowless-2x/* assets/fugue/icons-shadowless-32/
       - name: Install Python dependencies
         run: pip install pygdbmi pyinstaller pyside6
       - name: Compile QResouce file
