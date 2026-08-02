@@ -65,7 +65,6 @@ jobs:
           unzip assets/fugue-icons-3.5.6.zip -d assets/fugue-zip
           cp -Rvf assets/fugue-zip/bonus/icons-24 assets/fugue/
           cp -Rvf assets/fugue-zip/bonus/icons-32 assets/fugue/
-          cp -Rvf assets/fugue-zip/bonus/icons-shadowless assets/fugue/
           cp -Rvf assets/fugue-zip/bonus/icons-shadowless-24 assets/fugue/
           cp -Rvf assets/fugue-zip/bonus/icons-shadowless-32 assets/fugue/
           cp -Rvf assets/fugue-zip/bonus/animated assets/fugue/
