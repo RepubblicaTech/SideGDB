@@ -71,7 +71,7 @@ jobs:
           cp -Rvf assets/fugue-2x/icons-2x/* assets/fugue/icons-32/
           cp -Rvf assets/fugue-2x/icons-shadowless-2x/* assets/fugue/icons-shadowless-32/
       - name: Install Python dependencies
-        run: pip install pygdbmi pyinstaller pyside6
+        run: pip install pygdbmi pyinstaller pyside6 loguru
       - name: Compile QResouce file
         run: pyside6-rcc assets/assets.qrc -o src/assets_helpers/assets.py
       - name: PyInstaller
