@@ -61,10 +61,10 @@ class QPathChoose(QWidget):
         logger.debug("huh?")
         match (self.__fileDialog.fileMode()):
             case QFileDialog.FileMode.ExistingFile | QFileDialog.FileMode.ExistingFiles:
-                chosenFile = self.__fileDialog.getOpenFileName(self, f"Open {self.sideLabel.text()}", dir=os.getcwd())
+                chosenFile = self.__fileDialog.getOpenFileName(self, f"Open {self.sideLabel.text()}", dir=os.getcwd(), options=QFileDialog.Option.DontUseNativeDialog)
                 self.pathLine.setText(chosenFile[0])
             case QFileDialog.FileMode.Directory:
-                chosenDir = self.__fileDialog.getExistingDirectory(self, "Select", os.getcwd(), QFileDialog.Option.ShowDirsOnly)
+                chosenDir = self.__fileDialog.getExistingDirectory(self, "Select", os.getcwd(), QFileDialog.Option.ShowDirsOnly | QFileDialog.Option.DontUseNativeDialog)
                 self.pathLine.setText(chosenDir)
 
     def chosenPath(self):

@@ -1,18 +1,7 @@
 from pprint import pformat
-from typing import List
-from PySide6.QtGui import QPalette
-from PySide6.QtWidgets import QTextBrowser
-from loguru import logger
 
 
 class MIPromptManager:
-    miOutput: QTextBrowser
-    canAutoscroll: bool = True
-
-    @staticmethod
-    def setOutputView(p: QTextBrowser):
-        MIPromptManager.miOutput = p
-
     @staticmethod
     def formatResponseMessage(miResponse: dict) -> str:
         if (miResponse.get("message")):
@@ -82,25 +71,3 @@ class MIPromptManager:
                 formatted = pformat(payload)
 
         return formatted + "\n"
-
-    @staticmethod
-    def printFormatted(miResponses: List[dict]):
-        for response in miResponses:
-            match (response.get("message")):
-                case "done":
-                    MIPromptManager.miOutput.setTextColor("#23c417")
-                case "error":
-                    MIPromptManager.miOutput.setTextColor("#e93e3e")
-                case _:
-                    MIPromptManager.miOutput.setTextColor(MIPromptManager.miOutput.palette().color(QPalette.ColorRole.Text))
-
-            MIPromptManager.miOutput.insertPlainText(MIPromptManager.formatResponseMessage(response))
-            if (response.get("payload", None)):
-                MIPromptManager.miOutput.insertPlainText(MIPromptManager.formatResponsePayload(response))
-
-            currentScrollValue = MIPromptManager.miOutput.verticalScrollBar().value()
-            currentMaximum = MIPromptManager.miOutput.verticalScrollBar().maximum()
-            logger.debug(f"Current scrollbar value: {currentScrollValue}; Maximum: {currentMaximum}")
-
-            if (MIPromptManager.canAutoscroll and (currentScrollValue < currentMaximum)):
-                MIPromptManager.miOutput.verticalScrollBar().setValue(MIPromptManager.miOutput.verticalScrollBar().maximum())

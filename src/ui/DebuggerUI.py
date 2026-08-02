@@ -1,11 +1,10 @@
 import os
 from pathlib import Path
-from pprint import pformat
 import subprocess
 from typing import List, override
 from loguru import logger
 
-from assets.QFugueAssets import FugueIconSize, QFugueManager
+from assets_helpers.QFugueAssets import FugueIconSize, QFugueManager
 from backend.SGDBConfig import SGDBConfig, SGDBConfigManager
 from backend.GDBMI import GdbMI
 
@@ -26,34 +25,32 @@ class MainToolbar(QToolBar):
         super().__init__(title)
 
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.newConfig = self.addAction(QFugueManager.loadIcon("bug--plus", FugueIconSize.FUGUE_32), "New")
-        self.openConfig = self.addAction(QFugueManager.loadIcon("folder-horizontal-open", FugueIconSize.FUGUE_32), "Open")
-        self.saveAsConfig = self.addAction(QFugueManager.loadIcon("disk-rename", FugueIconSize.FUGUE_32), "")
-        # self.saveQAction = self.addAction(QFugueManager.loadIcon("disk", FugueIconSize.FUGUE_32), "")
-        self.terminateDebug = self.addAction(QFugueManager.loadIcon("plug-disconnect-prohibition", FugueIconSize.FUGUE_32), "Terminate")
+        self.newConfig = self.addAction(QFugueManager.loadIcon("new-debug", FugueIconSize.FUGUE_32), "New")
+        self.openConfig = self.addAction(QFugueManager.loadIcon("folder-open", FugueIconSize.FUGUE_32), "Open")
+        self.saveAsConfig = self.addAction(QFugueManager.loadIcon("floppy-save", FugueIconSize.FUGUE_32), "")
+        self.terminateDebug = self.addAction(QFugueManager.loadIcon("debug-terminate", FugueIconSize.FUGUE_32), "Terminate")
         self.saveAsConfig.setToolTip("Save As...")
-        # self.saveQAction.setToolTip("Save")
 
 class DebugToolbar(QToolBar):
     def __init__(self, title: str):
         super().__init__(title)
 
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.breakpointsMan = self.addAction(QFugueManager.loadIcon("table-delete-row", FugueIconSize.FUGUE_32), "Breakpoints")
-        self.continueExec = self.addAction(QFugueManager.loadIcon("control", FugueIconSize.FUGUE_32), "")
-        self.stepOver = self.addAction(QFugueManager.loadIcon("arrow-step-over", FugueIconSize.FUGUE_32), "")
-        self.stepInto = self.addAction(QFugueManager.loadIcon("arrow-step", FugueIconSize.FUGUE_32), "")
-        self.stepOut = self.addAction(QFugueManager.loadIcon("arrow-step-out", FugueIconSize.FUGUE_32), "")
+        self.breakpointsMan = self.addAction(QFugueManager.loadIcon("breakpoint-delete", FugueIconSize.FUGUE_32), "Breakpoints")
+        self.continueExec = self.addAction(QFugueManager.loadIcon("continue", FugueIconSize.FUGUE_32), "")
+        self.stepOver = self.addAction(QFugueManager.loadIcon("step-over", FugueIconSize.FUGUE_32), "")
+        self.stepInto = self.addAction(QFugueManager.loadIcon("step", FugueIconSize.FUGUE_32), "")
+        self.stepOut = self.addAction(QFugueManager.loadIcon("step-out", FugueIconSize.FUGUE_32), "")
 
 class ShowHideToolbar(QToolBar, Resettable):
     def __init__(self, title: str):
         super().__init__(title)
 
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.showCode = self.addAction(QFugueManager.loadIcon("script-code", FugueIconSize.FUGUE_32), "")
-        self.showDisasm = self.addAction(QFugueManager.loadIcon("script-binary", FugueIconSize.FUGUE_32), "")
-        self.showVars = self.addAction(QFugueManager.loadIcon("block", FugueIconSize.FUGUE_32), "")
-        self.showRegs = self.addAction(QFugueManager.loadIcon("processor", FugueIconSize.FUGUE_32), "")
+        self.showCode = self.addAction(QFugueManager.loadIcon("source-code", FugueIconSize.FUGUE_32), "")
+        self.showDisasm = self.addAction(QFugueManager.loadIcon("disassembly", FugueIconSize.FUGUE_32), "")
+        self.showVars = self.addAction(QFugueManager.loadIcon("variables", FugueIconSize.FUGUE_32), "")
+        self.showRegs = self.addAction(QFugueManager.loadIcon("registers", FugueIconSize.FUGUE_32), "")
         self.showCode.setCheckable(True)
         self.showDisasm.setCheckable(True)
         self.showVars.setCheckable(True)
@@ -110,10 +107,8 @@ class DebuggerUI(QMainWindow, Resettable):
 
         self.aboutProgram.triggered.connect(self.showAboutBox)
 
-        self.resettables.extend([self.widgetsToolbar, self])
-
         # to check if a program is being debugged.
-        self.running = False
+        self.isDebugging = False
 
     @override
     def sgReset(self):
@@ -124,6 +119,9 @@ class DebuggerUI(QMainWindow, Resettable):
 
         self.removeDockWidget(self.codeDock)
         self.setWindowTitle(self.appTitle)
+
+        self.model.miExecutionChanged.removeHandler(self.updateDebugger)
+        self.resettables.clear()
 
     def reset(self):
         # reset toolbars
@@ -138,14 +136,14 @@ class DebuggerUI(QMainWindow, Resettable):
             return
 
         self.__fileDialog.setFileMode(QFileDialog.FileMode.AnyFile)
-        destinationFile = self.__fileDialog.getSaveFileName(self, dir=os.getcwd(), filter="JSON (*.json)")
+        destinationFile = self.__fileDialog.getSaveFileName(self, dir=os.getcwd(), filter="JSON (*.json)", options=QFileDialog.Option.DontUseNativeDialog)
         if (destinationFile[0] == ""):
             return
         logger.debug(f"Saving to file {destinationFile[0]}")
         SGDBConfigManager.save(self.currentConfig, Path(destinationFile[0]))
 
     def showConfigureGDB(self):
-        if (self.running):
+        if (self.isDebugging):
             QMessageBox(QMessageBox.Icon.Warning, "Running session", "An instance of GDB is already running. Make sure to terminate the current session before starting a new one.", QMessageBox.StandardButton.Ok).exec()
             return
 
@@ -189,12 +187,12 @@ class DebuggerUI(QMainWindow, Resettable):
         breakpointsManager.show()
 
     def openConfig(self):
-        if (self.running):
+        if (self.isDebugging):
             QMessageBox(QMessageBox.Icon.Warning, "Running session", "An instance of GDB is already running. Make sure to terminate the current session before starting a new one.Another instance of", QMessageBox.StandardButton.Ok).exec()
             return
 
         self.__fileDialog.setFileMode(QFileDialog.FileMode.ExistingFile)
-        openFilename = self.__fileDialog.getOpenFileName(dir=os.getcwd(), filter="JSON (*.json)")
+        openFilename = self.__fileDialog.getOpenFileName(dir=os.getcwd(), filter="JSON (*.json)", options=QFileDialog.Option.DontUseNativeDialog)
         if (openFilename[0] == ""):
             return
         logger.debug(f"Using file {openFilename[0]}")
@@ -236,12 +234,10 @@ class DebuggerUI(QMainWindow, Resettable):
 
         self.setDebuggerUI(config)
 
-        self.running = True
+        self.isDebugging = True
         self.statusBar().showMessage("Debugger launched.")
 
     def updateDebugger(self, threadInfo):
-        logger.debug(pformat(threadInfo))
-
         threadId = threadInfo.get("currentThread")
         threads = threadInfo.get("threads")
         if ((threadId == 0) or ((not threads) or (type(threads) is not list))):
@@ -259,48 +255,44 @@ class DebuggerUI(QMainWindow, Resettable):
         self.codeDock.sgUpdate(frame)
 
     def sendContinue(self):
-        threadInfo = self.model.continueExecution()
-        self.updateDebugger(threadInfo)
+        self.model.continueExecution()
 
     def sendStepOver(self):
-        frame = self.model.stepOver()
-        self.updateDebugger(frame)
+        self.model.stepOver()
 
     def sendStepInto(self):
-        frame = self.model.stepInto()
-        self.updateDebugger(frame)
+        self.model.stepInto()
 
     def sendStepOut(self):
-        frame = self.model.stepOut()
-        self.updateDebugger(frame)
+        self.model.stepOut()
 
     def setDebuggerUI(self, config: SGDBConfig):
         self.miPrompt = MIPrompt(self.model)
         self.setCentralWidget(self.miPrompt)
         self.mainToolbar.terminateDebug.toggled.connect(self.terminateSession)
 
-
-        self.addToolBar(self.debugToolbar)
-        self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.widgetsToolbar)
-
-        # they may have been hidden
-        self.debugToolbar.show()
-        self.widgetsToolbar.show()
         self.codeDock = CodeDock()
+        self.codeDock.setMinimumHeight(400)
         self.addDockWidget(Qt.DockWidgetArea.TopDockWidgetArea, self.codeDock)
+
         self.widgetsToolbar.showCode.setChecked(True)
         self.widgetsToolbar.showCode.triggered.connect(self.showHideSourceView)
-        self.codeDock.setMinimumHeight(400)
+        self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.widgetsToolbar)
+        self.addToolBar(self.debugToolbar)
+
+        self.resettables.extend([self, self.widgetsToolbar, self.miPrompt, self.codeDock])
+
+        self.model.miExecutionChanged.connectHandler(self.updateDebugger)
+
+        self.widgetsToolbar.show()
+        self.debugToolbar.show()
 
         self.setWindowTitle(f"{config.sessionTitle} - {self.appTitle}")
-
-        self.resettables.extend([self.miPrompt, self.codeDock])
 
     def showHideSourceView(self):
         self.codeDock.setVisible(self.widgetsToolbar.showCode.isChecked())
 
     def closeEvent(self, event: QCloseEvent):
-            logger.debug("Wooo i'm overriding the close event!!!")
             self.terminateSession()
             logger.success("Bye!")
 
@@ -309,16 +301,13 @@ class DebuggerUI(QMainWindow, Resettable):
     def terminateSession(self):
         logger.debug("Terminating GDBMI...")
 
-        try:
+        if (self.isDebugging):
             self.gdbMi.exit()
-        except AttributeError:
+            self.reset()
+
+            self.isDebugging = False
+            logger.success("GDBMI terminated.")
+        else:
             logger.debug("No GDBMI instance...")
-            return
 
-        self.gdbMi = None
-        logger.success("GDBMI terminated.")
-
-        self.reset()
-
-        self.running = False
         self.statusBar().showMessage("Debugger terminated.")

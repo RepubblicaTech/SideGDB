@@ -10,6 +10,12 @@ venv
 
 # assets
 assets/fugue*
+# generated from pyside6-rcc
+src/assets_helpers/assets.py
 
 # test executable
 test/helloworld
+
+# PyInstaller build things
+build
+dist

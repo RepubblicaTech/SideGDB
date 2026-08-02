@@ -1,0 +1,467 @@
+{
+  "ai_spend": {
+    "generation_count": 0,
+    "last_updated": "2026-06-23T10:46:53Z",
+    "total_credits": 0.0,
+    "total_usd": 0.0
+  },
+  "app_version": "1.4.0",
+  "autosave_id": "ul98m65u",
+  "canvas": {
+    "pan_x": -10.7198486328125,
+    "pan_y": 102.98872375488281,
+    "ui_scale": 1.0980873107910156,
+    "zoom": 0.7181755304336548
+  },
+  "connections": [
+    {
+      "from_node": 3,
+      "from_pin": 5,
+      "id": 19,
+      "to_node": 12,
+      "to_pin": 15
+    },
+    {
+      "from_node": 27,
+      "from_pin": 29,
+      "id": 31,
+      "to_node": 20,
+      "to_pin": 21
+    },
+    {
+      "from_node": 20,
+      "from_pin": 24,
+      "id": 34,
+      "to_node": 32,
+      "to_pin": 33
+    },
+    {
+      "from_node": 1,
+      "from_pin": 2,
+      "id": 62,
+      "to_node": 35,
+      "to_pin": 36
+    },
+    {
+      "from_node": 12,
+      "from_pin": 16,
+      "id": 64,
+      "to_node": 20,
+      "to_pin": 23
+    },
+    {
+      "from_node": 35,
+      "from_pin": 38,
+      "id": 71,
+      "to_node": 12,
+      "to_pin": 13
+    }
+  ],
+  "created": "2026-06-23T10:46:53Z",
+  "format_version": 4,
+  "groups": [],
+  "label_counters": {
+    "Canvas": 2,
+    "Color Remap": 3,
+    "Export Image": 2,
+    "Image In": 2,
+    "Inpaint": 2,
+    "Mask Apply": 2,
+    "Mask Paint": 2,
+    "Paint": 2,
+    "Resize": 2,
+    "Shape": 2,
+    "Transform": 3
+  },
+  "nodes": [
+    {
+      "id": 35,
+      "input_pins": [
+        {
+          "id": 36,
+          "name": "image",
+          "required": true,
+          "type": "IMAGE"
+        },
+        {
+          "id": 37,
+          "name": "mask",
+          "required": false,
+          "type": "MASK"
+        }
+      ],
+      "label": "",
+      "output_pins": [
+        {
+          "id": 38,
+          "name": "image",
+          "required": false,
+          "type": "IMAGE"
+        }
+      ],
+      "params": {
+        "_fp_state": {
+          "input_fps": {
+            "36": 13168056645688524047
+          },
+          "output_fp": 17313956226461982374,
+          "params_fp": 11116817457915604696
+        },
+        "dest_b": 8,
+        "dest_g": 13,
+        "dest_r": 1,
+        "feather": 1.0,
+        "hue_tolerance": 1.0,
+        "mask_fit": 0,
+        "min_saturation": 0.0,
+        "preserve_luminance": false,
+        "source_b": 52,
+        "source_g": 54,
+        "source_r": 57
+      },
+      "position": {
+        "x": 718.716064453125,
+        "y": 105.34182739257813
+      },
+      "suffix_index": 1,
+      "type": "COLOR_REMAP_SIMPLE",
+      "uuid": "m13ttoy8"
+    },
+    {
+      "id": 1,
+      "input_pins": [],
+      "label": "",
+      "output_pins": [
+        {
+          "id": 2,
+          "name": "image",
+          "required": false,
+          "type": "IMAGE"
+        }
+      ],
+      "params": {
+        "_fp_state": {
+          "input_fps": {},
+          "output_fp": 13168056645688524047,
+          "params_fp": 16276284360375952664
+        },
+        "custom_size": false,
+        "file_path": "~/Scaricati/fugue-setup_3.png",
+        "filter": 1,
+        "fit_mode": 0,
+        "height": 512,
+        "watch_file": false,
+        "width": 512
+      },
+      "position": {
+        "x": 390.8582763671875,
+        "y": 105.34182739257813
+      },
+      "suffix_index": 1,
+      "type": "IMAGE_IN",
+      "uuid": "hxuop1b9"
+    },
+    {
+      "id": 27,
+      "input_pins": [
+        {
+          "id": 28,
+          "name": "size_ref",
+          "required": false,
+          "type": "SIZE_REF"
+        }
+      ],
+      "label": "",
+      "output_pins": [
+        {
+          "id": 29,
+          "name": "image",
+          "required": false,
+          "type": "IMAGE"
+        },
+        {
+          "id": 30,
+          "name": "alpha",
+          "required": false,
+          "type": "MASK"
+        }
+      ],
+      "params": {
+        "_fp_state": {
+          "input_fps": {},
+          "output_fp": 2498056996420512195,
+          "params_fp": 4529972270864754585
+        },
+        "anti_alias": false,
+        "corner_r": 0,
+        "fill_a": 255,
+        "fill_b": 255,
+        "fill_g": 255,
+        "fill_on": false,
+        "fill_r": 255,
+        "layout": 0,
+        "lock_center": true,
+        "lock_shape": true,
+        "out_h": 560,
+        "out_w": 493,
+        "padding": 0,
+        "poly_sides": 6,
+        "pos_x": 246,
+        "pos_y": 280,
+        "rotation": 0.0,
+        "shape_h": 512,
+        "shape_type": 0,
+        "shape_w": 512,
+        "spacing": 0,
+        "star_inner": 0.4000000059604645,
+        "star_points": 5,
+        "stroke_a": 255,
+        "stroke_align": 0,
+        "stroke_b": 107,
+        "stroke_g": 150,
+        "stroke_on": true,
+        "stroke_r": 59,
+        "stroke_w": 5,
+        "tile_cols": 4,
+        "tile_rows": 4,
+        "tile_shape_h": 100,
+        "tile_shape_w": 100
+      },
+      "position": {
+        "x": 1198.9468994140625,
+        "y": -303.10797119140625
+      },
+      "suffix_index": 1,
+      "type": "SHAPE",
+      "uuid": "o7uqejcf"
+    },
+    {
+      "id": 3,
+      "input_pins": [
+        {
+          "id": 4,
+          "name": "size_ref",
+          "required": false,
+          "type": "SIZE_REF"
+        }
+      ],
+      "label": "",
+      "output_pins": [
+        {
+          "id": 5,
+          "name": "image",
+          "required": false,
+          "type": "IMAGE"
+        }
+      ],
+      "params": {
+        "_fp_state": {
+          "input_fps": {},
+          "output_fp": 16574283210652310615,
+          "params_fp": 2644343386428595398
+        },
+        "bg_a": 255,
+        "bg_b": 8,
+        "bg_g": 13,
+        "bg_r": 1,
+        "height": 1024,
+        "width": 600
+      },
+      "position": {
+        "x": 1042.4161376953125,
+        "y": 302.65838623046875
+      },
+      "suffix_index": 1,
+      "type": "CANVAS",
+      "uuid": "7lbm8jxq"
+    },
+    {
+      "id": 12,
+      "input_pins": [
+        {
+          "id": 13,
+          "name": "image",
+          "required": false,
+          "type": "IMAGE"
+        },
+        {
+          "id": 14,
+          "name": "alpha",
+          "required": false,
+          "type": "MASK"
+        },
+        {
+          "id": 15,
+          "name": "background",
+          "required": false,
+          "type": "IMAGE"
+        }
+      ],
+      "label": "",
+      "output_pins": [
+        {
+          "id": 16,
+          "name": "image",
+          "required": false,
+          "type": "IMAGE"
+        },
+        {
+          "id": 17,
+          "name": "alpha",
+          "required": false,
+          "type": "MASK"
+        }
+      ],
+      "params": {
+        "_fp_state": {
+          "input_fps": {
+            "13": 17313956226461982374,
+            "15": 16574283210652310615
+          },
+          "output_fp": 765670674260626387,
+          "params_fp": 5481128781554795663
+        },
+        "bg_a": 0,
+        "bg_b": 0,
+        "bg_g": 0,
+        "bg_r": 0,
+        "blend_mode": 0,
+        "filter": 1,
+        "opacity": 1.0,
+        "output_mode": 1,
+        "pivot_x": 50.0,
+        "pivot_y": 50.0,
+        "proportional": false,
+        "rotate": 0.0,
+        "scale_x": 145.93624877929688,
+        "scale_y": 145.93624877929688,
+        "translate_x": 0.0,
+        "translate_x_unit": 0,
+        "translate_y": 0.0,
+        "translate_y_unit": 0
+      },
+      "position": {
+        "x": 1383.3519287109375,
+        "y": 155.18348693847656
+      },
+      "suffix_index": 1,
+      "type": "TRANSFORM",
+      "uuid": "ishu3rjf"
+    },
+    {
+      "id": 20,
+      "input_pins": [
+        {
+          "id": 21,
+          "name": "image",
+          "required": false,
+          "type": "IMAGE"
+        },
+        {
+          "id": 22,
+          "name": "alpha",
+          "required": false,
+          "type": "MASK"
+        },
+        {
+          "id": 23,
+          "name": "background",
+          "required": false,
+          "type": "IMAGE"
+        }
+      ],
+      "label": "",
+      "output_pins": [
+        {
+          "id": 24,
+          "name": "image",
+          "required": false,
+          "type": "IMAGE"
+        },
+        {
+          "id": 25,
+          "name": "alpha",
+          "required": false,
+          "type": "MASK"
+        }
+      ],
+      "params": {
+        "_fp_state": {
+          "input_fps": {
+            "21": 2498056996420512195,
+            "23": 765670674260626387
+          },
+          "output_fp": 3320722303180857161,
+          "params_fp": 3266769988775721225
+        },
+        "bg_a": 0,
+        "bg_b": 0,
+        "bg_g": 0,
+        "bg_r": 0,
+        "blend_mode": 0,
+        "filter": 1,
+        "opacity": 1.0,
+        "output_mode": 1,
+        "pivot_x": 50.0,
+        "pivot_y": 50.0,
+        "proportional": false,
+        "rotate": 0.0,
+        "scale_x": 100.0,
+        "scale_y": 100.0,
+        "translate_x": 0.0,
+        "translate_x_unit": 0,
+        "translate_y": -172.88063049316406,
+        "translate_y_unit": 0
+      },
+      "position": {
+        "x": 1757.984130859375,
+        "y": -191.9335479736328
+      },
+      "suffix_index": 2,
+      "type": "TRANSFORM",
+      "uuid": "agfj8yvm"
+    },
+    {
+      "id": 32,
+      "input_pins": [
+        {
+          "id": 33,
+          "name": "image",
+          "required": true,
+          "type": "IMAGE"
+        }
+      ],
+      "label": "",
+      "output_pins": [],
+      "params": {
+        "_export_ok_msg": "Saved: fugue_setup.png (107 ms, 172.8 KB) (+ recipe, 2 KB)",
+        "_export_output_fp": 3320722303180857161,
+        "_fp_state": {
+          "input_fps": {
+            "33": 3320722303180857161
+          },
+          "output_fp": 3320722303180857161,
+          "params_fp": 7166922272194642503
+        },
+        "embed_recipe": true,
+        "format": 0,
+        "matte_b": 255,
+        "matte_g": 255,
+        "matte_r": 255,
+        "output_path": "~/Documenti/Kode/SideGDB/repo_assets/fugue_setup.png",
+        "png_compress": 5,
+        "quality": 90,
+        "tga_rle": true,
+        "tiff_compress": 0,
+        "webp_lossless": false
+      },
+      "position": {
+        "x": 2132.6162109375,
+        "y": 132.395263671875
+      },
+      "suffix_index": 1,
+      "type": "EXPORT_IMAGE",
+      "uuid": "y5c3qsun"
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 # SideGDB
 
-a custom GDB UI made in Python.
+A graphical frontend for GDB.
 
-## ⚠️⚠️ THIS IS ALPHA SOFTWARE ⚠️⚠️
+## ⚠️⚠️ THIS IS v0 SOFTWARE ⚠️⚠️
 Parts of this project could be rewritten when you least expect it: this documentation can get outdated very easily.
   
 # VERY IMPORTANT NOTE
@@ -11,14 +11,12 @@ this program was made with OSDev in mind, i made it so that i could debug [my ke
 
 # Prerequisites
 
-If you want to run directly the Python code from the repo, you'll have to do some preparation.
+All the set up instructions are found in the [wiki](https://github.com/RepubblicaTech/SideGDB/wiki).
 
-All required libraries are in the [requirements.txt](requirements.txt) file. Anyways, these are the needed libraries:
+Anyways these are the main libraries that keep everything here up and running.
 - `pygdbmi`:  [A library to parse gdb mi output](https://cs01.github.io/pygdbmi/) and interact with gdb subprocesses
 - `PySide6`: the [official Qt Widgets implementation](https://doc.qt.io/qtforpython-6/) for Python
-- `loguru`: [Python logging](https://pypi.org/project/loguru/) made (stupidly) simple
-
-# Check out the [wiki](https://github.com/RepubblicaTech/SideGDB/wiki) for usage instructions
+- `loguru`: [Python logging made (stupidly) simple](https://pypi.org/project/loguru/)
 
 # CREDITS
 
