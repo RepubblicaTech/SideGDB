@@ -73,6 +73,8 @@ class QPathChoose(QWidget):
             case QFileDialog.FileMode.Directory:
                 chosenDir = self.__fileDialog.getExistingDirectory(self, "Select", os.getcwd(), QFileDialog.Option.ShowDirsOnly | QFileDialog.Option.DontUseNativeDialog)
                 self.pathLine.setText(chosenDir)
+            case _:
+                pass
 
     def chosenPath(self):
         return self.pathLine.text()
