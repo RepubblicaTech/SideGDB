@@ -292,6 +292,7 @@ class DebuggerUI(QMainWindow, Resettable):
     def showHideSourceView(self):
         self.codeDock.setVisible(self.widgetsToolbar.showCode.isChecked())
 
+    @override
     def closeEvent(self, event: QCloseEvent):
             self.terminateSession()
             logger.success("Bye!")
