@@ -24,7 +24,7 @@ if __name__ == "__main__":
     aboutJson = QFile(ABOUTJSON_PATH)
     if (not aboutJson.open(QFile.OpenModeFlag.ReadOnly | QIODeviceBase.OpenModeFlag.Text)):
         logger.error("Missing about.json. Quitting.")
-        window.close()
+        _ = window.close()
         app.exit(-1)
 
     f = QTextStream(aboutJson)
@@ -35,16 +35,15 @@ if __name__ == "__main__":
         semVersion += f"-{obj["prerelease"]["version"]}.{obj["prerelease"]["id"]}"
         match (obj["prerelease"]["version"]):
             case "alpha":
-                QMessageBox(QMessageBox.Icon.Warning,
+                _ = QMessageBox(QMessageBox.Icon.Warning,
                             "SideGDB development release",
-                            "This is alpha software.\n"
-                            "Do NOT report bugs to the developer as he might be fixing them right now...").exec()
+                            "This is alpha software.\nDo NOT report bugs to the developer as he might be fixing them right now..."
+                    ).exec()
             case _:
-                QMessageBox(QMessageBox.Icon.Warning,
+                _ = QMessageBox(QMessageBox.Icon.Warning,
                             "SideGDB development release",
-                            "This is beta/prerelease software.\n"
-                            "Make sure to report any bugs on the repo's Issues tab.\n"
-                            "https://github.com/RepubblicaTech/SideGDB/issues").exec()
+                            "This is beta/prerelease software.\nMake sure to report any bugs on the repo's Issues tab.\nhttps://github.com/RepubblicaTech/SideGDB/issues"
+                    ).exec()
 
     app.setApplicationVersion(semVersion)
 

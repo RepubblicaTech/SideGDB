@@ -32,8 +32,6 @@ class QLabeledLineEdit(QWidget):
                 layout = QHBoxLayout(self)
             case QDirectionFlag.QVertical:
                 layout = QVBoxLayout(self)
-            case _:
-                raise ValueError("Invalid direction flag (there are only two directions how can you get this wrong lol, go read the manual), got " + direction)
 
         self.__input = QLineEdit(placeholderText=placeholderText)
         layout.addWidget(QLabel(labelText))
