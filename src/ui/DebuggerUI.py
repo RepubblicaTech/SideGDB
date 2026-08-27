@@ -1,8 +1,8 @@
 import os
 import subprocess
 from pathlib import Path
-import subprocess
-from typing import List, override
+from typing import override
+
 from loguru import logger
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QCloseEvent
@@ -75,7 +75,7 @@ class DebuggerUI(QMainWindow, Resettable):
         self.setWindowTitle(self.appTitle)
         self.resize(1200, 800)
 
-        self.resettables: List[Resettable] = []
+        self.resettables: list[Resettable] = []
 
         # MENU BAR
         menuBar = self.menuBar()
