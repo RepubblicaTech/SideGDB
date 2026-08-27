@@ -50,4 +50,4 @@ if __name__ == "__main__":
     window.show()
     window.statusBar().showMessage("Ready.")
 
-    app.exec()
+    _ = app.exec()

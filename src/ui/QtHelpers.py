@@ -61,7 +61,7 @@ class QPathChoose(QWidget):
         self.__fileDialog = QFileDialog(filter=filter)
         self.__fileDialog.setFileMode(fileMode)
         self.pathLine.setReadOnly(True)
-        self.choosePathButton.clicked.connect(self.__spawnOpenDialog)
+        _ = self.choosePathButton.clicked.connect(self.__spawnOpenDialog)
 
     @QtCore.Slot()
     def __spawnOpenDialog(self):

@@ -92,20 +92,20 @@ class DebuggerUI(QMainWindow, Resettable):
 
         self.__fileDialog = QFileDialog()
 
-        self.mainToolbar.newConfig.triggered.connect(self.showConfigureGDB)
-        self.newSession.triggered.connect(self.showConfigureGDB)
-        self.mainToolbar.openConfig.triggered.connect(self.openConfig)
-        self.openSession.triggered.connect(self.openConfig)
-        self.mainToolbar.saveAsConfig.triggered.connect(self.saveAs)
-        self.mainToolbar.terminateDebug.triggered.connect(self.terminateSession)
+        _= self.mainToolbar.newConfig.triggered.connect(self.showConfigureGDB)
+        _= self.newSession.triggered.connect(self.showConfigureGDB)
+        _= self.mainToolbar.openConfig.triggered.connect(self.openConfig)
+        _= self.openSession.triggered.connect(self.openConfig)
+        _= self.mainToolbar.saveAsConfig.triggered.connect(self.saveAs)
+        _= self.mainToolbar.terminateDebug.triggered.connect(self.terminateSession)
 
-        self.debugToolbar.breakpointsMan.triggered.connect(self.showBreakpointsManager)
-        self.debugToolbar.continueExec.triggered.connect(self.sendContinue)
-        self.debugToolbar.stepOver.triggered.connect(self.sendStepOver)
-        self.debugToolbar.stepInto.triggered.connect(self.sendStepInto)
-        self.debugToolbar.stepOut.triggered.connect(self.sendStepOut)
+        _= self.debugToolbar.breakpointsMan.triggered.connect(self.showBreakpointsManager)
+        _= self.debugToolbar.continueExec.triggered.connect(self.sendContinue)
+        _= self.debugToolbar.stepOver.triggered.connect(self.sendStepOver)
+        _= self.debugToolbar.stepInto.triggered.connect(self.sendStepInto)
+        _= self.debugToolbar.stepOut.triggered.connect(self.sendStepOut)
 
-        self.aboutProgram.triggered.connect(self.showAboutBox)
+        _= self.aboutProgram.triggered.connect(self.showAboutBox)
 
         # to check if a program is being debugged.
         self.isDebugging = False
@@ -113,9 +113,9 @@ class DebuggerUI(QMainWindow, Resettable):
     @override
     def sgReset(self):
         # reset the widgets toolbar buttons to OFF
-        self.centralWidget().close()
-        self.debugToolbar.close()
-        self.widgetsToolbar.close()
+        _ = self.centralWidget().close()
+        _ = self.debugToolbar.close()
+        _ = self.widgetsToolbar.close()
 
         self.removeDockWidget(self.codeDock)
         self.setWindowTitle(self.appTitle)
@@ -167,7 +167,7 @@ class DebuggerUI(QMainWindow, Resettable):
             preRunCommands = (configurator.preRunCommands()).split("\n") if configurator.preRunCommands() else None
         except TypeError as e:
             error = QMessageBox(QMessageBox.Icon.Critical, "Missing field", f"The following field is missing: {str(e)}", QMessageBox.StandardButton.Ok)
-            error.exec()
+            _ = error.exec()
             self.statusBar().showMessage("Invalid configuration. Please check your settings again.")
 
             return
@@ -179,7 +179,7 @@ class DebuggerUI(QMainWindow, Resettable):
 
     def showAboutBox(self):
         aboutBox = AboutBox(self, self.appTitle)
-        aboutBox.exec()
+        _ = aboutBox.exec()
 
     def showBreakpointsManager(self):
         breakpointsManager = BreakManager(self, self.model)
@@ -276,7 +276,7 @@ class DebuggerUI(QMainWindow, Resettable):
         self.addDockWidget(Qt.DockWidgetArea.TopDockWidgetArea, self.codeDock)
 
         self.widgetsToolbar.showCode.setChecked(True)
-        self.widgetsToolbar.showCode.triggered.connect(self.showHideSourceView)
+        _ = self.widgetsToolbar.showCode.triggered.connect(self.showHideSourceView)
         self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.widgetsToolbar)
         self.addToolBar(self.debugToolbar)
 
