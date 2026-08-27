@@ -1,5 +1,5 @@
 from threading import Thread
-from typing import Any
+from typing import Any, final
 
 from loguru import logger
 from pygdbmi.constants import GdbTimeoutError
@@ -207,6 +207,7 @@ class SideModel:
 
         return None
 
+@final
 class MICommands:
     MIPREFIX_EXEC = "-exec"
     MIPREFIX_BREAK = "-break"
