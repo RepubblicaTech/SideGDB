@@ -166,7 +166,7 @@ class DebuggerUI(QMainWindow, Resettable):
             envPath = Path(configurator.envPath()) if configurator.envPath() else None
             preRunCommands = (configurator.preRunCommands()).split("\n") if configurator.preRunCommands() else None
         except TypeError as e:
-            error = QMessageBox(QMessageBox.Icon.Critical, "Missing field", f"The following field is missing: {str(e)}", QMessageBox.StandardButton.Ok)
+            error = QMessageBox(QMessageBox.Icon.Critical, "Missing field", f"The following field is missing: {e!s}", QMessageBox.StandardButton.Ok)
             _ = error.exec()
             self.statusBar().showMessage("Invalid configuration. Please check your settings again.")
 
@@ -199,17 +199,17 @@ class DebuggerUI(QMainWindow, Resettable):
         try:
             currentConfig = SGDBConfigManager.load(Path(openFilename[0]))
         except Exception as e:
-            logger.error(f"Error {type(e)} occurred when loading {Path(openFilename[0]).name}: {str(e)}")
-            _ = QMessageBox(QMessageBox.Icon.Critical, "Config error", f"Error {type(e)} occurred when loading {Path(openFilename[0]).name}: {str(e)}", QMessageBox.StandardButton.Ok).exec()
+            logger.error(f"Error {type(e)} occurred when loading {Path(openFilename[0]).name}: {e!s}")
+            _ = QMessageBox(QMessageBox.Icon.Critical, "Config error", f"Error {type(e)} occurred when loading {Path(openFilename[0]).name}: {e!s}", QMessageBox.StandardButton.Ok).exec()
             return
 
         self.launchGDBMI(currentConfig)
 
     def launchGDBMI(self, config: SGDBConfig):
-        logger.debug(f"Debugging program: {str(config.programPath)}")
+        logger.debug(f"Debugging program: {config.programPath!s}")
         self.statusBar().showMessage(f"Initializing {config.sessionTitle}...")
         if (config.dotGdbPath is not None):
-            logger.debug(f"GDB script: {str(config.dotGdbPath)}")
+            logger.debug(f"GDB script: {config.dotGdbPath!s}")
 
         # preRunCommands
         if (config.preRunCommands is not None):
