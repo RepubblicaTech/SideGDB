@@ -269,7 +269,7 @@ class DebuggerUI(QMainWindow, Resettable):
     def setDebuggerUI(self, config: SGDBConfig):
         self.miPrompt = MIPrompt(self.model)
         self.setCentralWidget(self.miPrompt)
-        self.mainToolbar.terminateDebug.toggled.connect(self.terminateSession)
+        _ = self.mainToolbar.terminateDebug.toggled.connect(self.terminateSession)
 
         self.codeDock = CodeDock()
         self.codeDock.setMinimumHeight(400)

@@ -28,7 +28,7 @@ class MIPrompt(QWidget, Resettable):
 
         self.setLayout(layout)
 
-        self.miPrompt.returnPressed.connect(self.sendCommand)
+        _ = self.miPrompt.returnPressed.connect(self.sendCommand)
 
         self.model = model
         self.model.miResponseReceived.connectHandler(self.miResponseHandler)

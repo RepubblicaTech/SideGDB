@@ -42,7 +42,7 @@ class AboutBox(QDialog):
         creditsLabel.setOpenExternalLinks(True)
 
         okButton = QPushButton("Ok")
-        okButton.clicked.connect(self.accept)
+        _ = okButton.clicked.connect(self.accept)
 
         layout.addWidget(banner, alignment=Qt.AlignmentFlag.AlignHCenter)
         layout.addWidget(aboutLabel)

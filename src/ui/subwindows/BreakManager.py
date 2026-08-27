@@ -31,8 +31,8 @@ class BreakManager(QDialog):
 
         self.setLayout(layout)
 
-        self.insertButton.clicked.connect(self.sendInsertBreakpoint)
-        self.deleteButton.clicked.connect(self.deleteSelectedBreakpoint)
+        _ = self.insertButton.clicked.connect(self.sendInsertBreakpoint)
+        _ = self.deleteButton.clicked.connect(self.deleteSelectedBreakpoint)
 
     def deleteSelectedBreakpoint(self):
         selectedIndexes = self.table.selectionModel().selectedIndexes()
@@ -54,7 +54,7 @@ class BreakManager(QDialog):
         if (not symbol):
             return
 
-        self.model.setBreakpoint(symbol)    # table model gets updated in here
+        _ = self.model.setBreakpoint(symbol)    # table model gets updated in here
         self.table.resizeColumnsToContents()
 
         self.symbolInput.setText("")

@@ -78,12 +78,12 @@ class SideConfigurator(QDialog):
         self.__gdbConfig = GDBConfig()
         self.__envConfig = EnvConfig()
 
-        self.tabWidget.addTab(self.__gdbConfig, "GDB Settings")
-        self.tabWidget.addTab(self.__envConfig, "Environment")
+        _ = self.tabWidget.addTab(self.__gdbConfig, "GDB Settings")
+        _ = self.tabWidget.addTab(self.__envConfig, "Environment")
 
         self.doneButton = QPushButton("Done")
 
-        self.doneButton.clicked.connect(self.accept)
+        _ = self.doneButton.clicked.connect(self.accept)
 
         mainLayout.addWidget(self.tabWidget)
         mainLayout.addWidget(self.doneButton, alignment=Qt.AlignmentFlag.AlignRight)
