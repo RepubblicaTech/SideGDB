@@ -1,5 +1,7 @@
-from typing import List, Optional
+from typing import ClassVar
+
 from pygdbmi.gdbcontroller import GdbController
+
 
 class GdbMI(GdbController):
     GDBMI_TOKENS = {
@@ -9,7 +11,7 @@ class GdbMI(GdbController):
         "MEM": 30
     }
 
-    def __init__(self, gdbArgs: Optional[List[str]]):
+    def __init__(self, gdbArgs: list[str] | None):
         gdbCommand = ["gdb", "--interpreter=mi2"]
 
         if (gdbArgs):
