@@ -4,7 +4,7 @@ from pygdbmi.gdbcontroller import GdbController
 
 
 class GdbMI(GdbController):
-    GDBMI_TOKENS = {
+    GDBMI_TOKENS: ClassVar[dict[str, int]] = {
         "COD": 00,
         "CPU": 10,
         "SYM": 20,
