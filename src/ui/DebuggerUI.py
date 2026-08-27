@@ -132,7 +132,7 @@ class DebuggerUI(QMainWindow, Resettable):
         try:
             self.currentConfig
         except AttributeError:
-            QMessageBox(QMessageBox.Icon.Warning, "No configuration", "No current configuration is available. Please create a new session before saving.", QMessageBox.StandardButton.Ok).exec()
+            _ = QMessageBox(QMessageBox.Icon.Warning, "No configuration", "No current configuration is available. Please create a new session before saving.", QMessageBox.StandardButton.Ok).exec()
             return
 
         self.__fileDialog.setFileMode(QFileDialog.FileMode.AnyFile)
@@ -144,7 +144,7 @@ class DebuggerUI(QMainWindow, Resettable):
 
     def showConfigureGDB(self):
         if (self.isDebugging):
-            QMessageBox(QMessageBox.Icon.Warning, "Running session", "An instance of GDB is already running. Make sure to terminate the current session before starting a new one.", QMessageBox.StandardButton.Ok).exec()
+            _ = QMessageBox(QMessageBox.Icon.Warning, "Running session", "An instance of GDB is already running. Make sure to terminate the current session before starting a new one.", QMessageBox.StandardButton.Ok).exec()
             return
 
         self.statusBar().showMessage("Showing configuration")
@@ -188,7 +188,7 @@ class DebuggerUI(QMainWindow, Resettable):
 
     def openConfig(self):
         if (self.isDebugging):
-            QMessageBox(QMessageBox.Icon.Warning, "Running session", "An instance of GDB is already running. Make sure to terminate the current session before starting a new one.Another instance of", QMessageBox.StandardButton.Ok).exec()
+            _ = QMessageBox(QMessageBox.Icon.Warning, "Running session", "An instance of GDB is already running. Make sure to terminate the current session before starting a new one.Another instance of", QMessageBox.StandardButton.Ok).exec()
             return
 
         self.__fileDialog.setFileMode(QFileDialog.FileMode.ExistingFile)
@@ -200,7 +200,7 @@ class DebuggerUI(QMainWindow, Resettable):
             currentConfig = SGDBConfigManager.load(Path(openFilename[0]))
         except Exception as e:
             logger.error(f"Error {type(e)} occurred when loading {Path(openFilename[0]).name}: {str(e)}")
-            QMessageBox(QMessageBox.Icon.Critical, "Config error", f"Error {type(e)} occurred when loading {Path(openFilename[0]).name}: {str(e)}", QMessageBox.StandardButton.Ok).exec()
+            _ = QMessageBox(QMessageBox.Icon.Critical, "Config error", f"Error {type(e)} occurred when loading {Path(openFilename[0]).name}: {str(e)}", QMessageBox.StandardButton.Ok).exec()
             return
 
         self.launchGDBMI(currentConfig)
@@ -213,7 +213,7 @@ class DebuggerUI(QMainWindow, Resettable):
 
         # preRunCommands
         if (config.preRunCommands is not None):
-            QMessageBox(QMessageBox.Icon.Information, "Pre-run commands", "Make sure to check the terminal for any input (eg. sudo)", QMessageBox.StandardButton.Ok).exec()
+            _ = QMessageBox(QMessageBox.Icon.Information, "Pre-run commands", "Make sure to check the terminal for any input (eg. sudo)", QMessageBox.StandardButton.Ok).exec()
             for command in config.preRunCommands:
                 logger.debug(f"Command {command}")
                 ret = subprocess.call(command.split(" "), text=True, cwd=config.envPrefix)
