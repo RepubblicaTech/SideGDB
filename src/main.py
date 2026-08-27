@@ -1,10 +1,11 @@
 import json
 import logging
+
+from loguru import logger
 from PySide6.QtCore import QFile, QIODeviceBase, QTextStream
 from PySide6.QtGui import QIcon
-from loguru import logger
-
 from PySide6.QtWidgets import QApplication, QMessageBox
+
 from ui.DebuggerUI import DebuggerUI
 
 APPLICATION_TITLE = "SideGDB"

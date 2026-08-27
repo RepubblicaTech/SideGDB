@@ -1,17 +1,16 @@
 import os
+import subprocess
 from pathlib import Path
 import subprocess
 from typing import List, override
 from loguru import logger
-
-from assets_helpers.QFugueAssets import FugueIconSize, QFugueManager
-from backend.SGDBConfig import SGDBConfig, SGDBConfigManager
-from backend.GDBMI import GdbMI
-
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import QFileDialog, QMainWindow, QMessageBox, QToolBar
 
+from assets_helpers.QFugueAssets import FugueIconSize, QFugueManager
+from backend.GDBMI import GdbMI
+from backend.SGDBConfig import SGDBConfig, SGDBConfigManager
 from backend.SideModel import SideModel
 from ui.QtHelpers import Resettable
 from ui.subwindows.AboutBox import AboutBox
@@ -19,6 +18,7 @@ from ui.subwindows.BreakManager import BreakManager
 from ui.subwindows.CodeDock import CodeDock
 from ui.subwindows.MIPrompt import MIPrompt
 from ui.subwindows.SideConfigurator import SideConfigurator
+
 
 class MainToolbar(QToolBar):
     def __init__(self, title: str):
