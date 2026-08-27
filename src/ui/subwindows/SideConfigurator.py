@@ -62,7 +62,7 @@ class EnvConfig(QWidget):
         return self.__preRunCommandsIn.toPlainText()
 
 class SideConfigurator(QDialog):
-    def __init__(self, parent, appTitle: str):
+    def __init__(self, parent: QWidget, appTitle: str):
         super().__init__(parent)
         self.appTitle = appTitle or "pyGDBView" # easter egg 2
 

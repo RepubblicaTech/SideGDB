@@ -4,6 +4,7 @@ Some useful macro-widgets for common components for SideGDB
 
 import os
 from enum import Enum
+from typing import Any
 
 from loguru import logger
 from PySide6 import QtCore
@@ -84,5 +85,5 @@ class Resettable:
         raise NotImplementedError("This function should be overridden!")
 
 class Updateable:
-    def sgUpdate(self, frame: dict):
+    def sgUpdate(self, frame: dict[Any, Any]):
         raise NotImplementedError("This function should be overridden!")
