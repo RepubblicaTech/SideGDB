@@ -1,7 +1,7 @@
 import os
 import subprocess
 from pathlib import Path
-from typing import override
+from typing import final, override
 
 from loguru import logger
 from PySide6.QtCore import Qt
@@ -20,6 +20,7 @@ from ui.subwindows.MIPrompt import MIPrompt
 from ui.subwindows.SideConfigurator import SideConfigurator
 
 
+@final
 class MainToolbar(QToolBar):
     def __init__(self, title: str):
         super().__init__(title)
@@ -31,6 +32,7 @@ class MainToolbar(QToolBar):
         self.terminateDebug = self.addAction(QFugueManager.loadIcon("debug-terminate", FugueIconSize.FUGUE_32), "Terminate")
         self.saveAsConfig.setToolTip("Save As...")
 
+@final
 class DebugToolbar(QToolBar):
     def __init__(self, title: str):
         super().__init__(title)
@@ -42,6 +44,7 @@ class DebugToolbar(QToolBar):
         self.stepInto = self.addAction(QFugueManager.loadIcon("step", FugueIconSize.FUGUE_32), "")
         self.stepOut = self.addAction(QFugueManager.loadIcon("step-out", FugueIconSize.FUGUE_32), "")
 
+@final
 class ShowHideToolbar(QToolBar, Resettable):
     def __init__(self, title: str):
         super().__init__(title)
@@ -67,6 +70,7 @@ class ShowHideToolbar(QToolBar, Resettable):
         self.showVars.setChecked(False)
         self.showRegs.setChecked(False)
 
+@final
 class DebuggerUI(QMainWindow, Resettable):
     def __init__(self, appTitle: str):
         super().__init__()
