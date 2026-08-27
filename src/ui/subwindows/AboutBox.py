@@ -1,8 +1,16 @@
 import json
 from venv import logger
-from PySide6.QtCore import QFile, QIODeviceBase, QTextStream, Qt
+
+from PySide6.QtCore import QFile, QIODeviceBase, Qt, QTextStream
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QDialog, QLabel, QPushButton, QVBoxLayout, QWidget, QApplication
+from PySide6.QtWidgets import (
+    QApplication,
+    QDialog,
+    QLabel,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 ABOUTJSON_PATH = ":/app-assets/about"
 

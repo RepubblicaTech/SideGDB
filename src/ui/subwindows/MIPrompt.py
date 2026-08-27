@@ -1,13 +1,13 @@
 from typing import List
 
-from PySide6.QtGui import QPalette, Qt
 from loguru import logger
+from PySide6.QtGui import QPalette, Qt
+from PySide6.QtWidgets import QLineEdit, QTextBrowser, QVBoxLayout, QWidget
 
 from backend.MIResponseManager import MIPromptManager
 from backend.SideModel import SideModel
-from PySide6.QtWidgets import QLineEdit, QTextBrowser, QVBoxLayout, QWidget
-
 from ui.QtHelpers import Resettable
+
 
 class MIPrompt(QWidget, Resettable):
     def __init__(self, model: SideModel):

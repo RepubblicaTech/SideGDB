@@ -1,6 +1,8 @@
 from PySide6.QtWidgets import QDockWidget
+
 from ui.QtHelpers import Resettable, Updateable
 from ui.subwindows.QCodeWidgets.QCodeArea import QCodeArea
+
 
 class CodeDock(QDockWidget, Updateable, Resettable):
     def __init__(self):
@@ -22,6 +24,7 @@ class CodeDock(QDockWidget, Updateable, Resettable):
         line = int(frame["line"])
         if (file):
             self.loadSource(file)
+            self.setWindowTitle(str(file).split("/")[-1])
         if (line):
             self.highlightLine(line)
 

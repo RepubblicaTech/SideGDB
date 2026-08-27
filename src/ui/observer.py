@@ -1,14 +1,14 @@
-from typing import Callable, List
+from typing import Callable
 
 
 class Signal:
     def __init__(self):
-        self.callables: List[Callable] = list()
+        self.callables: list[Callable] = list()
 
-    def connectHandler(self, callable: Callable):
+    def connectHandler(self, callable):
         self.callables.append(callable)
 
-    def removeHandler(self, callable: Callable):
+    def removeHandler(self, callable):
         try:
             self.callables.remove(callable)
         except ValueError:

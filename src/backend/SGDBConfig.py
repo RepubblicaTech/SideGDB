@@ -1,20 +1,22 @@
-from dataclasses import asdict, dataclass, field
 import json
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import override
+
 
 @dataclass
 class SGDBConfig:
     sessionTitle: str
 
     programPath: Path
-    dotGdbPath: Optional[Path]
+    dotGdbPath: Path | None
 
-    envPrefix: Optional[Path]
-    preRunCommands: Optional[List[str]] = field(default_factory=list)
+    envPrefix: Path | None
+    preRunCommands: list[str] | None = field(default_factory=list)
 
 class SGDBConfigEncoder(json.JSONEncoder):
-    def default(self, o: Any):
+    @override
+    def default(self, o):
         if isinstance(o, Path):
             return str(o)
         return super().default(o)
@@ -24,7 +26,7 @@ class SGDBConfigManager:
     @staticmethod
     def load(config_path: Path) -> SGDBConfig:
         if (not config_path.exists()):
-            raise FileNotFoundError(f"Missing file {str(config_path)}")
+            raise FileNotFoundError(f"Missing file {config_path!s}")
         with open(config_path) as f:
             data = json.load(f)
 
@@ -44,7 +46,7 @@ class SGDBConfigManager:
         if (not Path(config.programPath).exists()):
             return None
 
-        gdbArgs: list = [str(config.programPath)]
+        gdbArgs: list[str] = [str(config.programPath)]
 
         if (config.dotGdbPath is not None):
             gdbArgs.extend(["-x" , str(config.dotGdbPath)])

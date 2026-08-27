@@ -1,7 +1,18 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QDialog, QFileDialog, QLabel, QPlainTextEdit, QPushButton, QSizePolicy, QTabWidget, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QDialog,
+    QFileDialog,
+    QLabel,
+    QPlainTextEdit,
+    QPushButton,
+    QSizePolicy,
+    QTabWidget,
+    QVBoxLayout,
+    QWidget,
+)
 
 from ui import QtHelpers
+
 
 class GDBConfig(QWidget):
     def __init__(self):

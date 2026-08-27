@@ -1,16 +1,17 @@
 from pprint import pformat
+from typing import Any
 
 
 class MIPromptManager:
     @staticmethod
-    def formatResponseMessage(miResponse: dict) -> str:
+    def formatResponseMessage(miResponse: dict[str, Any]) -> str:
         if (miResponse.get("message")):
             return f"[MI::{str(miResponse.get("message")).upper()}] "
         else:
             return ""
 
     @staticmethod
-    def formatResponsePayload(miResponse: dict):
+    def formatResponsePayload(miResponse: dict[str, Any]):
         payload = miResponse.get("payload", None)
         if (not payload):
             return ""

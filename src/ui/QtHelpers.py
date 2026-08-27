@@ -2,12 +2,21 @@
 Some useful macro-widgets for common components for SideGDB
 """
 
-from enum import Enum
-from loguru import logger
 import os
+from enum import Enum
 
+from loguru import logger
 from PySide6 import QtCore
-from PySide6.QtWidgets import QFileDialog, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QFileDialog,
+    QGridLayout,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class QDirectionFlag(Enum):

@@ -1,4 +1,6 @@
 import os
+import subprocess
+
 
 def clearscreen():
-    os.system("cls" if os.name == "nt" else "clear")
+    return subprocess.run("cls" if os.name == "nt" else "clear", check=False)

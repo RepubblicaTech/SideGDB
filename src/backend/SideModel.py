@@ -1,12 +1,13 @@
 from threading import Thread
-from typing import Any, List
+from typing import Any
 
-from PySide6.QtGui import QStandardItem, QStandardItemModel
 from loguru import logger
+from pygdbmi.constants import GdbTimeoutError
+from PySide6.QtGui import QStandardItem, QStandardItemModel
 
 from backend import GDBMI
-from pygdbmi.constants import GdbTimeoutError
 from ui.observer import Signal
+
 
 class SideModel:
     def __init__(self, gdbMI: GDBMI.GdbMI) -> None:
@@ -65,7 +66,7 @@ class SideModel:
     def deleteBreakpoint(self, number):
         return self.send(f"{MICommands.MI_BREAKREM} {number}")
 
-    def setBreakpoint(self, where: str) -> dict | None:
+    def setBreakpoint(self, where: str) -> dict[str, Any] | None:
         if (not where):
             return None
 
@@ -96,7 +97,7 @@ class SideModel:
 
         return breakpointDict
 
-    def getBreakpointsList(self) -> List[dict[str, Any]] | None:
+    def getBreakpointsList(self) -> list[dict[str, Any]] | None:
         responses =  self.send(MICommands.MI_BREAKLIST)
         r = self.selectResponse(responses, ("token", self.token()))
         if (not r):
@@ -187,7 +188,7 @@ class SideModel:
     def terminate(self):
         self.__gdbMI.exit()
 
-    def selectResponse(self, gdbMIResponse: dict | List[dict], *keys: tuple[str, Any]):
+    def selectResponse(self, gdbMIResponse: dict[str, Any] | list[dict[str, Any]], *keys: tuple[str, Any]):
         keysCount = len(keys)
         finds = 0
 
